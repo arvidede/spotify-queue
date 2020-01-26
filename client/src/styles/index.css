@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+    font-family: 'Circular STD Bold', 'Roboto', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    --spotify_green: #1db954;
+    --spotify_black: #191414;
+    background-color: var(--spotify_black);
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}

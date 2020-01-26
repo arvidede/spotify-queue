@@ -1,0 +1,11 @@
+.start {
+}
+
+.start-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.start-buttons > :first-child {
+    margin-bottom: 2rem;
+}

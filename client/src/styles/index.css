@@ -1,13 +1,469 @@
 body {
     margin: 0;
-    font-family: 'Circular STD Bold', 'Roboto', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'spotify-circular', 'Roboto', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     --spotify_green: #1db954;
     --spotify_black: #191414;
+    --spotify_white: #fff;
+    --glue-font-weight-normal: 400;
+    --glue-font-weight-bold: 700;
+    --glue-font-weight-black: 900;
     background-color: var(--spotify_black);
 }
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+[class*=' spoticon-']:before,
+[class^='spoticon-']:before {
+    font-family: glue1-spoticon;
+    font-style: normal;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: inherit;
+    vertical-align: bottom;
+    display: inline-block;
+    text-decoration: inherit;
+}
+
+.spoticon-pause-16:before {
+    content: '\f130';
+    font-size: 16px;
+}
+
+.spoticon-pause-24:before {
+    content: '\f1D3';
+    font-size: 24px;
+}
+
+.spoticon-pause-32:before {
+    content: '\f131';
+    font-size: 32px;
+}
+
+.spoticon-play-16:before {
+    content: '\f132';
+    font-size: 16px;
+}
+
+.spoticon-play-24:before {
+    content: '\f1C8';
+    font-size: 24px;
+}
+
+.spoticon-play-32:before {
+    content: '\f133';
+    font-size: 32px;
+}
+
+.spoticon-shuffle-16:before {
+    content: '\f144';
+    font-size: 16px;
+}
+
+.spoticon-shuffle-24:before {
+    content: '\f1D5';
+    font-size: 24px;
+}
+
+.spoticon-shuffle-32:before {
+    content: '\f145';
+    font-size: 32px;
+}
+
+.spoticon-skip-back-16:before {
+    content: '\f146';
+    font-size: 16px;
+}
+
+.spoticon-skip-back-24:before {
+    content: '\f1D6';
+    font-size: 24px;
+}
+
+.spoticon-skip-back-32:before {
+    content: '\f147';
+    font-size: 32px;
+}
+
+.spoticon-skip-forward-16:before {
+    content: '\f148';
+    font-size: 16px;
+}
+
+.spoticon-skip-forward-24:before {
+    content: '\f1D7';
+    font-size: 24px;
+}
+
+.spoticon-skip-forward-32:before {
+    content: '\f149';
+    font-size: 32px;
+}
+
+.spoticon-skipback15-16:before {
+    content: '\f280';
+    font-size: 16px;
+}
+
+.spoticon-skipback15-24:before {
+    content: '\f3CC';
+    font-size: 24px;
+}
+
+.spoticon-skipback15-32:before {
+    content: '\f281';
+    font-size: 32px;
+}
+
+.spoticon-skipforward15-16:before {
+    content: '\f283';
+    font-size: 16px;
+}
+
+.spoticon-skipforward15-24:before {
+    content: '\f3CD';
+    font-size: 24px;
+}
+
+.spoticon-skipforward15-32:before {
+    content: '\f284';
+    font-size: 32px;
+}
+
+.spoticon-repeat-16:before {
+    content: '\f13e';
+    font-size: 16px;
+}
+
+.spoticon-repeat-24:before {
+    content: '\f1D4';
+    font-size: 24px;
+}
+
+.spoticon-repeat-32:before {
+    content: '\f13f';
+    font-size: 32px;
+}
+
+.spoticon-repeatonce-16:before {
+    content: '\f200';
+    font-size: 16px;
+}
+
+.spoticon-repeatonce-24:before {
+    content: '\f201';
+    font-size: 24px;
+}
+
+.spoticon-repeatonce-32:before {
+    content: '\f202';
+    font-size: 32px;
+}
+
+.spoticon-menu-16:before {
+    content: '\f1FD';
+    font-size: 16px;
+}
+
+.spoticon-menu-32:before {
+    content: '\f1FE';
+    font-size: 32px;
+}
+
+.spoticon-artist-placeholder-32:before {
+    content: '\f103';
+    font-size: 32px;
+}
+
+.spoticon-track-16:before {
+    content: '\f156';
+    font-size: 16px;
+}
+
+.spoticon-track-32:before {
+    content: '\f157';
+    font-size: 32px;
+}
+
+.spoticon-video-16:before {
+    content: '\f26B';
+    font-size: 16px;
+}
+
+.spoticon-video-24:before {
+    content: '\f2A0';
+    font-size: 24px;
+}
+
+.spoticon-video-32:before {
+    content: '\f26C';
+    font-size: 32px;
+}
+
+.spoticon-volume-16:before {
+    content: '\f15e';
+    font-size: 16px;
+}
+
+.spoticon-volume-off-16:before {
+    content: '\f1EF';
+    font-size: 16px;
+}
+
+.spoticon-volume-onewave-16:before {
+    content: '\f203';
+    font-size: 16px;
+}
+
+.spoticon-volume-twowave-16:before {
+    content: '\f206';
+    font-size: 16px;
+}
+
+.spoticon-spotifylogo-16:before {
+    content: '\f298';
+    font-size: 16px;
+}
+
+.spoticon-spotifylogo-32:before {
+    content: '\f299';
+    font-size: 32px;
+}
+
+.control-button,
+.control-button-wrapper {
+    position: relative;
+}
+
+.control-button {
+    background-color: transparent;
+    border: none;
+    color: #b3b3b3;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+}
+
+.no-focus-outline .control-button:focus {
+    outline: none;
+}
+
+.control-button:focus,
+.control-button:hover {
+    color: #fff;
+}
+
+.control-button:focus:active,
+.control-button:hover:active {
+    color: #b3b3b3;
+}
+
+.control-button--active {
+    color: #1db954;
+}
+
+.control-button--active:not(.control-button--disabled):focus,
+.control-button--active:not(.control-button--disabled):hover {
+    color: #1ed760;
+}
+
+.control-button--active:not(.control-button--disabled):active {
+    color: #b3b3b3;
+}
+
+.control-button--active:not(.control-button--disabled):active:focus,
+.control-button--active:not(.control-button--disabled):active:hover {
+    color: #1db954;
+}
+
+.control-button--active-dot:after {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    display: block;
+    width: 4px;
+    height: 4px;
+    content: '';
+    border-radius: 50%;
+    background-color: #1db954;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+@-webkit-keyframes circle-button-spinning {
+    0% {
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+    to {
+        -webkit-transform: rotate(315deg);
+        transform: rotate(315deg);
+    }
+}
+
+@keyframes circle-button-spinning {
+    0% {
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+    to {
+        -webkit-transform: rotate(315deg);
+        transform: rotate(315deg);
+    }
+}
+
+.control-button--circled {
+    -webkit-transition: none 33ms cubic-bezier(0.3, 0, 0.7, 1);
+    transition: none 33ms cubic-bezier(0.3, 0, 0.7, 1);
+    -webkit-transition-property: all;
+    transition-property: all;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .control-button--circled {
+        -webkit-transition-duration: 50ms;
+        transition-duration: 50ms;
+    }
+}
+
+.control-button--circled:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 500px;
+    border: 1px solid hsla(0, 0%, 100%, 0.6);
+}
+
+.control-button--circled:focus,
+.control-button--circled:hover {
+    -webkit-transition: none 33ms cubic-bezier(0.3, 0, 0, 1);
+    transition: none 33ms cubic-bezier(0.3, 0, 0, 1);
+    -webkit-transition-property: all;
+    transition-property: all;
+    -webkit-transform: scale(1.06);
+    transform: scale(1.06);
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .control-button--circled:focus,
+    .control-button--circled:hover {
+        -webkit-transition-duration: 66ms;
+        transition-duration: 66ms;
+    }
+}
+
+.control-button--circled:focus:after,
+.control-button--circled:hover:after {
+    border-color: #fff;
+}
+
+.control-button--circled:focus:active,
+.control-button--circled:hover:active {
+    -webkit-transition: none;
+    transition: none;
+    -webkit-transform: scale(0.99);
+    transform: scale(0.99);
+}
+
+.control-button--circled:focus:active:after,
+.control-button--circled:hover:active:after {
+    border-color: hsla(0, 0%, 100%, 0.6);
+}
+
+.control-button--circled.control-button--loading:after {
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 3px solid transparent;
+    border-top-color: #fff;
+    -webkit-animation: circle-button-spinning 0.65s ease infinite;
+    animation: circle-button-spinning 0.65s ease infinite;
+}
+
+.control-button--disabled,
+.control-button--disabled:hover {
+    color: #404040;
+}
+
+.control-button--circled.control-button--disabled:after {
+    border: 1px solid #404040;
+}
+
+.player-controls {
+    -webkit-box-orient: vertical;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.player-controls,
+.player-controls__buttons {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-direction: normal;
+}
+
+.player-controls__buttons {
+    margin-bottom: 12px;
+    width: 224px;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-orient: horizontal;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+}
+
+@font-face {
+    font-family: spotify-circular;
+    src: url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.afd9ab26.woff2) format('woff2'),
+        url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.2a78c017.woff) format('woff'),
+        url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.89e4be2e.ttf) format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: spotify-circular;
+    src: url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.3466e0ec.woff2) format('woff2'),
+        url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.ea8d19db.woff) format('woff'),
+        url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.a357677a.ttf) format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: spotify-circular;
+    src: url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.8d0a45cc.woff2) format('woff2'),
+        url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.10e93738.woff) format('woff'),
+        url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.7eb7d0f7.ttf) format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: spotify-circular;
+    src: url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Black.c21e63c5.woff2) format('woff2'),
+        url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Black.effa986f.woff) format('woff'),
+        url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Black.ce8ef887.ttf) format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
 }

@@ -1,0 +1,35 @@
+.App {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    color: #fff;
+}
+
+.green {
+    color: var(--spotify_green);
+}
+
+.white {
+    color: #fff;
+}
+
+.xs {
+    font-size: 0.5rem;
+}
+
+.s {
+    font-size: 1rem;
+}
+
+.m {
+    font-size: 2rem;
+}
+
+.l {
+    font-size: 3rem;
+}
+
+.xl {
+    font-size: 4rem;
+}

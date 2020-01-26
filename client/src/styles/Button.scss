@@ -1,0 +1,36 @@
+.button {
+    outline: none;
+    border-radius: 10rem;
+    padding: 0.6rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: ease 0.175s;
+}
+
+.button:hover {
+    outline: none;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.button-green {
+    background: var(--spotify_green);
+    color: var(--spotify_white);
+    border: none;
+}
+
+.button-white {
+    background: var(--spotify_white);
+    border: none;
+}
+
+.button-transparent {
+    background-color: var(--spotify_black);
+    color: var(--spotify_white);
+    border: solid 1px #888;
+}
+
+.button-transparent:hover {
+    border: solid 1px var(--spotify_white);
+}

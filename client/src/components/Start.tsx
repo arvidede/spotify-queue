@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from './Button'
 import '../styles/Start.scss'
 
@@ -18,10 +18,23 @@ export const Start: React.FC<Props> = ({ onSelect }: Props) => {
     )
 }
 
-const Join: React.FC = () => {
-    return <Button onClick={() => console.log('haj')} value="Join" type="white" />
+const Host: React.FC = () => {
+    const [input, setInput] = useState<string | undefined>('')
+    const [inputVisible, setInputVisible] = useState<boolean>(false)
+    return (
+        <>
+            <Button onClick={() => setInputVisible(!inputVisible)} value="Host" type="transparent" />
+            {inputVisible && <input
+                type="text"
+                value={input}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    setInput(e.target.value)
+                }}
+            />}
+        </>
+    )
 }
 
-const Host: React.FC = () => {
-    return <Button onClick={() => console.log('haj')} value="Host" type="transparent" />
+const Join: React.FC = () => {
+    return <Button onClick={() => console.log('haj')} value="Join" type="green" />
 }

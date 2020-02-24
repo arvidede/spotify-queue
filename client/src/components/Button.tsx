@@ -8,5 +8,5 @@ interface Props {
 }
 
 export const Button: React.FC<Props> = ({ onClick, type = 'green', value = '' }: Props) => {
-    return <button className={'button button-' + type}>{value}</button>
+    return <button onClick={onClick} className={'button button-' + type}>{value}</button>
 }

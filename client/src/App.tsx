@@ -1,20 +1,25 @@
-import React, { useState } from 'react'
-import { Main, Start, Voter } from './components/'
+import React from 'react'
+import { Start, Spectator, Host, Login, URLNotFound } from './components/'
+import * as ROUTES from './utils/routes'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import './styles/App.scss'
 
 const App: React.FC = () => {
-    const [view, setView] = useState<'start' | 'main' | 'voter'>('start')
-    const renderView = (): JSX.Element => {
-        switch (view) {
-            case 'main':
-                return <Main />
-            case 'start':
-                return <Start onSelect={() => setView('start')} />
-            case 'voter':
-                return <Voter />
-        }
-    }
-    return <div className="App">{renderView()}</div>
+    return (
+        <div className="App">
+            <Router>
+                <Switch>
+                    <Route path={ROUTES.START} exact component={Start} />
+                    <Route path={ROUTES.LOGIN} exact component={Login} />
+                    <Route path={ROUTES.ROOM} exact component={Spectator} />
+                    <Route path={ROUTES.HOST} exact component={Host} />
+                    <Route>
+                        <URLNotFound />
+                    </Route>
+                </Switch>
+            </Router>
+        </div>
+    )
 }
 
 export default App

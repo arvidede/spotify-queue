@@ -1,7 +1,7 @@
 const routes = require('express').Router()
 
 routes.get('/', (req, res) => {
-    res.status(200).send('Main')
+    res.status(200).send(req.session.cookie)
 })
 
 routes.get('/enter', (req, res) => {
@@ -9,7 +9,7 @@ routes.get('/enter', (req, res) => {
 })
 
 routes.get('/host', (req, res) => {
-    res.status(200).send('Host')
+    res.status(200).send(req.session.id)
 })
 
 module.exports = routes

@@ -1,5 +1,5 @@
 import React from 'react'
-import '../styles/TextInput.scss'
+import './styles/TextInput.scss'
 
 interface Props {
     onChange: (s: string) => void

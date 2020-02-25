@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from './Button'
+import { TextInput } from './TextInput'
 import '../styles/Start.scss'
 
 interface Props {
@@ -18,23 +19,48 @@ export const Start: React.FC<Props> = ({ onSelect }: Props) => {
     )
 }
 
-const Host: React.FC = () => {
+const Join: React.FC = () => {
     const [input, setInput] = useState<string | undefined>('')
     const [inputVisible, setInputVisible] = useState<boolean>(false)
+    const joinRef = useRef<HTMLDivElement>(document.createElement('div'))
+
+    const handleClickOutside = (e: MouseEvent): void => {
+        if (!joinRef.current.contains(e.target as Node) && inputVisible) {
+            setInputVisible(false)
+        }
+    }
+
+    const handleEnterPressed = (e: KeyboardEvent): void => {
+        if (e.key === 'Enter') {
+            handleSubmit()
+        }
+    }
+
+    const handleSubmit = (): void => {
+        if (inputVisible) {
+            // Join room
+        } else {
+            setInputVisible(true)
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside)
+        document.addEventListener('keydown', handleEnterPressed)
+        return () => {
+            document.removeEventListener('click', handleClickOutside)
+            document.removeEventListener('keydown', handleEnterPressed)
+        }
+    }, [joinRef, inputVisible])
+
     return (
-        <>
-            <Button onClick={() => setInputVisible(!inputVisible)} value="Host" type="transparent" />
-            {inputVisible && <input
-                type="text"
-                value={input}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    setInput(e.target.value)
-                }}
-            />}
-        </>
+        <div ref={joinRef} className={'join-button' + (inputVisible ? ' show' : '')}>
+            <Button onClick={handleSubmit} value={inputVisible ? '\uFF0B' : 'Join'} type="green" />
+            <TextInput onChange={setInput} placeholder='Room code' value={input} visible={inputVisible} />
+        </div>
     )
 }
 
-const Join: React.FC = () => {
-    return <Button onClick={() => console.log('haj')} value="Join" type="green" />
+const Host: React.FC = () => {
+    return <Button onClick={() => console.log('haj')} value="Host" type="transparent" />
 }

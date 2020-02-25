@@ -9,3 +9,19 @@
 .start-buttons > :first-child {
     margin-bottom: 2rem;
 }
+
+.join-button {
+    display: flex;
+    width: 100%;
+    position: relative;
+    align-items: center;
+}
+
+.join-button button {
+    width: 100%;
+    z-index: 2;
+}
+
+.join-button.show button {
+    width: 19%;
+}

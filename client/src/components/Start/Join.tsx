@@ -44,7 +44,7 @@ export const Join: React.FC<Props> = ({ onSelect }: Props) => {
             document.removeEventListener('click', handleClickOutside)
             document.removeEventListener('keydown', handleEnterPressed)
         }
-    }, [joinRef, handleEnterPressed, handleClickOutside])
+    }, [handleEnterPressed, handleClickOutside])
 
     return (
         <div ref={joinRef} className={'join-button' + (inputVisible ? ' show' : '')}>

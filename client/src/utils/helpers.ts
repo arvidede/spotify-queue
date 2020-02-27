@@ -1,3 +1,25 @@
-export const isValidRoomId = (s: string): boolean => {
+export const validateRoomId = (s: string): boolean => {
     return s.length > 0 && !s.includes(' ')
+}
+
+export const parsedFetch = (url: string, body: any = null, method: string = 'GET') =>
+    fetch(url, {
+        method,
+        credentials: 'include',
+        headers: body ? { 'Content-Type': 'application/json' } : undefined,
+        body: body ? JSON.stringify(body) : undefined,
+    }).then(gatherResponse)
+
+async function gatherResponse(response: any): Promise<string | object | boolean> {
+    const { headers } = response
+    const contentType = headers.get('content-type')
+    if (contentType.includes('application/json')) {
+        return await response.json()
+    } else if (contentType.includes('application/text')) {
+        return await response.text()
+    } else if (contentType.includes('text/html')) {
+        return await response.text()
+    } else {
+        return await response.text()
+    }
 }

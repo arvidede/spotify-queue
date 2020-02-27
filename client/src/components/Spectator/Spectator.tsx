@@ -1,21 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Header } from '../Common/'
 import { RouteComponentProps } from 'react-router'
+import { useAPI } from '../../utils'
 import './styles/Spectator.scss'
 
 interface MatchParams {
     id: string
 }
 
-interface Props extends RouteComponentProps<MatchParams> {
+interface Props extends RouteComponentProps<MatchParams> {}
 
-}
+export const Spectator: React.FC<Props> = ({ match }: Props) => {
+    const api = useAPI()
 
-export const Spectator: React.FC<Props> = (props: Props) => {
+    useEffect(() => {
+        api.doJoinRoom(match.params.id)
+    }, [])
+
     return (
         <div className="spectator">
             <Header color="green" size="s" />
-            <h3>Room {props.match.params.id}</h3>
+            <h3>Room {match.params.id}</h3>
         </div>
     )
 }

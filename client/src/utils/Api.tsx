@@ -16,14 +16,20 @@ export interface APIType {
     ws: WebSocket
     connect: () => void
     check: () => void
+    host: boolean
+    onSubscribe: (n: number) => void
 }
 
 export class API implements APIType {
     ws: WebSocket
+    host: boolean
+    onSubscribe: (n: number) => void
 
     constructor() {
         this.ws = new WebSocket(SOCKET_URL)
         this.connect()
+        this.host = false
+        this.onSubscribe = (n: number) => {}
     }
 
     connect = () => {
@@ -32,21 +38,30 @@ export class API implements APIType {
         }
 
         this.ws.onmessage = (e: any) => {
-            const message = e.data as string
-            switch (message) {
+            const message = JSON.parse(e.data)
+            switch (message.type) {
                 case 'spectator':
                     break
+                case 'noSubscribers':
+                    this.onSubscribe(message.payload as number)
+                    break
+                case 'leave':
+                    this.onSubscribe(message.payload as number)
+                    break
+                // case 'host':
+                // if(this.host)
                 default:
                     break
             }
         }
 
-        this.ws.onclose = () => {
-            console.log('Close socket')
+        this.ws.onclose = (par: any) => {
+            console.log('Close socket', par)
             setTimeout(this.check, 1000)
         }
 
-        this.ws.onerror = () => {
+        this.ws.onerror = (err: any) => {
+            console.error('Socket error', err)
             this.ws.close()
         }
     }
@@ -56,8 +71,8 @@ export class API implements APIType {
         if (!this.ws || this.ws.readyState === WebSocket.CLOSED) this.connect()
     }
 
-    doJoinRoom = (id: string) => {
-        const message = Message('join', id)
+    doSendMessage = (type: string, payload: string) => {
+        const message = Message(type, payload)
         const interval = setInterval(() => {
             if (this.ws.readyState === WebSocket.OPEN) {
                 this.ws.send(message)
@@ -66,8 +81,14 @@ export class API implements APIType {
         }, 1000)
     }
 
+    doJoinRoom = (id: string) => {
+        this.doSendMessage('join', id)
+    }
+
     doSetupRoom = async (): Promise<string> => {
         const response = await parsedFetch(HOST_URL)
+        this.host = true
+        this.doSendMessage('host', response as string)
         // Cookies.set('id', response)
         return String(response)
     }

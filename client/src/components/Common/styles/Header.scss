@@ -7,3 +7,24 @@
     justify-content: flex-start;
     margin: 0 2rem;
 }
+
+.header-person-icon {
+    color: var(--spotify_white);
+    display: flex;
+    font-size: 2rem;
+    position: absolute;
+    right: 3rem;
+    top: 0.75rem;
+    justify-content: center;
+    align-items: center;
+    line-height: 2rem;
+}
+
+.header-person-icon svg {
+    margin: 0 0 0 0.5rem;
+    fill: var(--spotify_white);
+    height: 1.6rem;
+    padding: 0;
+    position: relative;
+    top: -1px;
+}

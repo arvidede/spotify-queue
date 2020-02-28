@@ -5,7 +5,22 @@
     left: 0;
     display: flex;
     justify-content: flex-start;
-    margin: 0 2rem;
+}
+
+.header-name {
+    position: absolute;
+    left: 2rem;
+}
+
+.header-name:hover {
+    cursor: pointer;
+}
+
+.header-code {
+    color: var(--spotify_white);
+    font-weight: 300;
+    text-align: center;
+    flex: 1;
 }
 
 .header-person-icon {
@@ -13,18 +28,28 @@
     display: flex;
     font-size: 2rem;
     position: absolute;
-    right: 3rem;
-    top: 0.75rem;
+    right: 2rem;
+    top: 0.85rem;
     justify-content: center;
     align-items: center;
     line-height: 2rem;
+    font-weight: 300;
 }
 
 .header-person-icon svg {
     margin: 0 0 0 0.5rem;
     fill: var(--spotify_white);
-    height: 1.6rem;
+    height: 2rem;
     padding: 0;
     position: relative;
     top: -1px;
+}
+
+@media screen and (max-width: 780px) {
+    .header-code {
+        max-width: 50vw;
+        margin: 0.5rem auto;
+        align-self: center;
+        font-size: 1rem;
+    }
 }

@@ -17,13 +17,11 @@ export const Host: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         console.log('Fetch user data')
         api.onSubscribe = (n: number) => setSubscribers(n)
-    }, [])
+    })
 
     return (
         <div className="host">
-            <Header color="green" size="s" numSubscribers={subscribers} />
-            <h3>Host</h3>
-            <h5>{props.match.params.id}</h5>
+            <Header color="green" size="s" numSubscribers={subscribers} id={props.match.params.id} />
         </div>
     )
 }

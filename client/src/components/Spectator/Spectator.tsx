@@ -17,7 +17,7 @@ export const Spectator: React.FC<Props> = ({ match }: Props) => {
     useEffect(() => {
         api.doJoinRoom(match.params.id)
         api.onSubscribe = (n: number) => setSubscribers(n)
-    }, [])
+    })
 
     return (
         <div className="spectator">

@@ -1,15 +1,29 @@
 .button {
-    outline: none;
     border-radius: 10rem;
     padding: 0.6rem;
     font-size: 1rem;
     text-transform: uppercase;
+    text-align: center;
     font-weight: 700;
-    transition: ease 0.175s;
+    transition: all ease 0.175s;
+    outline: none;
+    box-sizing: border-box;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button div {
+    align-self: center;
+    line-height: 1.1rem;
+    margin: auto;
+    align-content: center;
 }
 
 .button:hover {
-    outline: none;
+    backface-visibility: hidden;
     cursor: pointer;
     transform: scale(1.05);
     filter: brightness(110%);
@@ -18,12 +32,12 @@
 .button-green {
     background: var(--spotify_green);
     color: var(--spotify_white);
-    border: none;
+    border: solid 1px var(--spotify_green);
 }
 
 .button-white {
     background: var(--spotify_white);
-    border: none;
+    border: solid 1px var(--spotify_white);
 }
 
 .button-transparent {

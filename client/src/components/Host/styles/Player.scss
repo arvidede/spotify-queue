@@ -1,0 +1,64 @@
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.player-controller {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    width: 60vh;
+    margin-top: 1rem;
+    background-color: var(--spotify_gray);
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.player-controller-controlls {
+    display: flex;
+    flex: 1;
+    justify-content: space-evenly;
+}
+
+.player-controll-button {
+    outline: none;
+    background: none;
+    color: var(--spotify_white);
+    border: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.progress-bar-container {
+    width: 90%;
+    align-self: center;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.progress-bar {
+    position: relative;
+    height: 5px;
+    background-color: var(--spotify_medium_gray);
+    border-radius: 3px;
+
+    &::before {
+        background-color: var(--spotify_text_gray);
+        position: absolute;
+        width: 75%;
+        height: 5px;
+        top: 0;
+        left: 0;
+        content: '';
+        border-radius: 3px;
+    }
+
+    &:hover::before {
+        background-color: var(--spotify_green);
+    }
+}

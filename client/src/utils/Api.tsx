@@ -67,7 +67,7 @@ export class API implements APIType {
     }
 
     check = () => {
-        //check if websocket instance is closed, if so call `connect` function.
+        /* check if websocket instance is closed, if so call `connect` function. */
         if (!this.ws || this.ws.readyState === WebSocket.CLOSED) this.connect()
     }
 

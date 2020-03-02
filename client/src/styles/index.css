@@ -6,7 +6,11 @@ body {
     --spotify_green: #1db954;
     --spotify_black: #191414;
     --spotify_white: #fff;
-    --spotify_gray: #222327;
+    --spotify_light_gray: #222327;
+    --spotify__dark_gray: rgb(24, 24, 24);
+    --spotify_gray: rgb(40, 40, 40);
+    --spotify_medium_gray: rgb(64, 64, 64);
+    --spotify_text_gray: rgb(147, 147, 147);
     --glue-font-weight-normal: 400;
     --glue-font-weight-bold: 700;
     --glue-font-weight-black: 900;

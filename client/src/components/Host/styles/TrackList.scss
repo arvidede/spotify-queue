@@ -6,8 +6,9 @@
 }
 
 .track-list li {
+    font-size: 0.9rem;
     margin: 0;
-    padding: 1rem 2rem;
+    padding: 0.8rem 2rem;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr;

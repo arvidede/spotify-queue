@@ -3,11 +3,12 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     width: 100vw;
-    height: 100vh;
+    height: 88vh;
+    padding-top: 12vh;
 }
 
 .host-content-inner {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }

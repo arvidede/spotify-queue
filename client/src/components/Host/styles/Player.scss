@@ -4,6 +4,15 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+
+    h3,
+    p {
+        margin-bottom: 0;
+    }
+
+    p {
+        margin-top: 0.5rem;
+    }
 }
 
 .player-controller {
@@ -12,15 +21,16 @@
     justify-content: space-between;
     flex: 1;
     width: 60vh;
-    margin-top: 1rem;
-    background-color: var(--spotify_gray);
+    margin-top: 0.25rem;
+    // background-color: var(--spotify_gray);
     padding: 1rem;
     box-sizing: border-box;
 }
 
 .player-controller-controlls {
     display: flex;
-    flex: 1;
+    width: 80%;
+    margin: 0 auto;
     justify-content: space-evenly;
 }
 
@@ -29,28 +39,73 @@
     background: none;
     color: var(--spotify_white);
     border: none;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
 
     &:hover {
         cursor: pointer;
+        filter: brightness(140%);
+    }
+
+    svg {
+        width: 0.9rem;
+        fill: var(--spotify_text_gray);
+    }
+
+    &.circle {
+        border: solid 1px var(--spotify_text_gray);
+        padding: 12px;
+
+        &:hover {
+            transform: scale(1.04);
+        }
+    }
+
+    &.play svg {
+        position: relative;
+        left: 1px;
     }
 }
 
 .progress-bar-container {
+    position: relative;
     width: 90%;
     align-self: center;
+    display: flex;
+    justify-content: center;
     margin: 1rem 0 0.5rem 0;
+
+    > div:not(:nth-of-type(2)) {
+        position: absolute;
+        font-size: 0.5rem;
+        top: -6px;
+        text-align: center;
+    }
+
+    > div:first-of-type {
+        left: -10px;
+    }
+
+    > div:last-of-type {
+        right: -16px;
+    }
 }
 
 .progress-bar {
     position: relative;
+    width: 90%;
     height: 5px;
     background-color: var(--spotify_medium_gray);
     border-radius: 3px;
 
-    &::before {
+    div {
         background-color: var(--spotify_text_gray);
         position: absolute;
-        width: 75%;
+        transform-origin: left;
+        width: 100%;
         height: 5px;
         top: 0;
         left: 0;
@@ -58,7 +113,7 @@
         border-radius: 3px;
     }
 
-    &:hover::before {
+    &:hover div {
         background-color: var(--spotify_green);
     }
 }

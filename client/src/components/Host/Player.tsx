@@ -45,7 +45,7 @@ interface ControllButtonProps {
 }
 
 export const ControllButton: React.FC<ControllButtonProps> = ({ type, onClick }: ControllButtonProps) => {
-    const isCircled = type == 'play' || type == 'pause'
+    const isCircled = type === 'play' || type === 'pause'
     const renderIcon = () => {
         switch (type) {
             case 'next':

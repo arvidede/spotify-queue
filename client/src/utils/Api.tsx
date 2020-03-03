@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import Cookies from 'js-cookie'
-import { HOST_URL, VALIDATE_ROOM_URL, validateRoomId, parsedFetch } from './'
+import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomId, parsedFetch, TrackType } from './'
 import { SOCKET_URL } from './constants'
 
 const Message = (type: string, payload: string): string => {
@@ -18,6 +18,7 @@ export interface APIType {
     check: () => void
     host: boolean
     onSubscribe: (n: number) => void
+    doSearchTrack: (search: string) => Promise<{ tracks: TrackType[] }>
 }
 
 export class API implements APIType {
@@ -95,6 +96,12 @@ export class API implements APIType {
 
     isValidRoomId = async (id: string): Promise<boolean> => {
         return validateRoomId(id) && ((await parsedFetch(VALIDATE_ROOM_URL, { id }, 'POST')) as boolean)
+    }
+
+    doSearchTrack = async (search: string): Promise<{ tracks: TrackType[] }> => {
+        const response = await parsedFetch(`${SEARCH_URL}?query=${search}`)
+        console.log(response)
+        return response as Promise<{ tracks: TrackType[] }>
     }
 }
 

@@ -35,7 +35,52 @@ routes_ = db => {
                 res.status(200).send(doc.exists)
             })
     })
+
+    routes.get('/search', (req, res) => {
+        // Search spotify here
+        setTimeout(() => {
+            res.status(200).send(
+                JSON.stringify({
+                    tracks: [...TRACKS].splice(
+                        0,
+                        Math.floor(TRACKS.length * Math.random()),
+                    ),
+                }),
+            )
+        }, 1500)
+    })
     return routes
 }
+
+const TRACKS = [
+    {
+        title: 'Song title',
+        artist: 'Singer',
+        artwork: '../../assets/img/album.jpg',
+        length: 1337,
+        votes: 1,
+    },
+    {
+        title: 'Song title',
+        artist: 'Singer',
+        artwork: '../../assets/img/album.jpg',
+        length: 1337,
+        votes: 1,
+    },
+    {
+        title: 'Song title',
+        artist: 'Singer',
+        artwork: '../../assets/img/album.jpg',
+        length: 1337,
+        votes: 1,
+    },
+    {
+        title: 'Song title',
+        artist: 'Singer',
+        artwork: '../../assets/img/album.jpg',
+        length: 1337,
+        votes: 1,
+    },
+]
 
 module.exports = routes_

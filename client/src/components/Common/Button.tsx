@@ -12,7 +12,7 @@ interface Props {
 export const Button: React.FC<Props> = ({ onClick, type = 'green', value = '', loading = false }: Props) => {
     return (
         <button onClick={onClick} className={'button button-' + type}>
-            <div>{loading ? Dots : value}</div>
+            <div>{loading ? <Dots /> : value}</div>
         </button>
     )
 }

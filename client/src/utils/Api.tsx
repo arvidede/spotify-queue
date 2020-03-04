@@ -87,21 +87,20 @@ export class API implements APIType {
     }
 
     doSetupRoom = async (): Promise<string> => {
-        const response = await parsedFetch(HOST_URL)
+        const response: { data: string } = await parsedFetch(HOST_URL)
         this.host = true
-        this.doSendMessage('host', response as string)
+        this.doSendMessage('host', response.data)
         // Cookies.set('id', response)
-        return String(response)
+        return response.data
     }
 
     isValidRoomId = async (id: string): Promise<boolean> => {
-        return validateRoomId(id) && ((await parsedFetch(VALIDATE_ROOM_URL, { id }, 'POST')) as boolean)
+        return validateRoomId(id) && ((await parsedFetch(`${VALIDATE_ROOM_URL}?id=${id}`)) as { data: boolean }).data
     }
 
     doSearchTrack = async (search: string): Promise<{ tracks: TrackType[] }> => {
-        const response = await parsedFetch(`${SEARCH_URL}?query=${search}`)
-        console.log(response)
-        return response as Promise<{ tracks: TrackType[] }>
+        const response: { data: { tracks: TrackType[] } } = await parsedFetch(`${SEARCH_URL}?query=${search}`)
+        return response.data
     }
 }
 

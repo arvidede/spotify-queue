@@ -16,7 +16,7 @@ export const Search: React.FC<SearchProps> = ({ onSearch, isSearching, onCancel 
     const handleCancel = () => {
         inputRef.current.blur()
         setInput('')
-        onCancel()
+        // onCancel()
     }
 
     const handleClickOutside = useCallback((e: MouseEvent) => {
@@ -58,13 +58,23 @@ export const Search: React.FC<SearchProps> = ({ onSearch, isSearching, onCancel 
 
 interface SearchResultProps {
     tracks: TrackType[]
+    onAddTrack: (track: string) => void
 }
 
-export const SearchResults: React.FC<SearchResultProps> = ({ tracks }: SearchResultProps) => {
+export const SearchResults: React.FC<SearchResultProps> = ({ tracks, onAddTrack }: SearchResultProps) => {
     return (
         <ul className="track-list">
             {tracks.map((track, index) => (
-                <li key={track.title + Math.random()}></li>
+                <li key={track.title + Math.random()}>
+                    <img src={track.artwork} alt="" />
+                    <div className="track-names">
+                        <div>
+                            <h3>{track.title}</h3>
+                        </div>
+                        <div>{track.artist}</div>
+                    </div>
+                    <button onClick={() => onAddTrack(track.title)}>&#65291;</button>
+                </li>
             ))}
         </ul>
     )

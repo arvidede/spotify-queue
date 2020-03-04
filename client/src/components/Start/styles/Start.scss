@@ -1,13 +1,10 @@
-.start {
-}
-
 .start-buttons {
     display: flex;
     flex-direction: column;
 }
 
 .start-buttons > :first-child {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 
 .join-button {
@@ -20,8 +17,16 @@
 .join-button button {
     width: 100%;
     z-index: 2;
+    position: absolute;
 }
 
 .join-button.show button {
     width: 19%;
+    letter-spacing: 0;
+}
+
+@media screen and (max-width: 780px) {
+    .start-buttons {
+        margin-bottom: 4rem;
+    }
 }

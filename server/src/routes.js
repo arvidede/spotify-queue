@@ -1,13 +1,13 @@
 const FieldValue = require('firebase-admin').firestore.FieldValue
 const routes = require('express').Router()
 
-routes_ = db => {
-    routes.get('/', (req, res) => {
-        res.status(200).send(req.session.cookie)
-    })
+const Response = res => {
+    return JSON.stringify({ data: res })
+}
 
+routes_ = db => {
     routes.get('/join', (req, res) => {
-        res.status(200).send(true)
+        res.status(200).send(Response(true))
     })
 
     routes.get('/host', (req, res) => {
@@ -24,23 +24,24 @@ routes_ = db => {
                         })
                 }
             })
-        res.status(200).send(req.session.id)
+        res.status(200).send(Response(req.session.id))
     })
 
-    routes.post('/validate', (req, res) => {
+    routes.get('/validate', (req, res) => {
         db.collection('sessions')
-            .doc(req.body.id)
+            .doc(req.query.id)
             .get()
             .then(doc => {
-                res.status(200).send(doc.exists)
+                res.status(200).send(Response(doc.exists))
             })
     })
 
     routes.get('/search', (req, res) => {
         // Search spotify here
+        console.log(req.query)
         setTimeout(() => {
             res.status(200).send(
-                JSON.stringify({
+                Response({
                     tracks: [...TRACKS].splice(
                         0,
                         Math.floor(TRACKS.length * Math.random()),

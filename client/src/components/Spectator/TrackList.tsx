@@ -1,24 +1,33 @@
 import React from 'react'
 import { TrackType } from '../../utils'
+import { Heart, HeartOutline } from '../Common'
 import './styles/TrackList.scss'
 
 interface TrackListProps {
     tracks: TrackType[]
+    onVote: (s: string) => void
 }
 
-export const TrackList: React.FC<TrackListProps> = ({ tracks }: TrackListProps) => {
+export const TrackList: React.FC<TrackListProps> = ({ tracks, onVote }: TrackListProps) => {
     return (
         <ul className="track-list">
-            <li>
-                <div>TITLE</div>
-                <div>ARTIST</div>
-                <div>VOTES</div>
-            </li>
             {tracks.map((track, index) => (
                 <li key={track.title + Math.random()}>
-                    <div>{track.title}</div>
-                    <div>{track.artist}</div>
-                    <div>{track.votes}</div>
+                    <img src={track.artwork} alt="" />
+                    <div className="track-names">
+                        <div>
+                            <h3>{track.title}</h3>
+                        </div>
+                        <div>{track.artist}</div>
+                    </div>
+                    <div>
+                        <div>
+                            {track.votes} vote{track.votes > 1 && 's'}
+                        </div>
+                        <button onClick={() => onVote(track.title)}>
+                            <HeartOutline />
+                        </button>
+                    </div>
                 </li>
             ))}
         </ul>

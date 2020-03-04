@@ -26,7 +26,6 @@ export const Spectator: React.FC<Props> = ({ match }: Props) => {
     const handleSearch = (query: string) => {
         setIsSearching(true)
         api.doSearchTrack(query).then(({ tracks }) => {
-            console.log(tracks)
             setIsSearching(false)
             setSearchResults(tracks)
         })
@@ -44,9 +43,9 @@ export const Spectator: React.FC<Props> = ({ match }: Props) => {
             {isSearching ? (
                 <Spinner css={'margin-top: 10vh;'} size={10} color={'white'} />
             ) : searchResults.length > 0 ? (
-                <SearchResults tracks={TRACKS} />
+                <SearchResults onAddTrack={(s: string) => console.log(s)} tracks={searchResults} />
             ) : (
-                <TrackList tracks={TRACKS} />
+                <TrackList onVote={(s: string) => console.log(s)} tracks={TRACKS} />
             )}
         </div>
     )
@@ -58,7 +57,7 @@ const TRACKS: TrackType[] = [
         artist: 'Singer',
         artwork: require('../../assets/img/album.jpg'),
         length: 1337,
-        votes: 1,
+        votes: 10,
     },
     {
         title: 'Song title',

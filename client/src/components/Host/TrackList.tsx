@@ -9,7 +9,7 @@ interface TrackListProps {
 export const TrackList: React.FC<TrackListProps> = ({ tracks }: TrackListProps) => {
     return (
         <div className="host-content-inner">
-            <ul className="track-list">
+            <ul className="host-track-list">
                 <li>
                     <div>TITLE</div>
                     <div>ARTIST</div>

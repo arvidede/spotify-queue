@@ -3,30 +3,89 @@
     padding: 0;
     margin: 0 0 0 0;
     width: 100%;
-}
 
-.track-list li {
-    width: 100%;
-    font-size: 0.9rem;
-    margin: 0;
-    padding: 0.8rem 1rem;
-    box-sizing: border-box;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr;
-    background-color: var(--spotify_dark_gray);
-    justify-content: space-around;
+    li {
+        width: 100%;
+        margin: 0;
+        padding: 0.8rem 1rem;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 1fr 4fr 3fr;
+        grid-template-rows: 1fr;
+        background-color: var(--spotify_dark_gray);
+        justify-content: space-around;
 
-    &:first-of-type {
-        font-size: 0.75rem;
-        color: var(--spotify_text_gray);
+        &:not(:first-of-type) {
+            border-top: solid 1px var(--spotify_gray);
+        }
+
+        &:hover {
+            background-color: var(--spotify_gray);
+        }
+
+        > div:nth-of-type(2) {
+            display: flex;
+            align-items: center;
+
+            > div {
+                margin-right: auto;
+                color: var(--spotify_text_gray);
+            }
+        }
     }
 
-    &:not(:first-of-type) {
-        border-top: solid 1px var(--spotify_gray);
+    img {
+        height: 7vh;
+        width: 7vh;
+        max-width: 6rem;
+        max-height: 6rem;
     }
 
-    &:hover {
-        background-color: var(--spotify_gray);
+    .track-names {
+        padding-left: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        div:last-of-type {
+            font-size: 0.75rem;
+            color: var(--spotify_text_gray);
+        }
+    }
+
+    div:last-of-type {
+        color: var(--spotify_white);
+    }
+
+    button {
+        color: var(--spotify_white);
+        font-size: 1.5rem;
+        background: none;
+        border: none;
+        margin: 0 0.75rem 0 auto;
+        display: flex;
+        align-items: center;
+        padding: 0;
+        outline: none;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        svg {
+            height: 1.5rem;
+            fill: var(--spotify_white);
+            transition: ease 0.25s;
+
+            &:active {
+                fill: var(--spotify_green);
+                transform: scale(1.2);
+            }
+        }
     }
 }

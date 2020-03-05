@@ -4,6 +4,12 @@ import * as ROUTES from './utils/routes'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import './styles/App.scss'
 
+/**
+ * TODO:
+ *  - Dispatch exit event on disconnect or exit room in order to remove session from redis
+ *  - Abort last search request on cancel
+ */
+
 const App: React.FC = () => {
     return (
         <div className="App">

@@ -1,22 +1,19 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react'
-import { useAPI, TrackType, useDebounce } from '../../utils'
+import { useAPI, TrackType, useDebouncedInput } from '../../utils'
 import './styles/Search.scss'
 
 interface SearchProps {
-    onSearch: (s: string) => void
-    isSearching: boolean
     onCancel: () => void
+    onSearchUpdate: (s: string) => void
 }
 
-export const Search: React.FC<SearchProps> = ({ onSearch, isSearching, onCancel }: SearchProps) => {
-    const [input, setInput] = useState('')
+export const Search: React.FC<SearchProps> = ({ onCancel, onSearchUpdate }) => {
     const inputRef = useRef<HTMLInputElement>(document.createElement('input'))
-    const debouncedInput = useDebounce(input, 300)
-
+    const { input, setInput, handleInputChange } = useDebouncedInput(onSearchUpdate, onCancel)
     const handleCancel = () => {
         inputRef.current.blur()
         setInput('')
-        // onCancel()
+        onCancel()
     }
 
     const handleClickOutside = useCallback((e: MouseEvent) => {
@@ -25,28 +22,21 @@ export const Search: React.FC<SearchProps> = ({ onSearch, isSearching, onCancel 
         }
     }, [])
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (input === '' && e.target.value.length > 0) {
-            onSearch(input)
-        } else if (e.target.value.length === 0) {
-            onCancel()
+    const handleKeyPressed = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            handleCancel()
         }
-        setInput(e.target.value)
-    }
+    }, [])
 
     useEffect(() => {
-        if (debouncedInput) {
-            onSearch(input)
-        }
-    }, [debouncedInput])
-
-    useEffect(() => {
-        document.addEventListener('click', handleClickOutside)
+        inputRef.current.addEventListener('click', handleClickOutside)
+        inputRef.current.addEventListener('keydown', handleKeyPressed)
 
         return () => {
-            document.removeEventListener('click', handleClickOutside)
+            inputRef.current.removeEventListener('click', handleClickOutside)
+            inputRef.current.removeEventListener('keydown', handleKeyPressed)
         }
-    }, [handleClickOutside])
+    }, [handleClickOutside, handleKeyPressed])
 
     return (
         <div className="search">
@@ -61,15 +51,17 @@ interface SearchResultProps {
     onAddTrack: (track: string) => void
 }
 
+const img = require('../../assets/img/album.jpg')
+
 export const SearchResults: React.FC<SearchResultProps> = ({ tracks, onAddTrack }: SearchResultProps) => {
     return (
         <ul className="track-list">
             {tracks.map((track, index) => (
                 <li key={track.title + Math.random()}>
-                    <img src={track.artwork} alt="" />
+                    <img src={img /*track.artwor*/} alt="" />
                     <div className="track-names">
                         <div>
-                            <h3>{track.title}</h3>
+                            <h3>{track.title + ' ' + Math.ceil(Math.random() * 10)}</h3>
                         </div>
                         <div>{track.artist}</div>
                     </div>

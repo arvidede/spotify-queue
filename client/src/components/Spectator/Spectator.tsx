@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { Header } from '../Common/'
 import { PulseLoader as Spinner } from 'react-spinners'
 import { TrackList, Search, SearchResults } from './'
 import { RouteComponentProps } from 'react-router'
+import { useAsyncAbortable } from 'react-async-hook'
 import { useAPI, TrackType } from '../../utils'
 import './styles/Spectator.scss'
+import { useSearch } from '../../utils/helpers'
 
 interface MatchParams {
     id: string
@@ -12,44 +14,44 @@ interface MatchParams {
 
 interface Props extends RouteComponentProps<MatchParams> {}
 
-export const Spectator: React.FC<Props> = ({ match }: Props) => {
-    const api = useAPI()
+export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
     const [subscribers, setSubscribers] = useState<number>(1)
-    const [isSearching, setIsSearching] = useState(false)
-    const [searchResults, setSearchResults] = useState<TrackType[] | never[]>([])
+    const { searching, setSearching, setSearchInput, search } = useSearch()
+    const api = useAPI()
 
     useEffect(() => {
         api.doJoinRoom(match.params.id)
         api.onSubscribe = (n: number) => setSubscribers(n)
     })
 
-    const handleSearch = (query: string) => {
-        setIsSearching(true)
-        api.doSearchTrack(query).then(({ tracks }) => {
-            setIsSearching(false)
-            setSearchResults(tracks)
-        })
+    const handleCancelSearch = () => {
+        setSearching(false)
+        search.reset()
     }
 
-    const handleCancelSearch = () => {
-        setIsSearching(false)
-        setSearchResults([])
+    const handleSearchUpdate = (input: string) => {
+        setSearchInput(input)
+        if (!searching) setSearching(true)
     }
 
     return (
         <div className="spectator">
             <Header color="green" size="s" numSubscribers={subscribers} />
-            <Search onSearch={handleSearch} isSearching={isSearching} onCancel={handleCancelSearch} />
-            {isSearching ? (
-                <Spinner css={'margin-top: 10vh;'} size={10} color={'white'} />
-            ) : searchResults.length > 0 ? (
-                <SearchResults onAddTrack={(s: string) => console.log(s)} tracks={searchResults} />
+            <Search onSearchUpdate={handleSearchUpdate} onCancel={handleCancelSearch} />
+            {searching ? (
+                search.loading ? (
+                    <Spinner css={'margin-top: 10vh;'} size={10} color={'white'} />
+                ) : search.result && search.result.length > 0 ? (
+                    <SearchResults onAddTrack={(s: string) => console.log(s)} tracks={search.result} />
+                ) : (
+                    <p>No results</p>
+                )
             ) : (
                 <TrackList onVote={(s: string) => console.log(s)} tracks={TRACKS} />
             )}
         </div>
     )
-}
+})
 
 const TRACKS: TrackType[] = [
     {

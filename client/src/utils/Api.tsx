@@ -18,7 +18,7 @@ export interface APIType {
     check: () => void
     host: boolean
     onSubscribe: (n: number) => void
-    doSearchTrack: (search: string) => Promise<{ tracks: TrackType[] }>
+    doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
 }
 
 export class API implements APIType {
@@ -98,9 +98,14 @@ export class API implements APIType {
         return validateRoomId(id) && ((await parsedFetch(`${VALIDATE_ROOM_URL}?id=${id}`)) as { data: boolean }).data
     }
 
-    doSearchTrack = async (search: string): Promise<{ tracks: TrackType[] }> => {
-        const response: { data: { tracks: TrackType[] } } = await parsedFetch(`${SEARCH_URL}?query=${search}`)
-        return response.data
+    doSearchTrack = async (search: string, signal: AbortSignal): Promise<TrackType[]> => {
+        const response: { data: { tracks: TrackType[] } } = await parsedFetch(
+            `${SEARCH_URL}?query=${search}`,
+            null,
+            'GET',
+            signal,
+        )
+        return response.data.tracks
     }
 }
 

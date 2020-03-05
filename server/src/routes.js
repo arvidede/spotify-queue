@@ -44,7 +44,7 @@ routes_ = db => {
                 Response({
                     tracks: [...TRACKS].splice(
                         0,
-                        Math.floor(TRACKS.length * Math.random()),
+                        1 + Math.floor((TRACKS.length - 1) * Math.random()),
                     ),
                 }),
             )

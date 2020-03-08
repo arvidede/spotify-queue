@@ -99,13 +99,14 @@ export class API implements APIType {
     }
 
     doSearchTrack = async (search: string, signal: AbortSignal): Promise<TrackType[]> => {
-        const response: { data: { tracks: TrackType[] } } = await parsedFetch(
+        const response: { data: { items: TrackType[] } } = await parsedFetch(
             `${SEARCH_URL}?query=${search}`,
             null,
             'GET',
             signal,
         )
-        return response.data.tracks
+
+        return response.data.items
     }
 }
 

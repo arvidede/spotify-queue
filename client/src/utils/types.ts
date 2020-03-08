@@ -1,4 +1,4 @@
-export interface TrackType {
+export interface TrackType extends Partial<SpotifyApi.TrackObjectFull> {
     title: string
     artist: string
     artwork: string

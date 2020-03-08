@@ -1,4 +1,10 @@
-import { TOKEN_URL, CLIENT_TOKEN, CLIENT_TOKEN_SECRET } from './constants'
+import {
+    TOKEN_URL,
+    CLIENT_TOKEN,
+    CLIENT_TOKEN_SECRET,
+    DATABASE_URL,
+    TOKEN_BASE_64,
+} from './constants'
 const routes = require('./routes')
 const Socket = require('./socket')
 const serviceAccount = require('../firebase.key.json')
@@ -39,7 +45,7 @@ class Server {
         this.admin = admin
         this.admin.initializeApp({
             credential: this.admin.credential.cert(serviceAccount),
-            databaseURL: 'https://queue-1337.firebaseio.com',
+            databaseURL: DATABASE_URL,
         })
     }
 
@@ -66,10 +72,7 @@ class Server {
     }
 
     async fetchToken() {
-        const tokenBase64 = new Buffer(
-            `${CLIENT_TOKEN}:${CLIENT_TOKEN_SECRET}`,
-        ).toString('base64')
-        const auth = `Basic ${tokenBase64}`
+        const auth = `Basic ${TOKEN_BASE_64}`
         const options = {
             method: 'POST',
             headers: {

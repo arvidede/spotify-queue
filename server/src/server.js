@@ -1,3 +1,4 @@
+import { TOKEN_URL, CLIENT_TOKEN, CLIENT_TOKEN_SECRET } from './constants'
 const routes = require('./routes')
 const Socket = require('./socket')
 const serviceAccount = require('../firebase.key.json')
@@ -10,16 +11,20 @@ const admin = require('firebase-admin')
 const session = require('express-session')
 const redis = require('redis')
 const RedisStore = require('connect-redis')(session)
+const axios = require('axios')
+const querystring = require('querystring')
 
 const redisClient = redis.createClient()
 const PORT = process.env.PORT || 8081
 
 class Server {
     constructor() {
+        this.token = ''
         this.createApp()
         this.configFirebase()
         this.createDb()
         this.createSession()
+        this.fetchToken()
         this.config()
         this.createServer()
         this.createSockets()
@@ -60,6 +65,27 @@ class Server {
         })
     }
 
+    async fetchToken() {
+        const tokenBase64 = new Buffer(
+            `${CLIENT_TOKEN}:${CLIENT_TOKEN_SECRET}`,
+        ).toString('base64')
+        const auth = `Basic ${tokenBase64}`
+        const options = {
+            method: 'POST',
+            headers: {
+                Authorization: auth,
+            },
+            data: querystring.stringify({ grant_type: 'client_credentials' }),
+            url: TOKEN_URL,
+        }
+        try {
+            const response = await axios(options)
+            this.token = response.data.access_token
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     config() {
         this.port = PORT
         this.app.use(bodyParser.json())
@@ -82,7 +108,7 @@ class Server {
 
         this.app.options('*', cors(corsOptions))
         this.app.use(cors(corsOptions))
-        this.app.use('/', routes(this.db))
+        this.app.use('/', routes(this.db, this.token))
     }
 
     createServer() {

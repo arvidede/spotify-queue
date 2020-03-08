@@ -1,11 +1,13 @@
+import { SEARCH_URL } from './constants'
 const FieldValue = require('firebase-admin').firestore.FieldValue
 const routes = require('express').Router()
+const axios = require('axios')
 
 const Response = res => {
     return JSON.stringify({ data: res })
 }
 
-routes_ = db => {
+const routes_ = (db, token) => {
     routes.get('/join', (req, res) => {
         res.status(200).send(Response(true))
     })
@@ -36,52 +38,26 @@ routes_ = db => {
             })
     })
 
-    routes.get('/search', (req, res) => {
-        // Search spotify here
-        console.log(req.query)
-        setTimeout(() => {
-            res.status(200).send(
-                Response({
-                    tracks: [...TRACKS].splice(
-                        0,
-                        1 + Math.floor((TRACKS.length - 1) * Math.random()),
-                    ),
-                }),
-            )
-        }, 1500)
+    routes.get('/search', async (req, res) => {
+        let query = req.query
+
+        query = query.query.replace(' ', '%')
+
+        try {
+            const searchResults = await axios({
+                medthod: 'GET',
+                url: `${SEARCH_URL}?q=${query}&type=track`,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+
+            res.status(200).send(Response(searchResults.data.tracks))
+        } catch (error) {
+            console.log(error.response)
+        }
     })
     return routes
 }
-
-const TRACKS = [
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: '../../assets/img/album.jpg',
-        length: 1337,
-        votes: 1,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: '../../assets/img/album.jpg',
-        length: 1337,
-        votes: 1,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: '../../assets/img/album.jpg',
-        length: 1337,
-        votes: 1,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: '../../assets/img/album.jpg',
-        length: 1337,
-        votes: 1,
-    },
-]
 
 module.exports = routes_

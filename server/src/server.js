@@ -4,6 +4,7 @@ import {
     CLIENT_TOKEN_SECRET,
     DATABASE_URL,
     TOKEN_BASE_64,
+    PORT,
 } from './constants'
 const routes = require('./routes')
 const Socket = require('./socket')
@@ -21,7 +22,6 @@ const axios = require('axios')
 const querystring = require('querystring')
 
 const redisClient = redis.createClient()
-const PORT = process.env.PORT || 8081
 
 class Server {
     constructor() {

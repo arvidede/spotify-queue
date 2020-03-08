@@ -11,3 +11,6 @@ export const TOKEN_BASE_64 = new Buffer(
 
 /* Firebase */
 export const DATABASE_URL = 'https://queue-1337.firebaseio.com'
+
+/* Misc */
+export const PORT = process.env.PORT || 8081

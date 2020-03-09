@@ -31,7 +31,8 @@ exports.host = (req, res) => {
         .get()
         .then(doc => {
             if (!doc.exists) {
-                db.collection('sessions')
+                req.db
+                    .collection('sessions')
                     .doc(req.session.id)
                     .set({
                         spectators: 0,
@@ -39,6 +40,7 @@ exports.host = (req, res) => {
                     })
             }
         })
+    console.log('New host:', req.session.id)
     res.status(200).send(Response(req.session.id))
 }
 

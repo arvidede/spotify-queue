@@ -129,9 +129,16 @@ class Server {
                 })
             }
         }
+
+        const withDB = (req, res, next) => {
+            req.db = this.db
+            next()
+        }
+
         const middlewares = {
-            withAppToken,
             ...middleware,
+            withAppToken,
+            withDB,
         }
 
         this.app.use('/', routes(middlewares))

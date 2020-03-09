@@ -8,7 +8,7 @@ module.exports = middleware => {
 
     routes.get('/host', middleware.withDB, controllers.host)
 
-    routes.get('/validate', controllers.validate)
+    routes.get('/validate', middleware.withDB, controllers.validate)
 
     routes.get('/search', middleware.withAppToken, controllers.search)
     return routes

@@ -65,7 +65,7 @@ class Server {
             cookie: {
                 maxAge: 1000 * 60 * 60 * 6, // MS : SS : MM : HH
                 secure: false,
-                domain: 'localhost',
+                domain: process.env.DOMAIN,
             },
             resave: true,
             saveUninitialized: true,

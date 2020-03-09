@@ -27,6 +27,7 @@ const redisClient = redis.createClient()
 class Server {
     constructor() {
         this.token = ''
+        this.tokenExpiration = 0
         this.createApp()
         this.configFirebase()
         this.createDb()
@@ -85,6 +86,8 @@ class Server {
         try {
             const response = await axios(options)
             this.token = response.data.access_token
+            this.tokenExpiration = Date.now() + response.data.expires_in * 1000
+            return this.token
         } catch (error) {
             console.log(error)
         }
@@ -116,8 +119,15 @@ class Server {
 
     createRoutes() {
         const withAppToken = (req, res, next) => {
-            req.token = this.token
-            next()
+            if (Date.now() > this.tokenExpiration) {
+                req.token = this.token
+                next()
+            } else {
+                this.fetchToken().then(token => {
+                    req.token = token
+                    next()
+                })
+            }
         }
         const middlewares = {
             withAppToken,

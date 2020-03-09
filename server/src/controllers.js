@@ -66,7 +66,6 @@ exports.search = async (req, res) => {
                 Authorization: `Bearer ${req.token}`,
             },
         })
-        console.log(req.token)
 
         res.status(200).send(Response(searchResults.data.tracks))
     } catch (error) {

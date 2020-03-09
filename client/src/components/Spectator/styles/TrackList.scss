@@ -10,7 +10,7 @@
         padding: 0.8rem 1rem;
         box-sizing: border-box;
         display: grid;
-        grid-template-columns: 1fr 4fr 3fr;
+        grid-template-columns: 7vh 4fr 3fr;
         grid-template-rows: 1fr;
         background-color: var(--spotify_dark_gray);
         justify-content: space-around;
@@ -48,6 +48,7 @@
         justify-content: center;
 
         h3 {
+            text-align: left;
             margin: 0;
             font-size: 1rem;
         }
@@ -55,6 +56,14 @@
         div:last-of-type {
             font-size: 0.75rem;
             color: var(--spotify_text_gray);
+        }
+
+        h3,
+        div:last-of-type {
+            max-width: 60vw;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
     }
 

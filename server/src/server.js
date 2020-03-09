@@ -72,11 +72,10 @@ class Server {
     }
 
     async fetchToken() {
-        const auth = `Basic ${TOKEN_BASE_64}`
         const options = {
             method: 'POST',
             headers: {
-                Authorization: auth,
+                Authorization: `Basic ${TOKEN_BASE_64}`,
             },
             data: querystring.stringify({ grant_type: 'client_credentials' }),
             url: TOKEN_URL,

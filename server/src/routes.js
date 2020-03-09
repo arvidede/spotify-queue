@@ -7,7 +7,7 @@ const Response = res => {
     return JSON.stringify({ data: res })
 }
 
-const routes_ = (db, token) => {
+module.exports = (db, token) => {
     routes.get('/join', (req, res) => {
         res.status(200).send(Response(true))
     })
@@ -59,5 +59,3 @@ const routes_ = (db, token) => {
     })
     return routes
 }
-
-module.exports = routes_

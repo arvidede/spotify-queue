@@ -10,26 +10,28 @@ interface TrackListProps {
 
 export const TrackList: React.FC<TrackListProps> = ({ tracks, onVote }: TrackListProps) => {
     return (
-        <ul className="track-list">
-            {tracks.map((track, index) => (
-                <li key={track.title + Math.random()}>
-                    <img src={track.artwork} alt="" />
-                    <div className="track-names">
-                        <div>
-                            <h3>{track.title}</h3>
+        <div className="list-container">
+            <ul className="track-list">
+                {tracks.map((track, index) => (
+                    <li key={track.title + Math.random()}>
+                        <img src={track.artwork} alt="" />
+                        <div className="track-names">
+                            <div>
+                                <h3>{track.title}</h3>
+                            </div>
+                            <div>{track.artist}</div>
                         </div>
-                        <div>{track.artist}</div>
-                    </div>
-                    <div>
                         <div>
-                            {track.votes} vote{track.votes > 1 && 's'}
+                            <div>
+                                {track.votes} vote{track.votes > 1 && 's'}
+                            </div>
+                            <button onClick={() => onVote(track.title)}>
+                                <HeartOutline />
+                            </button>
                         </div>
-                        <button onClick={() => onVote(track.title)}>
-                            <HeartOutline />
-                        </button>
-                    </div>
-                </li>
-            ))}
-        </ul>
+                    </li>
+                ))}
+            </ul>
+        </div>
     )
 }

@@ -11,20 +11,22 @@ const img = require('../../assets/img/album.jpg')
 
 export const SearchResults: React.FC<SearchResultProps> = ({ tracks, onAddTrack }: SearchResultProps) => {
     return (
-        <ul className="track-list">
-            {tracks.map((track, index) => (
-                <li key={track.id}>
-                    <img src={getArtwork(track.album as SpotifyApi.AlbumObjectSimplified)} alt="" />
-                    <div className="track-names">
-                        <div>
-                            <h3>{track.name}</h3>
+        <div className="list-container">
+            <ul className="track-list">
+                {tracks.map((track, index) => (
+                    <li key={track.id}>
+                        <img src={getArtwork(track.album as SpotifyApi.AlbumObjectSimplified)} alt="" />
+                        <div className="track-names">
+                            <div>
+                                <h3>{track.name}</h3>
+                            </div>
+                            <div>{track.artists[0].name}</div>
                         </div>
-                        <div>{track.artists[0].name}</div>
-                    </div>
-                    <button onClick={() => onAddTrack(track.title)}>&#65291;</button>
-                </li>
-            ))}
-        </ul>
+                        <button onClick={() => onAddTrack(track.id)}>&#65291;</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
     )
 }
 

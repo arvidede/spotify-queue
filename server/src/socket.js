@@ -34,15 +34,20 @@ class Socket {
                             req.sessionID,
                             message.payload,
                         )
-                        store.set(req.sessionID, message.payload)
-                        store.sadd(message.payload, req.sessionID)
-                        store.smembers(message.payload, (err, channel) => {
-                            this.doSendMessage(
-                                'noSubscribers',
-                                channel.length,
-                                channel,
-                            )
-                        })
+
+                        try {
+                            store.set(req.sessionID, message.payload)
+                            store.sadd(message.payload, req.sessionID)
+                            store.smembers(message.payload, (err, channel) => {
+                                this.doSendMessage(
+                                    'noSubscribers',
+                                    channel.length,
+                                    channel,
+                                )
+                            })
+                        } catch (error) {
+                            console.error(error)
+                        }
                         break
                     case 'host':
                         store.sadd(req.sessionID, req.sessionID)

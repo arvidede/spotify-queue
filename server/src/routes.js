@@ -1,61 +1,15 @@
-import { SEARCH_URL } from './constants'
-const FieldValue = require('firebase-admin').firestore.FieldValue
+const controllers = require('./controllers')
 const routes = require('express').Router()
-const axios = require('axios')
 
-const Response = res => {
-    return JSON.stringify({ data: res })
-}
+module.exports = middleware => {
+    routes.get('/authorize', controllers.authorize)
 
-module.exports = (db, token) => {
-    routes.get('/join', (req, res) => {
-        res.status(200).send(Response(true))
-    })
+    routes.get('/join', controllers.join)
 
-    routes.get('/host', (req, res) => {
-        db.collection('sessions')
-            .doc(req.session.id)
-            .get()
-            .then(doc => {
-                if (!doc.exists) {
-                    db.collection('sessions')
-                        .doc(req.session.id)
-                        .set({
-                            spectators: 0,
-                            sessionID: req.session.id,
-                        })
-                }
-            })
-        res.status(200).send(Response(req.session.id))
-    })
+    routes.get('/host', middleware.withDB, controllers.host)
 
-    routes.get('/validate', (req, res) => {
-        db.collection('sessions')
-            .doc(req.query.id)
-            .get()
-            .then(doc => {
-                res.status(200).send(Response(doc.exists))
-            })
-    })
+    routes.get('/validate', controllers.validate)
 
-    routes.get('/search', async (req, res) => {
-        let query = req.query
-
-        query = query.query.replace(' ', '%')
-
-        try {
-            const searchResults = await axios({
-                medthod: 'GET',
-                url: `${SEARCH_URL}?q=${query}&type=track`,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-
-            res.status(200).send(Response(searchResults.data.tracks))
-        } catch (error) {
-            console.log(error.response)
-        }
-    })
+    routes.get('/search', middleware.withAppToken, controllers.search)
     return routes
 }

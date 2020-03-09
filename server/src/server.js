@@ -20,6 +20,7 @@ const redis = require('redis')
 const RedisStore = require('connect-redis')(session)
 const axios = require('axios')
 const querystring = require('querystring')
+const middleware = require('./middleware')
 
 const redisClient = redis.createClient()
 
@@ -32,6 +33,7 @@ class Server {
         this.createSession()
         this.fetchToken()
         this.config()
+        this.createRoutes()
         this.createServer()
         this.createSockets()
         this.listen()
@@ -110,7 +112,19 @@ class Server {
 
         this.app.options('*', cors(corsOptions))
         this.app.use(cors(corsOptions))
-        this.app.use('/', routes(this.db, this.token))
+    }
+
+    createRoutes() {
+        const withAppToken = (req, res, next) => {
+            req.token = this.token
+            next()
+        }
+        const middlewares = {
+            withAppToken,
+            ...middleware,
+        }
+
+        this.app.use('/', routes(middlewares))
     }
 
     createServer() {

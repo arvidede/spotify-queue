@@ -1,3 +1,12 @@
+/* 
+    Breakpoints:
+    - xs: 680px
+    -  s: 860px
+    -  m: 990px
+    -  l: 1100px
+    - xl: 1280px
+*/
+
 body {
     margin: 0;
     font-family: 'spotify-circular', 'Roboto', 'Droid Sans', 'Helvetica Neue', sans-serif;

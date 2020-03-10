@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import Cookies from 'js-cookie'
 import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomId, parsedFetch, TrackType } from './'
-import { SOCKET_URL } from './constants'
+import { SOCKET_URL, AUTHORIZE_URL } from './constants'
 
 const Message = (type: string, payload: string): string => {
     return JSON.stringify({
@@ -19,6 +19,7 @@ export interface APIType {
     host: boolean
     onSubscribe: (n: number) => void
     doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
+    doAuthorizeUser: () => void
 }
 
 export class API implements APIType {
@@ -84,6 +85,23 @@ export class API implements APIType {
 
     doJoinRoom = (id: string) => {
         this.doSendMessage('join', id)
+    }
+
+    doAuthorizeUser = () => {
+        return parsedFetch(AUTHORIZE_URL, null, 'GET').then((res: { data: string }) =>
+            window.open(
+                res.data,
+                'Spotify',
+                'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' +
+                    680 +
+                    ', height=' +
+                    800 +
+                    ', top=' +
+                    100 +
+                    ', left=' +
+                    100,
+            ),
+        )
     }
 
     doSetupRoom = async (): Promise<string> => {

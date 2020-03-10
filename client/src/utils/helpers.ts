@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useAsyncAbortable } from 'react-async-hook'
 import { useAPI } from './'
+import { SpotifyToken } from './types'
 
 export const validateRoomId = (s: string): boolean => {
     return s.length > 0 && !s.includes(' ')
+}
+
+export const tokenHasExpired = (token: SpotifyToken): boolean => {
+    return token.expires_on < Date.now()
 }
 
 export const parsedFetch = (url: string, body?: any, method: string = 'GET', signal?: AbortSignal) =>

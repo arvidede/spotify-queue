@@ -117,6 +117,7 @@ export class API implements APIType {
                     'menubar=no,location=no,resizable=no,scrollbars=no,status=no,width=' +
                         `${width},height=${height},top=${top},left=${left}`,
                 )
+
                 this.window.onbeforeunload = () => {
                     this.token = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
                     resolve()

@@ -1,5 +1,10 @@
-import { SEARCH_URL, CLIENT_TOKEN, USER_AUTH_URL } from './constants'
-import { Response } from './helpers'
+import {
+    SEARCH_URL,
+    CLIENT_TOKEN,
+    USER_AUTH_URL,
+    REDIRECT_URL,
+} from './constants'
+import { Response, fetchToken } from './helpers'
 const axios = require('axios')
 const FieldValue = require('firebase-admin').firestore.FieldValue
 
@@ -16,10 +21,34 @@ exports.authorize = (req, res) => {
                 encodeURIComponent(scopes) +
                 '&redirect_uri=' +
                 encodeURIComponent(
-                    `${'http://localhost:3000' /*req.url*/}/host`, //${req.session.id}`,
+                    REDIRECT_URL, //${req.session.id}`,
                 ),
         ),
     )
+}
+
+//
+exports.requestToken = async (req, res) => {
+    console.log(req.query.code)
+    const token = await fetchToken({
+        grant_type: 'authorization_code',
+        code: req.query.code,
+        redirect_uri: REDIRECT_URL,
+    })
+
+    console.log(token)
+
+    res.status(200).send(Response(token))
+}
+
+//
+exports.refreshToken = async (req, res) => {
+    const token = await fetchToken({
+        grant_type: 'refresh_token',
+        refreshToken: req.query.token,
+    })
+
+    res.status(200).send(Response(token))
 }
 
 //

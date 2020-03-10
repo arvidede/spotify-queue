@@ -6,6 +6,7 @@ import {
     TOKEN_BASE_64,
     PORT,
 } from './constants'
+import { fetchToken } from './helpers'
 const routes = require('./routes')
 const Socket = require('./socket')
 const serviceAccount = require('../firebase.key.json')
@@ -75,22 +76,12 @@ class Server {
     }
 
     async fetchToken() {
-        const options = {
-            method: 'POST',
-            headers: {
-                Authorization: `Basic ${TOKEN_BASE_64}`,
-            },
-            data: querystring.stringify({ grant_type: 'client_credentials' }),
-            url: TOKEN_URL,
-        }
-        try {
-            const response = await axios(options)
-            this.token = response.data.access_token
-            this.tokenExpiration = Date.now() + response.data.expires_in * 1000
-            return this.token
-        } catch (error) {
-            console.log(error)
-        }
+        const token = await fetchToken({
+            grant_type: 'client_credentials',
+        })
+        this.token = token.access_token
+        this.tokenExpiration = Date.now() + token.expires_in * 1000
+        return this.token
     }
 
     config() {

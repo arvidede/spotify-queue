@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
 import Cookies from 'js-cookie'
 import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomId, parsedFetch, TrackType } from './'
-import { SOCKET_URL, AUTHORIZE_URL, REQUEST_TOKEN_URL, SPOTIFY_USER_TOKEN } from './constants'
+import { SOCKET_URL, AUTHORIZE_URL, REQUEST_TOKEN_URL, SPOTIFY_USER_TOKEN, REFRESH_TOKEN_URL } from './constants'
 import { SpotifyToken } from './types'
 import { resolve } from 'dns'
 import { rejects } from 'assert'
+import { tokenHasExpired } from './helpers'
 
 const Message = (type: string, payload: string): string => {
     return JSON.stringify({
@@ -100,7 +101,7 @@ export class API implements APIType {
         return new Promise((resolve, reject) => {
             const token: SpotifyToken = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
 
-            if (token && token.expires_on > Date.now()) {
+            if (token && !tokenHasExpired(token)) {
                 this.token = token
                 return resolve()
             }
@@ -128,6 +129,10 @@ export class API implements APIType {
 
     doFetchUserToken = (code: string) => {
         return parsedFetch(`${REQUEST_TOKEN_URL}?code=${code}`).then(res => res.data)
+    }
+
+    doRefreshUserToken = (code: string) => {
+        return parsedFetch(`${REFRESH_TOKEN_URL}?refresh_token=${this.token.refresh_token}`).then(res => res.data)
     }
 
     doSetupRoom = async (): Promise<string> => {

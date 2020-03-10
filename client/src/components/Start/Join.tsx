@@ -4,9 +4,10 @@ import { TextInput } from './'
 
 type Props = {
     onSelect: (s: string) => void
+    loading: boolean
 }
 
-export const Join: React.FC<Props> = ({ onSelect }: Props) => {
+export const Join: React.FC<Props> = ({ onSelect, loading }: Props) => {
     const [input, setInput] = useState<string>('')
     const [inputVisible, setInputVisible] = useState<boolean>(false)
     const joinRef = useRef<HTMLDivElement>(document.createElement('div'))
@@ -48,7 +49,12 @@ export const Join: React.FC<Props> = ({ onSelect }: Props) => {
 
     return (
         <div ref={joinRef} className={'join-button' + (inputVisible ? ' show' : '')}>
-            <Button onClick={handleSubmit} value={inputVisible ? '\uFF0B' : 'Join'} type="green" />
+            <Button
+                className={loading ? 'loading' : ''}
+                onClick={handleSubmit}
+                value={inputVisible ? '\uFF0B' : 'Join'}
+                type="green"
+            />
             <TextInput onChange={setInput} placeholder="Room code" value={input} visible={inputVisible} />
         </div>
     )

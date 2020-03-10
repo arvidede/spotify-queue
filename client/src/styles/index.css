@@ -20,6 +20,7 @@ body {
     --spotify_gray: rgb(40, 40, 40);
     --spotify_medium_gray: rgb(64, 64, 64);
     --spotify_text_gray: rgb(147, 147, 147);
+    --error_red: rgba(182, 7, 7, 0.788);
     --glue-font-weight-normal: 400;
     --glue-font-weight-bold: 700;
     --glue-font-weight-black: 900;

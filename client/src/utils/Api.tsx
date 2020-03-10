@@ -1,7 +1,10 @@
 import React, { useContext } from 'react'
 import Cookies from 'js-cookie'
 import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomId, parsedFetch, TrackType } from './'
-import { SOCKET_URL, AUTHORIZE_URL } from './constants'
+import { SOCKET_URL, AUTHORIZE_URL, REQUEST_TOKEN_URL, SPOTIFY_USER_TOKEN } from './constants'
+import { SpotifyToken } from './types'
+import { resolve } from 'dns'
+import { rejects } from 'assert'
 
 const Message = (type: string, payload: string): string => {
     return JSON.stringify({
@@ -19,15 +22,21 @@ export interface APIType {
     host: boolean
     onSubscribe: (n: number) => void
     doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
-    doAuthorizeUser: () => void
+    doAuthorizeUser: () => Promise<unknown>
+    doFetchUserToken: (code: string) => Promise<SpotifyToken>
+    window: Window | null
+    token: SpotifyToken | null
 }
 
 export class API implements APIType {
     ws: WebSocket
     host: boolean
     onSubscribe: (n: number) => void
+    window: Window | null
+    token: SpotifyToken | null
 
     constructor() {
+        this.window = null
         this.ws = new WebSocket(SOCKET_URL)
         this.connect()
         this.host = false
@@ -88,20 +97,36 @@ export class API implements APIType {
     }
 
     doAuthorizeUser = () => {
-        return parsedFetch(AUTHORIZE_URL, null, 'GET').then((res: { data: string }) =>
-            window.open(
-                res.data,
-                'Spotify',
-                'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' +
-                    680 +
-                    ', height=' +
-                    800 +
-                    ', top=' +
-                    100 +
-                    ', left=' +
-                    100,
-            ),
-        )
+        return new Promise((resolve, reject) => {
+            const token: SpotifyToken = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
+
+            if (token && token.expires_on > Date.now()) {
+                this.token = token
+                return resolve()
+            }
+
+            return parsedFetch(AUTHORIZE_URL, null, 'GET').then((res: { data: string }) => {
+                const width = 450,
+                    height = 730,
+                    left = window.screen.width / 2 - width / 2,
+                    top = window.screen.height / 2 - height / 2
+
+                this.window = window.open(
+                    res.data,
+                    'Spotify',
+                    'menubar=no,location=no,resizable=no,scrollbars=no,status=no,width=' +
+                        `${width},height=${height},top=${top},left=${left}`,
+                )
+                this.window.onbeforeunload = () => {
+                    this.token = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
+                    resolve()
+                }
+            })
+        })
+    }
+
+    doFetchUserToken = (code: string) => {
+        return parsedFetch(`${REQUEST_TOKEN_URL}?code=${code}`).then(res => res.data)
     }
 
     doSetupRoom = async (): Promise<string> => {

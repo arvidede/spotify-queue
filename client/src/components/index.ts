@@ -1,5 +1,5 @@
 export { Header, Button } from './Common/'
-export { Start } from './Start/'
+export { Start, Redirect } from './Start/'
 export { Host } from './Host/'
 export { Spectator } from './Spectator/'
 export { Login } from './Login/'

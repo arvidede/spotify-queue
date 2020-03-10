@@ -27,7 +27,7 @@ export const Start: React.FC<Props> = ({ onSelect, history }: Props) => {
     }
 
     const handleJoinRoom = async (id: string): Promise<any> => {
-        if (await api.isValidRoomId(id)) {
+        if (await api.doValidateRoomID(id)) {
             history.push(ROUTES.ROOM.replace(':id', id))
         }
     }

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import Cookies from 'js-cookie'
-import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomId, parsedFetch, TrackType } from './'
+import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomID, parsedFetch, TrackType } from './'
 import { SOCKET_URL, AUTHORIZE_URL, REQUEST_TOKEN_URL, SPOTIFY_USER_TOKEN, REFRESH_TOKEN_URL } from './constants'
 import { SpotifyToken } from './types'
 import { resolve } from 'dns'
@@ -16,7 +16,7 @@ const Message = (type: string, payload: string): string => {
 export interface APIType {
     doSetupRoom: () => Promise<string>
     doJoinRoom: (id: string) => void
-    isValidRoomId: (id: string) => Promise<boolean>
+    doValidateRoomID: (id: string) => Promise<boolean>
     ws: WebSocket
     connect: () => void
     check: () => void
@@ -143,8 +143,8 @@ export class API implements APIType {
         return response.data
     }
 
-    isValidRoomId = async (id: string): Promise<boolean> => {
-        return validateRoomId(id) && ((await parsedFetch(`${VALIDATE_ROOM_URL}?id=${id}`)) as { data: boolean }).data
+    doValidateRoomID = async (id: string): Promise<boolean> => {
+        return validateRoomID(id) && ((await parsedFetch(`${VALIDATE_ROOM_URL}?id=${id}`)) as { data: boolean }).data
     }
 
     doSearchTrack = async (search: string, signal: AbortSignal): Promise<TrackType[]> => {

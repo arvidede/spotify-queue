@@ -3,7 +3,7 @@ import { useAsyncAbortable } from 'react-async-hook'
 import { useAPI } from './'
 import { SpotifyToken } from './types'
 
-export const validateRoomId = (s: string): boolean => {
+export const validateRoomID = (s: string): boolean => {
     return s.length > 0 && !s.includes(' ')
 }
 

@@ -6,15 +6,19 @@ const FieldValue = require('firebase-admin').firestore.FieldValue
 //
 exports.authorize = (req, res) => {
     const scopes = 'user-read-private user-read-email'
-    res.redirect(
-        USER_AUTH_URL +
-            '?response_type=code' +
-            '&client_id=' +
-            CLIENT_TOKEN +
-            '&scope=' +
-            encodeURIComponent(scopes) +
-            '&redirect_uri=' +
-            encodeURIComponent(`${req.url}/host/${req.session.id}`),
+    res.status(200).send(
+        Response(
+            USER_AUTH_URL +
+                '?response_type=code' +
+                '&client_id=' +
+                CLIENT_TOKEN +
+                '&scope=' +
+                encodeURIComponent(scopes) +
+                '&redirect_uri=' +
+                encodeURIComponent(
+                    `${'http://localhost:3000' /*req.url*/}/host`, //${req.session.id}`,
+                ),
+        ),
     )
 }
 

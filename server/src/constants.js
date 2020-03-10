@@ -24,6 +24,16 @@ export const USER_TOKEN_TEMPLATE = {
     refresh_token: '',
 }
 
+export const SCOPES = [
+    'streaming',
+    'user-modify-playback-state',
+    'user-read-playback-state',
+    'user-read-email',
+    'user-read-private',
+    'playlist-read-collaborative',
+    'playlist-read-private',
+]
+
 /* Firebase */
 export const DATABASE_URL = 'https://queue-1337.firebaseio.com'
 

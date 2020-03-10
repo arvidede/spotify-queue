@@ -18,6 +18,7 @@ export const Start: React.FC<Props> = ({ onSelect, history }: Props) => {
 
     const handleHostRoom = async (): Promise<any> => {
         // Emit setup request to server & fetch room id
+        api.doAuthorizeUser()
         const id = await api.doSetupRoom()
         history.push(ROUTES.HOST.replace(':id', id))
     }

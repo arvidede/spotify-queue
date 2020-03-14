@@ -29,6 +29,7 @@ export interface APIType {
     window: Window | null
     token: SpotifyToken | null
     roomID: string
+    inSession: boolean
 }
 
 export class API implements APIType {
@@ -38,10 +39,12 @@ export class API implements APIType {
     window: Window | null
     token: SpotifyToken | null
     roomID: string
+    inSession: boolean
 
     constructor() {
         this.window = null
         this.roomID = ''
+        this.inSession = false
         this.ws = null
         this.host = false
         this.onSubscribe = (n: number) => {}
@@ -75,7 +78,7 @@ export class API implements APIType {
         this.ws.onclose = (par: any) => {
             console.log('Close socket', par)
             this.ws = null
-            // setTimeout(this.check, 1000)
+            setTimeout(this.check, 1000)
         }
 
         this.ws.onerror = (err: any) => {
@@ -86,7 +89,7 @@ export class API implements APIType {
 
     check = () => {
         /* check if websocket instance is closed, if so call `connect` function. */
-        if (!this.ws || this.ws.readyState === WebSocket.CLOSED) this.connect()
+        if (this.inSession && (!this.ws || this.ws.readyState === WebSocket.CLOSED)) this.connect()
     }
 
     doSendMessage = (type: string, payload: string = '') => {
@@ -102,10 +105,12 @@ export class API implements APIType {
     doJoinRoom = (id: string) => {
         this.connect()
         this.roomID = id
+        this.inSession = true
         this.doSendMessage('join', id)
     }
 
     doLeaveRoom = () => {
+        this.inSession = false
         this.roomID = ''
         this.ws.close()
     }
@@ -153,7 +158,6 @@ export class API implements APIType {
         this.host = true
         this.connect()
         this.doSendMessage('host', response.data)
-        // Cookies.set('id', response)
         return response.data
     }
 

@@ -110,11 +110,13 @@ class Server {
 
     createRoutes() {
         const withAppToken = (req, res, next) => {
-            if (Date.now() > this.tokenExpiration) {
+            if (Date.now() < this.tokenExpiration) {
                 req.token = this.token
                 next()
             } else {
+                console.log('Token expired. Fetching new token!')
                 this.fetchToken().then(token => {
+                    console.log('New token:', token)
                     req.token = token
                     next()
                 })

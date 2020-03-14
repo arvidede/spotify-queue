@@ -6,7 +6,7 @@ import {
     TOKEN_BASE_64,
     PORT,
 } from './constants'
-import { fetchToken } from './helpers'
+import { fetchToken, shortID } from './helpers'
 const routes = require('./routes')
 const Socket = require('./socket')
 const serviceAccount = require('../firebase.key.json')
@@ -61,7 +61,7 @@ class Server {
             secret: 'queue',
             genid: function(req) {
                 // return shortid.generate()
-                return (Math.random() * 10).toString().substr(2, 6)
+                return shortID()
             },
             cookie: {
                 maxAge: 1000 * 60 * 60 * 6, // MS : SS : MM : HH
@@ -110,6 +110,7 @@ class Server {
 
     createRoutes() {
         const withAppToken = (req, res, next) => {
+            // May need to offset somewhat to compensate for latency
             if (Date.now() < this.tokenExpiration) {
                 req.token = this.token
                 next()

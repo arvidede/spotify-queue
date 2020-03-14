@@ -22,3 +22,12 @@ export const fetchToken = async type => {
         console.log('Error fetching token:', error)
     }
 }
+
+export const shortID = () =>
+    (
+        String.fromCharCode(Math.floor(Math.random() * 26) + 97).toUpperCase() +
+        (Math.random() * 10).toString().substr(2, 5)
+    )
+        .split('')
+        .sort(() => 0.5 - Math.random())
+        .join('')

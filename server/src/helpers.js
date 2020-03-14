@@ -23,11 +23,25 @@ export const fetchToken = async type => {
     }
 }
 
-export const shortID = () =>
-    (
+export const shortID = () => {
+    return (
         String.fromCharCode(Math.floor(Math.random() * 26) + 97).toUpperCase() +
         (Math.random() * 10).toString().substr(2, 5)
     )
         .split('')
         .sort(() => 0.5 - Math.random())
         .join('')
+}
+
+export const extractTrackInformation = track => {
+    return {
+        title: track.name,
+        artist: track.artists[0].name,
+        album_s: track.album.images[0].url,
+        album_m: track.album.images[1].url,
+        album_l: track.album.images[2].url,
+        length: track.duration_ms,
+        id: track.id,
+        votes: 0,
+    }
+}

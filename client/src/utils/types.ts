@@ -1,9 +1,12 @@
 export interface TrackType extends Partial<SpotifyApi.TrackObjectFull> {
     title: string
     artist: string
-    artwork: string
+    album_s: string
+    album_m: string
+    album_l: string
     length: number
     votes: number
+    id: any
 }
 
 export interface SpotifyToken {

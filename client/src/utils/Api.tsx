@@ -1,7 +1,15 @@
 import React, { useContext } from 'react'
 import Cookies from 'js-cookie'
-import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomID, parsedFetch, TrackType } from './'
-import { SOCKET_URL, AUTHORIZE_URL, REQUEST_TOKEN_URL, SPOTIFY_USER_TOKEN, REFRESH_TOKEN_URL } from './constants'
+import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomID, Fetch, TrackType } from './'
+import {
+    SOCKET_URL,
+    AUTHORIZE_URL,
+    REQUEST_TOKEN_URL,
+    SPOTIFY_USER_TOKEN,
+    REFRESH_TOKEN_URL,
+    GET_QUEUE_URL,
+    ADD_TRACK_TO_QUEUE_URL,
+} from './constants'
 import { SpotifyToken } from './types'
 import { tokenHasExpired } from './helpers'
 
@@ -12,16 +20,18 @@ const Message = (type: string, payload: string): string => {
     })
 }
 export interface APIType {
-    doSetupRoom: () => Promise<string>
-    doJoinRoom: (id: string) => void
-    doLeaveRoom: () => void
-    doValidateRoomID: (id: string) => Promise<boolean>
     connect: () => void
     check: () => void
-    onSubscribe: (n: number) => void
-    doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
+    doAddTrackToQueue: (track: string) => Promise<unknown>
     doAuthorizeUser: () => Promise<unknown>
     doFetchUserToken: (code: string) => Promise<SpotifyToken>
+    doGetQueue: () => Promise<TrackType[]>
+    doJoinRoom: (id: string) => void
+    doLeaveRoom: () => void
+    doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
+    doSetupRoom: () => Promise<string>
+    onSubscribe: (n: number) => void
+    doValidateRoomID: (id: string) => Promise<boolean>
     ws: WebSocket
     host: boolean
     window: Window | null
@@ -122,7 +132,7 @@ export class API implements APIType {
                 return resolve()
             }
 
-            return parsedFetch(AUTHORIZE_URL, null, 'GET').then((res: { data: string }) => {
+            return Fetch(AUTHORIZE_URL, null, 'GET').then((res: { data: string }) => {
                 const width = 450,
                     height = 730,
                     left = window.screen.width / 2 - width / 2,
@@ -144,15 +154,15 @@ export class API implements APIType {
     }
 
     doFetchUserToken = (code: string) => {
-        return parsedFetch(`${REQUEST_TOKEN_URL}?code=${code}`).then(res => res.data)
+        return Fetch(`${REQUEST_TOKEN_URL}?code=${code}`).then(res => res.data)
     }
 
     doRefreshUserToken = (code: string) => {
-        return parsedFetch(`${REFRESH_TOKEN_URL}?refresh_token=${this.token.refresh_token}`).then(res => res.data)
+        return Fetch(`${REFRESH_TOKEN_URL}?refresh_token=${this.token.refresh_token}`).then(res => res.data)
     }
 
     doSetupRoom = async (): Promise<string> => {
-        const response: { data: string } = await parsedFetch(HOST_URL)
+        const response: { data: string } = await Fetch(HOST_URL)
         this.host = true
         this.connect()
         this.doSendMessage('host', response.data)
@@ -160,11 +170,11 @@ export class API implements APIType {
     }
 
     doValidateRoomID = async (id: string): Promise<boolean> => {
-        return validateRoomID(id) && ((await parsedFetch(`${VALIDATE_ROOM_URL}?id=${id}`)) as { data: boolean }).data
+        return validateRoomID(id) && ((await Fetch(`${VALIDATE_ROOM_URL}?id=${id}`)) as { data: boolean }).data
     }
 
     doSearchTrack = async (search: string, signal: AbortSignal): Promise<TrackType[]> => {
-        const response: { data: { items: TrackType[] } } = await parsedFetch(
+        const response: { data: { items: TrackType[] } } = await Fetch(
             `${SEARCH_URL}?query=${search}`,
             null,
             'GET',
@@ -172,6 +182,15 @@ export class API implements APIType {
         )
 
         return response.data.items
+    }
+
+    doGetQueue = async (): Promise<TrackType[]> => {
+        const response: { data: { tracks: TrackType[] } } = await Fetch(`${GET_QUEUE_URL}?id=${this.roomID}`)
+        return response.data.tracks
+    }
+
+    doAddTrackToQueue = async (id: string) => {
+        Fetch(`${ADD_TRACK_TO_QUEUE_URL}?trackID=${id}&sessionID=${this.roomID}`, null, 'PUT')
     }
 }
 

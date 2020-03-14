@@ -5,6 +5,7 @@ export const USER_AUTH_URL = 'https://accounts.spotify.com/authorize'
 export const TOKEN_URL = 'https://accounts.spotify.com/api/token'
 export const BASE_URL = 'https://api.spotify.com'
 export const SEARCH_URL = BASE_URL + '/v1/search'
+export const TRACK_URL = BASE_URL + '/v1/tracks'
 export const REDIRECT_URL = 'http://localhost:3000/redirect'
 
 export const TOKEN_BASE_64 = new Buffer(
@@ -37,6 +38,9 @@ export const SCOPES = [
 
 /* Firebase */
 export const DATABASE_URL = 'https://queue-1337.firebaseio.com'
+export const COLLECTIONS = {
+    QUEUE: 'queue',
+}
 
 /* Misc */
 export const PORT = process.env.PORT || 8081

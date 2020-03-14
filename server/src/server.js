@@ -91,7 +91,7 @@ class Server {
 
         const corsOptions = {
             origin: ['http://localhost:3000', 'https://accounts.spotify.com'],
-            methods: 'GET,POST',
+            methods: 'GET,POST,PUT',
             allowedHeaders: [
                 'Origin',
                 'X-Requested-With',

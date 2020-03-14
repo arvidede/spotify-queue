@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAsyncAbortable } from 'react-async-hook'
 import { useAPI } from './'
-import { SpotifyToken } from './types'
+import { SpotifyToken, TrackType } from './types'
 
 export const validateRoomID = (s: string): boolean => {
     // return s.length === 6 && Number.isInteger(Number(s.substr(1, 6))) && !s.includes(' ')
@@ -12,7 +12,7 @@ export const tokenHasExpired = (token: SpotifyToken): boolean => {
     return token.expires_on < Date.now()
 }
 
-export const parsedFetch = (url: string, body?: any, method: string = 'GET', signal?: AbortSignal) =>
+export const Fetch = (url: string, body?: any, method: string = 'GET', signal?: AbortSignal) =>
     fetch(url, {
         signal,
         method,
@@ -21,7 +21,7 @@ export const parsedFetch = (url: string, body?: any, method: string = 'GET', sig
         body: body ? JSON.stringify(body) : undefined,
     })
         .then(gatherResponse)
-        .catch(console.log)
+        .catch(console.error)
 
 async function gatherResponse(response: any): Promise<any> {
     if (response.status !== 200) {
@@ -110,4 +110,19 @@ export const useSubscribers = (id: string) => {
     }, [])
 
     return subscribers
+}
+
+export const placeHolderTracks = (n: number): TrackType[] => {
+    return Array(n)
+        .fill('')
+        .map(() => ({
+            title: 'Song title',
+            artist: 'Singer',
+            album_s: require('../assets/img/album.jpg'),
+            album_m: require('../assets/img/album.jpg'),
+            album_l: require('../assets/img/album.jpg'),
+            length: 1337,
+            votes: 1,
+            id: Math.random(),
+        }))
 }

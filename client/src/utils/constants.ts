@@ -7,6 +7,8 @@ export const VALIDATE_ROOM_URL = BASE_URL + 'validate'
 export const AUTHORIZE_URL = BASE_URL + 'authorize'
 export const REQUEST_TOKEN_URL = BASE_URL + 'token'
 export const REFRESH_TOKEN_URL = BASE_URL + 'refresh'
+export const GET_QUEUE_URL = BASE_URL + 'get-queue'
+export const ADD_TRACK_TO_QUEUE_URL = BASE_URL + 'add-to-queue'
 
 /* Localstorage */
 export const SPOTIFY_USER_TOKEN = 'spotifyUserToken'

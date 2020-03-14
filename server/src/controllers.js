@@ -3,8 +3,10 @@ import {
     CLIENT_TOKEN,
     USER_AUTH_URL,
     REDIRECT_URL,
+    COLLECTIONS,
+    TRACK_URL,
 } from './constants'
-import { Response, fetchToken } from './helpers'
+import { Response, fetchToken, extractTrackInformation } from './helpers'
 const axios = require('axios')
 const FieldValue = require('firebase-admin').firestore.FieldValue
 
@@ -49,24 +51,18 @@ exports.refreshToken = async (req, res) => {
 }
 
 //
-exports.join = (req, res) => {
-    res.status(200).send(Response(true))
-}
-
-//
 exports.host = (req, res) => {
     req.db
-        .collection('sessions')
+        .collection(COLLECTIONS.QUEUE)
         .doc(req.session.id)
         .get()
         .then(doc => {
             if (!doc.exists) {
                 req.db
-                    .collection('sessions')
+                    .collection(COLLECTIONS.QUEUE)
                     .doc(req.session.id)
                     .set({
-                        spectators: 0,
-                        sessionID: req.session.id,
+                        tracks: [],
                     })
             }
         })
@@ -77,7 +73,7 @@ exports.host = (req, res) => {
 //
 exports.validate = (req, res) => {
     req.db
-        .collection('sessions')
+        .collection(COLLECTIONS.QUEUE)
         .doc(req.query.id)
         .get()
         .then(doc => {
@@ -102,5 +98,44 @@ exports.search = async (req, res) => {
         res.status(200).send(Response(searchResults.data.tracks))
     } catch (error) {
         console.log('Error fetching search:', error)
+    }
+}
+
+exports.getQueue = async (req, res) => {
+    const id = req.query.id
+    req.db
+        .collection(COLLECTIONS.QUEUE)
+        .doc(id)
+        .get()
+        .then(doc => {
+            if (doc.exists) {
+                res.status(200).send(Response(doc.data()))
+            } else {
+                res.status(204).send(Response([]))
+            }
+        })
+}
+
+exports.addTrackToQueue = async (req, res) => {
+    const { trackID, sessionID } = req.query
+    try {
+        const track = await axios({
+            medthod: 'GET',
+            url: `${TRACK_URL}/${trackID}`,
+            headers: {
+                Authorization: `Bearer ${req.token}`,
+            },
+        }).then(res => extractTrackInformation(res.data))
+
+        req.db
+            .collection(COLLECTIONS.QUEUE)
+            .doc(sessionID)
+            .update({
+                tracks: FieldValue.arrayUnion(track),
+            })
+
+        res.status(200).send(Response('OK'))
+    } catch (error) {
+        console.log('Error fetching track:', error)
     }
 }

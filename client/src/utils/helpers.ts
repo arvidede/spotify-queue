@@ -4,7 +4,8 @@ import { useAPI } from './'
 import { SpotifyToken } from './types'
 
 export const validateRoomID = (s: string): boolean => {
-    return s.length === 6 && Number.isInteger(Number(s)) && !s.includes(' ')
+    // return s.length === 6 && Number.isInteger(Number(s.substr(1, 6))) && !s.includes(' ')
+    return s.length === 6 && !s.includes(' ')
 }
 
 export const tokenHasExpired = (token: SpotifyToken): boolean => {

@@ -3,8 +3,6 @@ import Cookies from 'js-cookie'
 import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomID, parsedFetch, TrackType } from './'
 import { SOCKET_URL, AUTHORIZE_URL, REQUEST_TOKEN_URL, SPOTIFY_USER_TOKEN, REFRESH_TOKEN_URL } from './constants'
 import { SpotifyToken } from './types'
-import { resolve } from 'dns'
-import { rejects } from 'assert'
 import { tokenHasExpired } from './helpers'
 
 const Message = (type: string, payload: string): string => {

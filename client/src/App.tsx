@@ -6,8 +6,16 @@ import './styles/App.scss'
 
 /**
  * TODO:
- *  - Dispatch exit event on disconnect or exit room in order to remove session from redis
  *  - Abort last search request on cancel
+ *  - Get current queue
+ *  - Add track to queue from search results
+ *  - Vote for track
+ *  - Host: Play current track
+ *  - Host: Pause current track
+ *  - Host: Skip to next track
+ *  - Host: Skip to previous track
+ *  - Host: Logout
+ *  - Host: Remove session
  */
 
 const App: React.FC = () => {

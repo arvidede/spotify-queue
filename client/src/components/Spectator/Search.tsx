@@ -1,6 +1,5 @@
-import React, { useEffect, useCallback, useState, useRef } from 'react'
-import { TrackType, useDebouncedInput } from '../../utils'
-import { SearchResults } from './'
+import React, { useEffect, useCallback, useRef } from 'react'
+import { useDebouncedInput } from '../../utils'
 import './styles/Search.scss'
 
 interface SearchProps {
@@ -11,11 +10,12 @@ interface SearchProps {
 export const Search: React.FC<SearchProps> = ({ onCancel, onSearchUpdate }) => {
     const inputRef = useRef<HTMLInputElement>(document.createElement('input'))
     const { input, setInput, handleInputChange } = useDebouncedInput(onSearchUpdate, onCancel)
-    const handleCancel = () => {
+
+    const handleCancel = useCallback(() => {
         inputRef.current.blur()
         setInput('')
         onCancel()
-    }
+    }, [onCancel, setInput])
 
     const handleClickOutside = useCallback(
         (e: MouseEvent) => {

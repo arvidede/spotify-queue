@@ -20,7 +20,6 @@ const session = require('express-session')
 const redis = require('redis')
 const RedisStore = require('connect-redis')(session)
 const axios = require('axios')
-const querystring = require('querystring')
 const middleware = require('./middleware')
 
 const redisClient = redis.createClient()

@@ -57,7 +57,7 @@ export function useDebounce(value: string, delay: number) {
 
 export const useDebouncedInput = (onUpdate: any, onCancel: any) => {
     const [input, setInput] = useState('')
-    const debouncedInput = useDebounce(input, 300)
+    const debouncedInput = useDebounce(input, 500)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (input === '' && e.target.value.length > 0) {

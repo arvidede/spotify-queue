@@ -53,7 +53,14 @@ class Socket {
                         store.sadd(req.sessionID, req.sessionID)
                         break
                     case 'leave':
+                        console.log(
+                            'Client',
+                            req.sessionID,
+                            'left room',
+                            message.payload,
+                        )
                         this.deleteFromChannel(store, req.sessionID)
+                        break
                     default:
                         break
                 }
@@ -88,6 +95,7 @@ class Socket {
 
     doSendMessage = (type, payload, receivers) => {
         const message = Message(type, payload)
+        console.log('Sending message:', JSON.stringify(message, null, 2))
         this.wss.clients.forEach(client => {
             if (receivers.includes(client.clientID)) {
                 client.send(message)

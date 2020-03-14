@@ -16,6 +16,7 @@ const Message = (type: string, payload: string): string => {
 export interface APIType {
     doSetupRoom: () => Promise<string>
     doJoinRoom: (id: string) => void
+    doLeaveRoom: (id: string) => void
     doValidateRoomID: (id: string) => Promise<boolean>
     ws: WebSocket
     connect: () => void
@@ -38,13 +39,14 @@ export class API implements APIType {
 
     constructor() {
         this.window = null
-        this.ws = new WebSocket(SOCKET_URL)
-        this.connect()
+        this.ws = null
         this.host = false
         this.onSubscribe = (n: number) => {}
     }
 
     connect = () => {
+        this.ws = new WebSocket(SOCKET_URL)
+
         this.ws.onopen = () => {
             console.log('Open socket')
         }
@@ -83,7 +85,7 @@ export class API implements APIType {
         if (!this.ws || this.ws.readyState === WebSocket.CLOSED) this.connect()
     }
 
-    doSendMessage = (type: string, payload: string) => {
+    doSendMessage = (type: string, payload: string = '') => {
         const message = Message(type, payload)
         const interval = setInterval(() => {
             if (this.ws.readyState === WebSocket.OPEN) {
@@ -94,7 +96,12 @@ export class API implements APIType {
     }
 
     doJoinRoom = (id: string) => {
+        this.connect()
         this.doSendMessage('join', id)
+    }
+
+    doLeaveRoom = (id: string) => {
+        this.doSendMessage('leave', id)
     }
 
     doAuthorizeUser = () => {
@@ -138,6 +145,7 @@ export class API implements APIType {
     doSetupRoom = async (): Promise<string> => {
         const response: { data: string } = await parsedFetch(HOST_URL)
         this.host = true
+        this.connect()
         this.doSendMessage('host', response.data)
         // Cookies.set('id', response)
         return response.data

@@ -29,14 +29,11 @@ exports.authorize = (req, res) => {
 
 //
 exports.requestToken = async (req, res) => {
-    console.log(req.query.code)
     const token = await fetchToken({
         grant_type: 'authorization_code',
         code: req.query.code,
         redirect_uri: REDIRECT_URL,
     })
-
-    console.log(token)
 
     res.status(200).send(Response(token))
 }

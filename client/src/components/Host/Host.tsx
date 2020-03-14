@@ -19,7 +19,7 @@ export const Host: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         console.log('Fetch user data')
         api.onSubscribe = (n: number) => setSubscribers(n)
-    })
+    }, [])
 
     return (
         <div className="host">

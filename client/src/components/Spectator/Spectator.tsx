@@ -22,7 +22,11 @@ export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
     useEffect(() => {
         api.doJoinRoom(match.params.id)
         api.onSubscribe = (n: number) => setSubscribers(n)
-    })
+
+        return () => {
+            api.doLeaveRoom(match.params.id)
+        }
+    }, [])
 
     const handleCancelSearch = () => {
         setSearching(false)

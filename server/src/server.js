@@ -60,7 +60,8 @@ class Server {
         this.session = session({
             secret: 'queue',
             genid: function(req) {
-                return shortid.generate()
+                // return shortid.generate()
+                return (Math.random() * 10).toString().substr(2, 6)
             },
             cookie: {
                 maxAge: 1000 * 60 * 60 * 6, // MS : SS : MM : HH

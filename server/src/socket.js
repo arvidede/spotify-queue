@@ -7,6 +7,8 @@ const Message = (type, payload) => {
         payload,
     })
 }
+
+const Host = id => `host-${id}`
 class Socket {
     constructor(server, db, verifyClient) {
         this.wss = new WebSocket.Server({
@@ -20,8 +22,6 @@ class Socket {
     config() {
         this.wss.on('connection', (ws, req) => {
             const store = req.sessionStore.client
-            console.log('Socket connection', req.sessionID)
-
             ws.clientID = req.sessionID
 
             ws.on('message', m => {
@@ -30,36 +30,31 @@ class Socket {
                 switch (message.type) {
                     case 'join':
                         console.log(
-                            'Adding to store',
+                            'Client',
                             req.sessionID,
+                            'joined room',
                             message.payload,
                         )
 
                         try {
                             store.set(req.sessionID, message.payload)
-                            store.sadd(message.payload, req.sessionID)
-                            store.smembers(message.payload, (err, channel) => {
-                                this.doSendMessage(
-                                    'noSubscribers',
-                                    channel.length,
-                                    channel,
-                                )
-                            })
+                            store.sadd(Host(message.payload), req.sessionID)
+                            store.smembers(
+                                Host(message.payload),
+                                (err, channel) => {
+                                    this.doSendMessage(
+                                        'noSubscribers',
+                                        channel.length,
+                                        channel,
+                                    )
+                                },
+                            )
                         } catch (error) {
                             console.error(error)
                         }
                         break
                     case 'host':
-                        store.sadd(req.sessionID, req.sessionID)
-                        break
-                    case 'leave':
-                        console.log(
-                            'Client',
-                            req.sessionID,
-                            'left room',
-                            message.payload,
-                        )
-                        this.deleteFromChannel(store, req.sessionID)
+                        this.setupChannel(store, req.sessionID)
                         break
                     default:
                         break
@@ -68,34 +63,27 @@ class Socket {
 
             ws.on('close', () => {
                 this.deleteFromChannel(store, req.sessionID)
-                console.log('Socket connection lost', req.sessionID)
+                console.log('Lost connection with client:', req.sessionID)
             })
         })
     }
 
+    setupChannel = (store, id) => {
+        store.sadd(Host(id), id)
+    }
+
     deleteFromChannel = (store, id) => {
-        store.type(id, (err, type) => {
-            if (type === 'set') {
-                store.del(id)
-            } else if (type === 'string') {
-                store.get(id, (err, res) => {
-                    store.del(id)
-                    store.srem(res, id)
-                    store.smembers(res, (err, channel) => {
-                        this.doSendMessage(
-                            'noSubscribers',
-                            channel.length,
-                            channel,
-                        )
-                    })
-                })
-            }
+        store.get(id, (err, res) => {
+            store.del(id)
+            store.srem(Host(res), id)
+            store.smembers(Host(res), (err, channel) => {
+                this.doSendMessage('noSubscribers', channel.length, channel)
+            })
         })
     }
 
     doSendMessage = (type, payload, receivers) => {
         const message = Message(type, payload)
-        console.log('Sending message:', JSON.stringify(message, null, 2))
         this.wss.clients.forEach(client => {
             if (receivers.includes(client.clientID)) {
                 client.send(message)

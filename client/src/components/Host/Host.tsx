@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Header } from '../Common/'
 import { RouteComponentProps } from 'react-router'
-import { useAPI, TrackType } from '../../utils'
+import { TrackType, useSubscribers } from '../../utils'
 import './styles/Host.scss'
 import { Player, TrackList } from './'
 
@@ -12,14 +12,8 @@ interface MatchParams {
 interface Props extends RouteComponentProps<MatchParams> {}
 
 export const Host: React.FC<Props> = (props: Props) => {
-    const api = useAPI()
-    const [subscribers, setSubscribers] = useState<number>(1)
     const [track, setTrack] = useState<number>(0)
-
-    useEffect(() => {
-        console.log('Fetch user data')
-        api.onSubscribe = (n: number) => setSubscribers(n)
-    }, [])
+    const subscribers = useSubscribers(props.match.params.id)
 
     return (
         <div className="host">

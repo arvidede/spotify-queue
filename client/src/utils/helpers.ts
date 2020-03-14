@@ -95,3 +95,18 @@ export const useSearch = () => {
 
     return { searching, setSearching, setSearchInput, search }
 }
+
+export const useSubscribers = (id: string) => {
+    const api = useAPI()
+    const [subscribers, setSubscribers] = useState<number>(1)
+
+    useEffect(() => {
+        api.doJoinRoom(id)
+        api.onSubscribe = (n: number) => setSubscribers(n)
+        return () => {
+            api.doLeaveRoom()
+        }
+    }, [])
+
+    return subscribers
+}

@@ -2,7 +2,7 @@ import * as ROUTES from './routes'
 export { ROUTES }
 export { useAuth, Auth, AuthContext } from './Auth'
 export { useAPI, APIContext, API } from './Api'
-export { validateRoomID, parsedFetch, useDebounce, useDebouncedInput, useSearch } from './helpers'
+export { validateRoomID, parsedFetch, useDebounce, useDebouncedInput, useSearch, useSubscribers } from './helpers'
 export {
     HOST_URL,
     VALIDATE_ROOM_URL,

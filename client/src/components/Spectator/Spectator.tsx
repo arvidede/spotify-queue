@@ -3,8 +3,7 @@ import { Header } from '../Common/'
 import { PulseLoader as Spinner } from 'react-spinners'
 import { TrackList, Search, SearchResults } from './'
 import { RouteComponentProps } from 'react-router'
-import { useAsyncAbortable } from 'react-async-hook'
-import { useAPI, TrackType } from '../../utils'
+import { TrackType, useSubscribers } from '../../utils'
 import './styles/Spectator.scss'
 import { useSearch } from '../../utils/helpers'
 
@@ -15,18 +14,8 @@ interface MatchParams {
 interface Props extends RouteComponentProps<MatchParams> {}
 
 export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
-    const [subscribers, setSubscribers] = useState<number>(1)
     const { searching, setSearching, setSearchInput, search } = useSearch()
-    const api = useAPI()
-
-    useEffect(() => {
-        api.doJoinRoom(match.params.id)
-        api.onSubscribe = (n: number) => setSubscribers(n)
-
-        return () => {
-            api.doLeaveRoom(match.params.id)
-        }
-    }, [])
+    const subscribers = useSubscribers(match.params.id)
 
     const handleCancelSearch = () => {
         setSearching(false)

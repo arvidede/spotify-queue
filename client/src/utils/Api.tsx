@@ -16,18 +16,19 @@ const Message = (type: string, payload: string): string => {
 export interface APIType {
     doSetupRoom: () => Promise<string>
     doJoinRoom: (id: string) => void
-    doLeaveRoom: (id: string) => void
+    doLeaveRoom: () => void
     doValidateRoomID: (id: string) => Promise<boolean>
-    ws: WebSocket
     connect: () => void
     check: () => void
-    host: boolean
     onSubscribe: (n: number) => void
     doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
     doAuthorizeUser: () => Promise<unknown>
     doFetchUserToken: (code: string) => Promise<SpotifyToken>
+    ws: WebSocket
+    host: boolean
     window: Window | null
     token: SpotifyToken | null
+    roomID: string
 }
 
 export class API implements APIType {
@@ -36,9 +37,11 @@ export class API implements APIType {
     onSubscribe: (n: number) => void
     window: Window | null
     token: SpotifyToken | null
+    roomID: string
 
     constructor() {
         this.window = null
+        this.roomID = ''
         this.ws = null
         this.host = false
         this.onSubscribe = (n: number) => {}
@@ -71,7 +74,8 @@ export class API implements APIType {
 
         this.ws.onclose = (par: any) => {
             console.log('Close socket', par)
-            setTimeout(this.check, 1000)
+            this.ws = null
+            // setTimeout(this.check, 1000)
         }
 
         this.ws.onerror = (err: any) => {
@@ -88,7 +92,7 @@ export class API implements APIType {
     doSendMessage = (type: string, payload: string = '') => {
         const message = Message(type, payload)
         const interval = setInterval(() => {
-            if (this.ws.readyState === WebSocket.OPEN) {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.ws.send(message)
                 clearInterval(interval)
             }
@@ -97,11 +101,13 @@ export class API implements APIType {
 
     doJoinRoom = (id: string) => {
         this.connect()
+        this.roomID = id
         this.doSendMessage('join', id)
     }
 
-    doLeaveRoom = (id: string) => {
-        this.doSendMessage('leave', id)
+    doLeaveRoom = () => {
+        this.roomID = ''
+        this.ws.close()
     }
 
     doAuthorizeUser = () => {

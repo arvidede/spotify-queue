@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Header } from '../Common/'
 import { PulseLoader as Spinner } from 'react-spinners'
 import { TrackList, Search, SearchResults } from './'
 import { RouteComponentProps } from 'react-router'
-import { TrackType, useSubscribers } from '../../utils'
+import { TrackType, useSubscribers, useAPI } from '../../utils'
 import './styles/Spectator.scss'
 import { useSearch } from '../../utils/helpers'
 
@@ -15,7 +15,10 @@ interface Props extends RouteComponentProps<MatchParams> {}
 
 export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
     const { searching, setSearching, setSearchInput, search } = useSearch()
+    const [queue, setQueue] = useState<TrackType[]>([])
+
     const subscribers = useSubscribers(match.params.id)
+    const api = useAPI()
 
     const handleCancelSearch = () => {
         setSearching(false)
@@ -27,6 +30,14 @@ export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
         if (!searching) setSearching(true)
     }
 
+    useEffect(() => {
+        api.doGetQueue().then(setQueue)
+    }, [api])
+
+    const handleAddTrackToQueue = (track: string) => {
+        api.doAddTrackToQueue(track)
+    }
+
     return (
         <div className="spectator">
             <Header color="green" size="s" numSubscribers={subscribers} />
@@ -35,44 +46,13 @@ export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
                 search.loading ? (
                     <Spinner css={'margin-top: 10vh;'} size={10} color={'white'} />
                 ) : search.result && search.result.length > 0 ? (
-                    <SearchResults onAddTrack={(s: string) => console.log(s)} tracks={search.result} />
+                    <SearchResults onAddTrack={handleAddTrackToQueue} tracks={search.result} />
                 ) : (
                     <p>No results</p>
                 )
             ) : (
-                <TrackList onVote={(s: string) => console.log(s)} tracks={TRACKS} />
+                <TrackList onVote={(s: string) => console.log(s)} tracks={queue} />
             )}
         </div>
     )
 })
-
-const TRACKS: TrackType[] = [
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: require('../../assets/img/album.jpg'),
-        length: 1337,
-        votes: 10,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: require('../../assets/img/album.jpg'),
-        length: 1337,
-        votes: 1,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: require('../../assets/img/album.jpg'),
-        length: 1337,
-        votes: 1,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: require('../../assets/img/album.jpg'),
-        length: 1337,
-        votes: 1,
-    },
-]

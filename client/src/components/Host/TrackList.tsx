@@ -16,7 +16,7 @@ export const TrackList: React.FC<TrackListProps> = ({ tracks }: TrackListProps) 
                     <div>VOTES</div>
                 </li>
                 {tracks.map((track, index) => (
-                    <li key={track.title + Math.random()}>
+                    <li key={track.id}>
                         <div>{track.title}</div>
                         <div>{track.artist}</div>
                         <div>{track.votes}</div>

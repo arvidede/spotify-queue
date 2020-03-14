@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { Header } from '../Common/'
 import { RouteComponentProps } from 'react-router'
-import { TrackType, useSubscribers } from '../../utils'
+import { TrackType, useSubscribers, placeHolderTracks } from '../../utils'
 import './styles/Host.scss'
 import { Player, TrackList } from './'
+
+const TRACKS = placeHolderTracks(4)
 
 interface MatchParams {
     id: string
@@ -25,34 +27,3 @@ export const Host: React.FC<Props> = (props: Props) => {
         </div>
     )
 }
-
-const TRACKS: TrackType[] = [
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: require('../../assets/img/album.jpg'),
-        length: 1337,
-        votes: 1,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: require('../../assets/img/album.jpg'),
-        length: 1337,
-        votes: 1,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: require('../../assets/img/album.jpg'),
-        length: 1337,
-        votes: 1,
-    },
-    {
-        title: 'Song title',
-        artist: 'Singer',
-        artwork: require('../../assets/img/album.jpg'),
-        length: 1337,
-        votes: 1,
-    },
-]

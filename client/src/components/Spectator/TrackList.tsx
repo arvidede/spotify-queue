@@ -14,7 +14,7 @@ export const TrackList: React.FC<TrackListProps> = ({ tracks, onVote }: TrackLis
             <ul className="track-list">
                 {tracks.map((track, index) => (
                     <li key={track.title + Math.random()}>
-                        <img src={track.artwork} alt="" />
+                        <img src={track.album_s} alt="" />
                         <div className="track-names">
                             <div>
                                 <h3>{track.title}</h3>

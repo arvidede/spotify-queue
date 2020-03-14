@@ -12,7 +12,7 @@ export const Player: React.FC<PlayerProps> = ({ track }: PlayerProps) => {
     return (
         <div className="host-content-inner">
             <div className="player">
-                <Image src={track.artwork} />
+                <Image src={track.album_l} />
                 <h3>{track.artist}</h3>
                 <p>{track.title}</p>
                 <Controller />

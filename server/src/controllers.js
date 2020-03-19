@@ -10,10 +10,23 @@ import { Response, fetchToken, extractTrackInformation } from './helpers'
 const axios = require('axios')
 const FieldValue = require('firebase-admin').firestore.FieldValue
 
+/* HTTPS CODES */
+const STATUS = {
+    OK: 200,
+    ACCEPTED: 202,
+    NO_CONTENT: 204,
+    PARTIAL_CONTENT: 206,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    REQUEST_TIMEOUT: 408,
+    INTERNAL_SERVER_ERROR: 500,
+}
+
 //
 exports.authorize = (req, res) => {
     const scopes = 'user-read-private user-read-email'
-    res.status(200).send(
+    res.status(STATUS.OK).send(
         Response(
             USER_AUTH_URL +
                 '?response_type=code' +
@@ -37,7 +50,7 @@ exports.requestToken = async (req, res) => {
         redirect_uri: REDIRECT_URL,
     })
 
-    res.status(200).send(Response(token))
+    res.status(STATUS.OK).send(Response(token))
 }
 
 //
@@ -47,7 +60,7 @@ exports.refreshToken = async (req, res) => {
         refreshToken: req.query.token,
     })
 
-    res.status(200).send(Response(token))
+    res.status(STATUS.OK).send(Response(token))
 }
 
 //
@@ -67,7 +80,7 @@ exports.host = (req, res) => {
             }
         })
     console.log('New host:', req.session.id)
-    res.status(200).send(Response(req.session.id))
+    res.status(STATUS.OK).send(Response(req.session.id))
 }
 
 //
@@ -77,7 +90,7 @@ exports.validate = (req, res) => {
         .doc(req.query.id)
         .get()
         .then(doc => {
-            res.status(200).send(Response(doc.exists))
+            res.status(STATUS.OK).send(Response(doc.exists))
         })
 }
 
@@ -95,7 +108,9 @@ exports.search = async (req, res) => {
             },
         })
 
-        res.status(200).send(Response(searchResults.data.tracks))
+        // Format search results before sending to client
+
+        res.status(STATUS.OK).send(Response(searchResults.data.tracks))
     } catch (error) {
         console.log('Error fetching search:', error)
     }
@@ -109,9 +124,9 @@ exports.getQueue = async (req, res) => {
         .get()
         .then(doc => {
             if (doc.exists) {
-                res.status(200).send(Response(doc.data()))
+                res.status(STATUS.OK).send(Response(doc.data()))
             } else {
-                res.status(204).send(Response([]))
+                res.status(STATUS.NO_CONTENT).send(Response([]))
             }
         })
 }
@@ -133,9 +148,11 @@ exports.addTrackToQueue = async (req, res) => {
             .update({
                 tracks: FieldValue.arrayUnion(track),
             })
-
-        res.status(200).send(Response('OK'))
+            .then(() => {
+                res.status(STATUS.OK).send(Response('OK'))
+            })
     } catch (error) {
         console.log('Error fetching track:', error)
+        res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
     }
 }

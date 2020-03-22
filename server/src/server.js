@@ -109,30 +109,12 @@ class Server {
     }
 
     createRoutes() {
-        const withAppToken = (req, res, next) => {
-            // May need to offset somewhat to compensate for latency
-            if (Date.now() < this.tokenExpiration) {
-                req.token = this.token
-                next()
-            } else {
-                console.log('Token expired. Fetching new token!')
-                this.fetchToken().then(token => {
-                    console.log('New token:', token)
-                    req.token = token
-                    next()
-                })
-            }
-        }
-
-        const withDB = (req, res, next) => {
-            req.db = this.db
-            next()
-        }
-
         const middlewares = {
-            ...middleware,
-            withAppToken,
-            withDB,
+            withAppToken: middleware.withAppToken(
+                () => this.tokenExpiration,
+                () => this.token,
+            ),
+            withDB: middleware.withDB(() => this.db),
         }
 
         this.app.use('/', routes(middlewares))

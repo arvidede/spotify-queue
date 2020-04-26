@@ -11,7 +11,7 @@ export function useDebounce(value: string, delay: number) {
         return () => {
             clearTimeout(handler)
         }
-    }, [value])
+    }, [value, delay])
 
     return debouncedValue
 }
@@ -43,6 +43,28 @@ export const useSearch = () => {
     const [searching, setSearching] = useState(false)
     const api = useAPI()
 
+    const handleCancelSearch = () => {
+        setSearching(false)
+        search.reset()
+    }
+
+    const handleSearchUpdate = (input: string) => {
+        setSearchInput(input)
+        if (!searching) setSearching(true)
+    }
+
+    useEffect(() => {
+        const handleEscapePressed = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && searching) {
+                setSearching(false)
+            }
+        }
+        document.addEventListener('keydown', handleEscapePressed)
+        return () => {
+            document.removeEventListener('keydown', handleEscapePressed)
+        }
+    }, [searching])
+
     const search = useAsyncAbortable(
         async (abortSignal, text) => {
             if (text.length === 0) {
@@ -54,7 +76,7 @@ export const useSearch = () => {
         [searchInput],
     )
 
-    return { searching, setSearching, setSearchInput, search }
+    return { searching, cancelSearch: handleCancelSearch, searchUpdate: handleSearchUpdate, search }
 }
 
 export const useSubscribers = (id: string) => {

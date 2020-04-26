@@ -5,9 +5,10 @@ import './styles/Search.scss'
 interface SearchProps {
     onCancel: () => void
     onSearchUpdate: (s: string) => void
+    searching: boolean
 }
 
-export const Search: React.FC<SearchProps> = ({ onCancel, onSearchUpdate }) => {
+export const Search: React.FC<SearchProps> = ({ onCancel, onSearchUpdate, searching }) => {
     const inputRef = useRef<HTMLInputElement>(document.createElement('input'))
     const { input, setInput, handleInputChange } = useDebouncedInput(onSearchUpdate, onCancel)
 
@@ -34,6 +35,12 @@ export const Search: React.FC<SearchProps> = ({ onCancel, onSearchUpdate }) => {
         },
         [handleCancel],
     )
+
+    useEffect(() => {
+        if (!searching && input.length > 0) {
+            setInput('')
+        }
+    })
 
     useEffect(() => {
         inputRef.current.addEventListener('click', handleClickOutside)

@@ -17,3 +17,7 @@ export interface SpotifyToken {
     refresh_token: string
     expires_on: number
 }
+
+export interface Response<T> {
+    data: T
+}

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import Cookies from 'js-cookie'
-import { HOST_URL, VALIDATE_ROOM_URL, SEARCH_URL, validateRoomID, Fetch, TrackType } from './'
 import {
     SOCKET_URL,
     AUTHORIZE_URL,
@@ -9,9 +8,15 @@ import {
     REFRESH_TOKEN_URL,
     GET_QUEUE_URL,
     ADD_TRACK_TO_QUEUE_URL,
-} from './constants'
-import { SpotifyToken } from './types'
-import { tokenHasExpired } from './helpers'
+    HOST_URL,
+    VALIDATE_ROOM_URL,
+    SEARCH_URL,
+    validateRoomID,
+    Fetch,
+    TrackType,
+    tokenHasExpired,
+    SpotifyToken,
+} from './'
 
 const Message = (type: string, payload: string): string => {
     return JSON.stringify({

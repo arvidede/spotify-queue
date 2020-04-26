@@ -113,6 +113,7 @@ class Server {
             withAppToken: middleware.withAppToken(
                 () => this.tokenExpiration,
                 () => this.token,
+                this.fetchToken,
             ),
             withDB: middleware.withDB(() => this.db),
         }

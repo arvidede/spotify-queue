@@ -4,7 +4,7 @@ import './styles/SearchResults.scss'
 
 interface SearchResultProps {
     tracks: TrackType[]
-    onAddTrack: (track: string) => void
+    onAddTrack: (track: TrackType) => void
 }
 
 const img = require('../../assets/img/album.jpg')
@@ -22,7 +22,7 @@ export const SearchResults: React.FC<SearchResultProps> = ({ tracks, onAddTrack 
                             </div>
                             <div>{track.artists[0].name}</div>
                         </div>
-                        <button onClick={() => onAddTrack(track.id)}>&#65291;</button>
+                        <button onClick={() => onAddTrack(track)}>&#65291;</button>
                     </li>
                 ))}
             </ul>

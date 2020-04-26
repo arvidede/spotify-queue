@@ -104,11 +104,16 @@ export const useQueue = () => {
 
     const handleAddTrackToQueue = (track: TrackType) => {
         api.doAddTrackToQueue(track.id)
+        // .then(id => {
+        //     track.queue_id = id
+        //     setTracks([...tracks, track])
+        // })
         setTracks([...tracks, track])
     }
 
     const handleRemoveFromQueue = (track: TrackType) => {
         // api.doRemoveTrackFromQueue(track)
+        // setTracks(tracks.filter(t => t.queue_id !== track.queue_id))
         setTracks(tracks.filter(t => t.id !== track.id))
     }
 

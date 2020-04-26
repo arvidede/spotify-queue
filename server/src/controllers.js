@@ -108,9 +108,11 @@ exports.search = async (req, res) => {
             },
         })
 
-        // Format search results before sending to client
+        const tracks = searchResults.data.tracks.items.map(t =>
+            extractTrackInformation(t),
+        )
 
-        res.status(STATUS.OK).send(Response(searchResults.data.tracks))
+        res.status(STATUS.OK).send(Response(tracks))
     } catch (error) {
         console.log('Error fetching search:', error)
     }
@@ -118,6 +120,7 @@ exports.search = async (req, res) => {
 
 exports.getQueue = async (req, res) => {
     const id = req.query.id
+    console.log(id)
     req.db
         .collection(COLLECTIONS.QUEUE)
         .doc(id)

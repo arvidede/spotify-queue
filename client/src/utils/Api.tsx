@@ -179,14 +179,9 @@ export class API implements APIType {
     }
 
     doSearchTrack = async (search: string, signal: AbortSignal): Promise<TrackType[]> => {
-        const response: { data: { items: TrackType[] } } = await Fetch(
-            `${SEARCH_URL}?query=${search}`,
-            null,
-            'GET',
-            signal,
-        )
+        const response: { data: TrackType[] } = await Fetch(`${SEARCH_URL}?query=${search}`, null, 'GET', signal)
 
-        return response.data.items
+        return response.data
     }
 
     doGetQueue = async (): Promise<TrackType[]> => {

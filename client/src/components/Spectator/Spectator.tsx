@@ -14,9 +14,8 @@ interface Props extends RouteComponentProps<MatchParams> {}
 
 export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
     const { searching, searchUpdate, cancelSearch, search } = useSearch()
-    const queue = useQueue()
-
     const subscribers = useSubscribers(match.params.id)
+    const queue = useQueue()
     const api = useAPI()
 
     return (
@@ -27,7 +26,11 @@ export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
                 search.loading ? (
                     <Spinner css={'margin-top: 10vh;'} size={10} color={'white'} />
                 ) : search.result && search.result.length > 0 ? (
-                    <SearchResults onAddTrack={queue.addToQueue} tracks={search.result} />
+                    <SearchResults
+                        onAddTrack={queue.addToQueue}
+                        onRemoveTrack={queue.removeFromQueue}
+                        tracks={search.result}
+                    />
                 ) : (
                     <p>No results</p>
                 )

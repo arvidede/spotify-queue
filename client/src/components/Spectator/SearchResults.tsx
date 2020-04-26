@@ -1,28 +1,53 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { TrackType } from '../../utils'
+import { Heart, HeartOutline } from '../Common'
 import './styles/SearchResults.scss'
 
 interface SearchResultProps {
     tracks: TrackType[]
     onAddTrack: (track: TrackType) => void
+    onRemoveTrack: (track: TrackType) => void
 }
 
 const img = require('../../assets/img/album.jpg')
 
-export const SearchResults: React.FC<SearchResultProps> = ({ tracks, onAddTrack }: SearchResultProps) => {
+export const SearchResults: React.FC<SearchResultProps> = ({
+    tracks,
+    onAddTrack,
+    onRemoveTrack,
+}: SearchResultProps) => {
+    const [queuedTracks, setQueuedTracks] = useState(tracks.map(t => t.id))
+
+    useEffect(() => {
+        setQueuedTracks(Array(tracks.length).fill(false))
+    }, [tracks])
+
+    const handleAddTrack = (index: number) => {
+        if (queuedTracks[index]) {
+            onRemoveTrack(tracks[index])
+        } else {
+            onAddTrack(tracks[index])
+        }
+        const copy = [...queuedTracks]
+        copy[index] = !copy[index]
+        setQueuedTracks(copy)
+    }
+
     return (
         <div className="list-container">
-            <ul className="track-list">
+            <ul className="track-list search-results">
                 {tracks.map((track, index) => (
                     <li key={track.id}>
-                        <img src={getArtwork(track.album as SpotifyApi.AlbumObjectSimplified)} alt="" />
+                        <img src={getArtwork(track.album_s)} alt="" />
                         <div className="track-names">
                             <div>
-                                <h3>{track.name}</h3>
+                                <h3>{track.title}</h3>
                             </div>
-                            <div>{track.artists[0].name}</div>
+                            <div>{track.artist}</div>
                         </div>
-                        <button onClick={() => onAddTrack(track)}>&#65291;</button>
+                        <button onClick={() => handleAddTrack(index)}>
+                            <div>{queuedTracks[index] ? <Heart /> : <HeartOutline />}</div>
+                        </button>
                     </li>
                 ))}
             </ul>
@@ -30,9 +55,9 @@ export const SearchResults: React.FC<SearchResultProps> = ({ tracks, onAddTrack 
     )
 }
 
-function getArtwork(album: SpotifyApi.AlbumObjectSimplified) {
-    if (album.images.length > 2) {
-        return album.images[1].url
+function getArtwork(album: string) {
+    if (album.length > 0) {
+        return album
     } else {
         return require('../../assets/img/album.jpg')
     }

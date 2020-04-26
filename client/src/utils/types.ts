@@ -7,6 +7,7 @@ export interface TrackType extends Partial<SpotifyApi.TrackObjectFull> {
     length: number
     votes: number
     id: any
+    queue_id?: string
 }
 
 export interface SpotifyToken {

@@ -23,7 +23,7 @@ export const TrackList: React.FC<TrackListProps> = ({ tracks, onVote }: TrackLis
                         </div>
                         <div>
                             <div>
-                                {track.votes} vote{track.votes > 1 && 's'}
+                                {track.votes} vote{track.votes !== 1 && 's'}
                             </div>
                             <button onClick={() => onVote(track.title)}>
                                 <HeartOutline />

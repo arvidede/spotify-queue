@@ -78,7 +78,7 @@
 
         h3,
         div:last-of-type {
-            max-width: 60vw;
+            max-width: 45vw;
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -110,7 +110,7 @@
             transition: ease 0.25s;
 
             &:active {
-                fill: var(--spotify_green);
+                // fill: var(--spotify_green);
                 transform: scale(1.2);
             }
         }

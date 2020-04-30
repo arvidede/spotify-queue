@@ -6,9 +6,6 @@ import './styles/App.scss'
 
 /**
  * TODO:
- *  - Abort last search request on cancel
- *  - Get current queue
- *  - Add track to queue from search results
  *  - Vote for track
  *  - Host: Play current track
  *  - Host: Pause current track
@@ -16,6 +13,13 @@ import './styles/App.scss'
  *  - Host: Skip to previous track
  *  - Host: Logout
  *  - Host: Remove session
+ *  - Host: Fallback playlist/queue/track (Radio on last played track)
+ *  - Host: Search and add tracks
+ *  - Redirect to 404 when entering unknown id in url
+ *  - Lazy-load additional search results
+ *
+ * FIX:
+ *  - Abort last search request on cancel
  */
 
 const App: React.FC = () => {

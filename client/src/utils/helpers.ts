@@ -1,4 +1,5 @@
 import { SpotifyToken, TrackType } from './types'
+import { VOTED_TRACKS } from './constants'
 
 export const validateRoomID = (s: string): boolean => {
     // return s.length === 6 && Number.isInteger(Number(s.substr(1, 6))) && !s.includes(' ')
@@ -39,17 +40,22 @@ async function gatherResponse(response: any): Promise<any> {
     // }
 }
 
-export const placeHolderTracks = (n: number): TrackType[] => {
-    return Array(n)
-        .fill('')
-        .map(() => ({
-            title: 'Song title',
-            artist: 'Singer',
-            album_s: require('../assets/img/album.jpg'),
-            album_m: require('../assets/img/album.jpg'),
-            album_l: require('../assets/img/album.jpg'),
-            length: 1337,
-            votes: 1,
-            id: Math.random(),
-        }))
+export const setVote = (id: string, vote: boolean) => {
+    let votes = getVotes()
+    if (vote) votes.push(id)
+    else votes = votes.filter(v => v !== id)
+    localStorage.setItem(VOTED_TRACKS, JSON.stringify(votes))
+}
+
+export const getVotes = () => {
+    const votes = localStorage.getItem(VOTED_TRACKS)
+    if (!votes) {
+        setupLocalStorage()
+        return []
+    }
+    return JSON.parse(votes)
+}
+
+const setupLocalStorage = () => {
+    localStorage.setItem(VOTED_TRACKS, JSON.stringify([]))
 }

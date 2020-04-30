@@ -22,3 +22,8 @@ exports.withAppToken = (getTokenExpiration, getToken, fetchNewToken) => (
         })
     }
 }
+
+exports.withWebSocket = getWS => (req, res, next) => {
+    req.ws = getWS()
+    next()
+}

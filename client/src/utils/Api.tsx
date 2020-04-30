@@ -8,6 +8,7 @@ import {
     REFRESH_TOKEN_URL,
     GET_QUEUE_URL,
     ADD_TRACK_TO_QUEUE_URL,
+    REMOVE_TRACK_FROM_QUEUE_URL,
     HOST_URL,
     VALIDATE_ROOM_URL,
     SEARCH_URL,
@@ -18,7 +19,7 @@ import {
     SpotifyToken,
 } from './'
 
-const Message = (type: string, payload: string): string => {
+const Message = (type: string, payload: string | object): string => {
     return JSON.stringify({
         type,
         payload,
@@ -27,15 +28,16 @@ const Message = (type: string, payload: string): string => {
 export interface APIType {
     connect: () => void
     check: () => void
-    doAddTrackToQueue: (track: string) => Promise<unknown>
+    doAddTrackToQueue: (track: string) => Promise<string>
+    doRemoveTrackFromQueue: (track: string) => Promise<unknown>
+    doVoteForTrack: (track: string, vote: boolean) => void
     doAuthorizeUser: () => Promise<unknown>
     doFetchUserToken: (code: string) => Promise<SpotifyToken>
     doGetQueue: () => Promise<TrackType[]>
-    doJoinRoom: (id: string) => void
+    doJoinRoom: (id: string, callbacks: object) => void
     doLeaveRoom: () => void
     doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
     doSetupRoom: () => Promise<string>
-    onSubscribe: (n: number) => void
     doValidateRoomID: (id: string) => Promise<boolean>
     ws: WebSocket
     host: boolean
@@ -48,7 +50,6 @@ export interface APIType {
 export class API implements APIType {
     ws: WebSocket
     host: boolean
-    onSubscribe: (n: number) => void
     window: Window | null
     token: SpotifyToken | null
     roomID: string
@@ -60,7 +61,6 @@ export class API implements APIType {
         this.inSession = false
         this.ws = null
         this.host = false
-        this.onSubscribe = (n: number) => {}
     }
 
     connect = () => {
@@ -68,24 +68,6 @@ export class API implements APIType {
 
         this.ws.onopen = () => {
             console.log('Open socket')
-        }
-
-        this.ws.onmessage = (e: any) => {
-            const message = JSON.parse(e.data)
-            switch (message.type) {
-                case 'spectator':
-                    break
-                case 'noSubscribers':
-                    this.onSubscribe(message.payload as number)
-                    break
-                case 'leave':
-                    this.onSubscribe(message.payload as number)
-                    break
-                // case 'host':
-                // if(this.host)
-                default:
-                    break
-            }
         }
 
         this.ws.onclose = (par: any) => {
@@ -105,7 +87,7 @@ export class API implements APIType {
         if (this.inSession && (!this.ws || this.ws.readyState === WebSocket.CLOSED)) this.connect()
     }
 
-    doSendMessage = (type: string, payload: string = '') => {
+    doSendMessage = (type: string, payload: string | object) => {
         const message = Message(type, payload)
         const interval = setInterval(() => {
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
@@ -115,11 +97,37 @@ export class API implements APIType {
         }, 1000)
     }
 
-    doJoinRoom = (id: string) => {
-        this.connect()
+    doJoinRoom = (id: string, cb: any) => {
+        if (!this.ws) this.connect()
+
+        this.ws.onmessage = (e: any) => {
+            const message = JSON.parse(e.data)
+            switch (message.type) {
+                case 'spectator':
+                    break
+                case 'numSubscribers':
+                    cb.setSubscribers(message.payload as number)
+                    break
+                case 'leave':
+                    cb.setSubscribers(message.payload as number)
+                    break
+                case 'trackAdded':
+                    cb.addTrackToQueue(message.payload as TrackType)
+                    break
+                case 'trackRemoved':
+                    cb.removeTrackFromQueue(message.payload as string)
+                    break
+                case 'vote':
+                    cb.vote(message.payload as { votes: number; id: string })
+                    break
+                default:
+                    break
+            }
+        }
+
         this.roomID = id
+        if (!this.inSession) this.doSendMessage('join', id)
         this.inSession = true
-        this.doSendMessage('join', id)
     }
 
     doLeaveRoom = () => {
@@ -137,7 +145,7 @@ export class API implements APIType {
                 return resolve()
             }
 
-            return Fetch(AUTHORIZE_URL, null, 'GET').then((res: { data: string }) => {
+            return Fetch(AUTHORIZE_URL, 'GET').then((res: { data: string }) => {
                 const width = 450,
                     height = 730,
                     left = window.screen.width / 2 - width / 2,
@@ -179,8 +187,7 @@ export class API implements APIType {
     }
 
     doSearchTrack = async (search: string, signal: AbortSignal): Promise<TrackType[]> => {
-        const response: { data: TrackType[] } = await Fetch(`${SEARCH_URL}?query=${search}`, null, 'GET', signal)
-
+        const response: { data: TrackType[] } = await Fetch(`${SEARCH_URL}?query=${search}`, 'GET', null, signal)
         return response.data
     }
 
@@ -189,8 +196,20 @@ export class API implements APIType {
         return response.data.tracks
     }
 
-    doAddTrackToQueue = async (id: string) => {
-        Fetch(`${ADD_TRACK_TO_QUEUE_URL}?trackID=${id}&sessionID=${this.roomID}`, null, 'PUT')
+    doAddTrackToQueue = async (id: string): Promise<string> => {
+        const response: { data: string } = await Fetch(
+            `${ADD_TRACK_TO_QUEUE_URL}?trackID=${id}&sessionID=${this.roomID}`,
+            'PUT',
+        )
+        return response.data
+    }
+
+    doRemoveTrackFromQueue = async (id: string) => {
+        Fetch(`${REMOVE_TRACK_FROM_QUEUE_URL}?trackID=${id}&sessionID=${this.roomID}`, 'DELETE')
+    }
+
+    doVoteForTrack = async (id: string, vote: boolean) => {
+        this.doSendMessage('vote', { id, vote, room: this.roomID })
     }
 }
 

@@ -2,8 +2,8 @@ import * as ROUTES from './routes'
 export { ROUTES }
 export { useAuth, Auth, AuthContext } from './Auth'
 export { useAPI, APIContext, API } from './Api'
-export { validateRoomID, Fetch, placeHolderTracks, tokenHasExpired } from './helpers'
-export { useDebounce, useDebouncedInput, useSearch, useSubscribers, useQueue } from './Hooks'
+export { validateRoomID, Fetch, tokenHasExpired, getVotes, setVote } from './helpers'
+export { useDebounce, useDebouncedInput, useSearch, useWebSocket, useQueue } from './Hooks'
 
 export {
     AUTHORIZE_URL,
@@ -16,5 +16,7 @@ export {
     REQUEST_TOKEN_URL,
     SPOTIFY_USER_TOKEN,
     ADD_TRACK_TO_QUEUE_URL,
+    REMOVE_TRACK_FROM_QUEUE_URL,
+    VOTED_TRACKS,
 } from './constants'
 export * from './types'

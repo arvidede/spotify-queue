@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAsyncAbortable } from 'react-async-hook'
-import { useAPI, TrackType } from './'
+import { useAPI, TrackType, getVotes, setVote as setVoteInStorage } from './'
 
 export function useDebounce(value: string, delay: number) {
     const [debouncedValue, setDebouncedValue] = useState(value)
@@ -79,55 +79,102 @@ export const useSearch = () => {
     return { searching, cancelSearch: handleCancelSearch, searchUpdate: handleSearchUpdate, search }
 }
 
-export const useSubscribers = (id: string) => {
+export const useWebSocket = (id: string) => {
     const api = useAPI()
+    const queue = useQueue()
     const [subscribers, setSubscribers] = useState<number>(1)
 
     useEffect(() => {
-        api.doJoinRoom(id)
-        api.onSubscribe = (n: number) => setSubscribers(n)
+        const callbacks = {
+            setSubscribers: (n: number) => setSubscribers(n),
+            addTrackToQueue: queue.addedToQueue,
+            removeTrackFromQueue: queue.removedFromQueue,
+            vote: queue.voted,
+        }
+        api.doJoinRoom(id, callbacks)
+    }, [queue.addedToQueue, queue.removedFromQueue])
+
+    useEffect(() => {
+        api.doGetQueue().then(queue.setTracks)
         return () => {
             api.doLeaveRoom()
         }
     }, [])
 
-    return subscribers
+    return { subscribers, queue }
+}
+
+const useVotes = () => {
+    const [votes, setVotes] = useState<string[]>([])
+    useEffect(() => {
+        setVotes(getVotes())
+    }, [])
+
+    const handleSetVote = (id: string, vote: boolean) => {
+        if (vote) setVotes([...votes, id])
+        else setVotes(votes.filter(v => v != id))
+        setVoteInStorage(id, vote)
+    }
+
+    return { votes, setVotes: handleSetVote }
 }
 
 export const useQueue = () => {
     const [tracks, setTracks] = useState<TrackType[]>([])
+    const { votes, setVotes } = useVotes()
     const api = useAPI()
 
-    useEffect(() => {
-        api.doGetQueue().then(setTracks)
-    }, [api])
-
     const handleAddTrackToQueue = (track: TrackType) => {
-        api.doAddTrackToQueue(track.id)
-        // .then(id => {
-        //     track.queue_id = id
-        //     setTracks([...tracks, track])
-        // })
+        api.doAddTrackToQueue(track.id).then(id => {
+            track.queue_id = id
+            setTracks([...tracks, track])
+            setVotes(id, true)
+        })
+    }
+
+    const handleTrackAddedToQueue = (track: TrackType) => {
         setTracks([...tracks, track])
     }
 
-    const handleRemoveFromQueue = (track: TrackType) => {
-        // api.doRemoveTrackFromQueue(track)
-        // setTracks(tracks.filter(t => t.queue_id !== track.queue_id))
-        setTracks(tracks.filter(t => t.id !== track.id))
+    const handleRemoveTrackFromQueue = (id: string) => {
+        api.doRemoveTrackFromQueue(id)
+        setTracks(tracks.filter(t => t.queue_id !== id))
+        setVotes(id, false)
     }
 
-    const handleVote = (id: string, like: boolean = true) => {
-        // api.doVoteForTrack(id)
+    const handleTrackRemovedFromQueue = (id: string) => {
+        setTracks(tracks.filter(t => t.queue_id !== id))
+    }
+
+    const handleVoteForTrack = (id: string, vote: boolean = true) => {
+        api.doVoteForTrack(id, vote)
+        const copy = [...tracks]
+        const index = copy.findIndex(t => t.queue_id === id)
+        copy[index].votes = copy[index].votes + (vote ? 1 : -1)
+        setTracks(copy)
+        setVotes(id, vote)
+    }
+
+    const handleReceivedVoteForTrack = (vote: { id: string; votes: number }) => {
+        const { id, votes } = vote
+        const copy = [...tracks]
+        const index = copy.findIndex(t => t.queue_id === id)
+        copy[index].votes = votes
+        setTracks(copy)
     }
 
     return {
         // Probably anti-pattern to sort here, right?
         // The queue can be sorted from firebase,
         // but needs to be re-sorted on each vote
-        tracks: tracks.sort((a, b) => a.votes - b.votes),
+        tracks: tracks.sort((a, b) => b.votes - a.votes),
         addToQueue: handleAddTrackToQueue,
-        removeFromQueue: handleRemoveFromQueue,
-        vote: handleVote,
+        addedToQueue: handleTrackAddedToQueue,
+        removeFromQueue: handleRemoveTrackFromQueue,
+        removedFromQueue: handleTrackRemovedFromQueue,
+        vote: handleVoteForTrack,
+        voted: handleReceivedVoteForTrack,
+        votes,
+        setTracks,
     }
 }

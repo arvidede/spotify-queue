@@ -19,6 +19,9 @@
         &:focus {
             color: var(--spotify_white);
             background-color: rgba(200, 200, 200, 0.2);
+            & + button {
+                color: var(--spotify_white);
+            }
         }
     }
 
@@ -26,7 +29,7 @@
         position: absolute;
         right: 1.3rem;
         background-color: transparent;
-        color: var(--spotify_white);
+        color: var(--spotify_text_gray);
         border: none;
         outline: none;
 

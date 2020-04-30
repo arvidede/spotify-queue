@@ -6,7 +6,7 @@ import './styles/SearchResults.scss'
 interface SearchResultProps {
     tracks: TrackType[]
     onAddTrack: (track: TrackType) => void
-    onRemoveTrack: (track: TrackType) => void
+    onRemoveTrack: (id: string) => void
 }
 
 const img = require('../../assets/img/album.jpg')
@@ -24,7 +24,7 @@ export const SearchResults: React.FC<SearchResultProps> = ({
 
     const handleAddTrack = (index: number) => {
         if (queuedTracks[index]) {
-            onRemoveTrack(tracks[index])
+            onRemoveTrack(tracks[index].queue_id)
         } else {
             onAddTrack(tracks[index])
         }
@@ -37,7 +37,7 @@ export const SearchResults: React.FC<SearchResultProps> = ({
         <div className="list-container">
             <ul className="track-list search-results">
                 {tracks.map((track, index) => (
-                    <li key={track.id}>
+                    <li key={track.queue_id}>
                         <img src={getArtwork(track.album_s)} alt="" />
                         <div className="track-names">
                             <div>

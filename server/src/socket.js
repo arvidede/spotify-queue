@@ -1,3 +1,4 @@
+import { COLLECTIONS } from './constants'
 const WebSocket = require('ws')
 const FieldValue = require('firebase-admin').firestore.FieldValue
 
@@ -21,7 +22,7 @@ class Socket {
 
     config() {
         this.wss.on('connection', (ws, req) => {
-            const store = req.sessionStore.client
+            this.store = req.sessionStore.client
             ws.clientID = req.sessionID
 
             ws.on('message', m => {
@@ -29,56 +30,97 @@ class Socket {
 
                 switch (message.type) {
                     case 'join':
-                        console.log(
-                            'Client',
-                            req.sessionID,
-                            'joined room',
-                            message.payload,
-                        )
-
-                        try {
-                            store.set(req.sessionID, message.payload)
-                            store.sadd(Host(message.payload), req.sessionID)
-                            store.smembers(
-                                Host(message.payload),
-                                (err, channel) => {
-                                    this.doSendMessage(
-                                        'noSubscribers',
-                                        channel.length,
-                                        channel,
-                                    )
-                                },
-                            )
-                        } catch (error) {
-                            console.error(error)
-                        }
+                        this.joinChannel(req.sessionID, message.payload)
                         break
                     case 'host':
-                        this.setupChannel(store, req.sessionID)
+                        this.setupChannel(req.sessionID)
                         break
+                    case 'vote':
+                        this.doVoteForTrack(req.sessionID, message.payload)
                     default:
                         break
                 }
             })
 
             ws.on('close', () => {
-                this.deleteFromChannel(store, req.sessionID)
+                this.deleteFromChannel(req.sessionID)
                 console.log('Lost connection with client:', req.sessionID)
             })
         })
     }
 
-    setupChannel = (store, id) => {
-        store.sadd(Host(id), id)
+    setupChannel = id => {
+        this.store.sadd(Host(id), id)
     }
 
-    deleteFromChannel = (store, id) => {
-        store.get(id, (err, res) => {
-            store.del(id)
-            store.srem(Host(res), id)
-            store.smembers(Host(res), (err, channel) => {
-                this.doSendMessage('noSubscribers', channel.length, channel)
+    joinChannel = (sessionID, room) => {
+        console.log('Client', sessionID, 'joined room', room)
+
+        try {
+            this.store.set(sessionID, room)
+            this.store.sadd(Host(room), sessionID)
+            this.store.smembers(Host(room), (err, channel) => {
+                this.doSendMessage('numSubscribers', channel.length, channel)
             })
+        } catch (error) {
+            console.error('Error:', error)
+        }
+    }
+
+    deleteFromChannel = id => {
+        this.store.get(id, (err, res) => {
+            this.store.del(id)
+            this.store.srem(Host(res), id)
+            this.store.smembers(Host(res), (err, channel) => {
+                this.doSendMessage('numSubscribers', channel.length, channel)
+            })
+        })
+    }
+
+    doVoteForTrack = async (client, payload) => {
+        console.log('Vote:', payload)
+        const room = payload.room
+        const trackRef = this.db.collection(COLLECTIONS.QUEUE).doc(room)
+        trackRef.get().then(doc => {
+            // workaround until Firestore arrayRemove supports filter keys
+            const tracks = doc.data().tracks
+            const index = tracks.findIndex(t => t.queue_id === payload.id)
+            if (index !== -1) {
+                tracks[index].votes =
+                    tracks[index].votes + (payload.vote ? 1 : -1)
+                trackRef.update({ tracks })
+                this.store.smembers(Host(room), (err, channel) => {
+                    const track = {
+                        id: tracks[index].queue_id,
+                        votes: tracks[index].votes,
+                    }
+                    this.doSendMessage(
+                        'vote',
+                        track,
+                        channel.filter(id => id !== client),
+                    )
+                })
+            }
+        })
+    }
+
+    doSendAddedTrack = async (track, room, client) => {
+        this.store.smembers(Host(room), (err, channel) => {
+            this.doSendMessage(
+                'trackAdded',
+                track,
+                channel.filter(id => id !== client),
+            )
+        })
+    }
+
+    doSendRemovedTrack = async (trackID, room, client) => {
+        this.store.smembers(Host(room), (err, channel) => {
+            this.doSendMessage(
+                'trackRemoved',
+                trackID,
+                channel.filter(id => id !== client),
+            )
         })
     }
 

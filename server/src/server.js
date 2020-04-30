@@ -91,7 +91,7 @@ class Server {
 
         const corsOptions = {
             origin: ['http://localhost:3000', 'https://accounts.spotify.com'],
-            methods: 'GET,POST,PUT',
+            methods: 'GET,POST,PUT,DELETE',
             allowedHeaders: [
                 'Origin',
                 'X-Requested-With',
@@ -116,6 +116,7 @@ class Server {
                 this.fetchToken,
             ),
             withDB: middleware.withDB(() => this.db),
+            withWebSocket: middleware.withWebSocket(() => this.ws),
         }
 
         this.app.use('/', routes(middlewares))

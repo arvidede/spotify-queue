@@ -120,7 +120,7 @@ exports.search = async (req, res) => {
 
 exports.getQueue = async (req, res) => {
     const id = req.query.id
-    console.log(id)
+    console.log('Get queue:', id)
     req.db
         .collection(COLLECTIONS.QUEUE)
         .doc(id)
@@ -145,6 +145,8 @@ exports.addTrackToQueue = async (req, res) => {
             },
         }).then(res => extractTrackInformation(res.data))
 
+        req.ws.doSendAddedTrack(track, sessionID, req.sessionID)
+
         req.db
             .collection(COLLECTIONS.QUEUE)
             .doc(sessionID)
@@ -152,10 +154,34 @@ exports.addTrackToQueue = async (req, res) => {
                 tracks: FieldValue.arrayUnion(track),
             })
             .then(() => {
-                res.status(STATUS.OK).send(Response('OK'))
+                res.status(STATUS.OK).send(Response(track.queue_id))
             })
     } catch (error) {
-        console.log('Error fetching track:', error)
+        console.log('Error adding track:', error)
         res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
     }
+}
+
+exports.removeTrackFromQueue = async (req, res) => {
+    const { trackID, sessionID } = req.query
+    req.ws.doSendRemovedTrack(trackID, sessionID, req.sessionID)
+
+    const trackRef = req.db.collection(COLLECTIONS.QUEUE).doc(sessionID)
+
+    trackRef
+        .get()
+        .then(doc => {
+            // workaround until Firestore arrayRemove supports filter keys
+            const tracks = doc.data().tracks
+            trackRef.update({
+                tracks: tracks.filter(t => t.queue_id !== trackID),
+            })
+        })
+        .then(() => {
+            res.status(STATUS.OK).send(Response('OK'))
+        })
+        .catch(error => {
+            console.log('Error removing track:', error)
+            res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
+        })
 }

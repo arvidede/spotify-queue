@@ -20,7 +20,15 @@ module.exports = middleware => {
         '/add-to-queue',
         middleware.withDB,
         middleware.withAppToken,
+        middleware.withWebSocket,
         controllers.addTrackToQueue,
+    )
+
+    routes.delete(
+        '/remove-from-queue',
+        middleware.withDB,
+        middleware.withWebSocket,
+        controllers.removeTrackFromQueue,
     )
 
     return routes

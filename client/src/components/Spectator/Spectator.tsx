@@ -3,7 +3,7 @@ import { Header } from '../Common/'
 import { PulseLoader as Spinner } from 'react-spinners'
 import { TrackList, Search, SearchResults } from './'
 import { RouteComponentProps } from 'react-router'
-import { TrackType, useSubscribers, useAPI, useSearch, useQueue } from '../../utils'
+import { TrackType, useWebSocket, useAPI, useSearch, useQueue } from '../../utils'
 import './styles/Spectator.scss'
 
 interface MatchParams {
@@ -14,8 +14,7 @@ interface Props extends RouteComponentProps<MatchParams> {}
 
 export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
     const { searching, searchUpdate, cancelSearch, search } = useSearch()
-    const subscribers = useSubscribers(match.params.id)
-    const queue = useQueue()
+    const { subscribers, queue } = useWebSocket(match.params.id)
     const api = useAPI()
 
     return (
@@ -35,7 +34,7 @@ export const Spectator: React.FC<Props> = React.memo(({ match }: Props) => {
                     <p>No results</p>
                 )
             ) : (
-                <TrackList onVote={(s: string) => console.log(s)} tracks={queue.tracks} />
+                <TrackList onVote={queue.vote} votes={queue.votes} tracks={queue.tracks} />
             )}
         </div>
     )

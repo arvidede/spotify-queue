@@ -9,7 +9,7 @@ export const tokenHasExpired = (token: SpotifyToken): boolean => {
     return token.expires_on < Date.now()
 }
 
-export const Fetch = (url: string, body?: any, method: string = 'GET', signal?: AbortSignal) =>
+export const Fetch = (url: string, method: string = 'GET', body?: any, signal?: AbortSignal) =>
     fetch(url, {
         signal,
         method,

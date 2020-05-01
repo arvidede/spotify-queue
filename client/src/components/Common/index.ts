@@ -1,7 +1,0 @@
-export { Header } from './Header'
-export { Button } from './Button'
-export { URLNotFound } from './URLNotFound'
-export { Dots } from './Spinner'
-export { Spectators } from './Spectators'
-export { PersonIcon } from './PersonIcon'
-export { Heart, HeartOutline } from './Heart'

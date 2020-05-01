@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Queue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        body {
+            margin: 0;
+            font-family: 'spotify-circular', 'Roboto', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            --spotify_green: #1db954;
+            --spotify_black: #191414;
+            --spotify_white: #fff;
+            --spotify_light_gray: #222327;
+            --spotify__dark_gray: rgb(24, 24, 24);
+            --spotify_gray: rgb(40, 40, 40);
+            --spotify_medium_gray: rgb(64, 64, 64);
+            --spotify_text_gray: rgb(147, 147, 147);
+            --error_red: rgba(182, 7, 7, 0.788);
+            --glue-font-weight-normal: 400;
+            --glue-font-weight-bold: 700;
+            --glue-font-weight-black: 900;
+            background-color: var(--spotify_black);
+        }
+
+        @font-face {
+            font-family: spotify-circular;
+            src: url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.afd9ab26.woff2) format('woff2'),
+            url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.2a78c017.woff) format('woff'),
+            url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.89e4be2e.ttf) format('truetype');
+            font-weight: 200;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: spotify-circular;
+            src: url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.3466e0ec.woff2) format('woff2'),
+            url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.ea8d19db.woff) format('woff'),
+            url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.a357677a.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: spotify-circular;
+            src: url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.8d0a45cc.woff2) format('woff2'),
+            url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.10e93738.woff) format('woff'),
+            url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.7eb7d0f7.ttf) format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: spotify-circular;
+            src: url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Black.c21e63c5.woff2) format('woff2'),
+            url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Black.effa986f.woff) format('woff'),
+            url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Black.ce8ef887.ttf) format('truetype');
+            font-weight: 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        section {
+            color: var(--spotify_white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            font-size: 1.8rem;
+        }
+
+        section h1 {
+            transition: opacity 2s ease;
+            opacity: 0;
+        }
+
+        h1 b {
+            color: var(--spotify_green);
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <h1>Coming Soon<b>.</b></h1>
+    </section>
+</body>
+<script type="text/javascript">
+    const text = document.querySelector('h1')
+    setTimeout(() => {
+        text.style.opacity = 1
+    }, 500)
+</script>
+</html>

@@ -1,6 +1,0 @@
-export { Header, Button } from './Common/'
-export { Start, Redirect } from './Start/'
-export { Host } from './Host/'
-export { Spectator } from './Spectator/'
-export { Login } from './Login/'
-export { URLNotFound } from './Common/'

@@ -5,8 +5,9 @@ import {
     REDIRECT_URL,
     COLLECTIONS,
     TRACK_URL,
+    SCOPES,
 } from './constants'
-import { Response, fetchToken, extractTrackInformation } from './helpers'
+import { Response, fetchToken, extractTrackInformation, Host } from './helpers'
 const axios = require('axios')
 const FieldValue = require('firebase-admin').firestore.FieldValue
 
@@ -25,7 +26,6 @@ const STATUS = {
 
 //
 exports.authorize = (req, res) => {
-    const scopes = 'user-read-private user-read-email'
     res.status(STATUS.OK).send(
         Response(
             USER_AUTH_URL +
@@ -33,7 +33,7 @@ exports.authorize = (req, res) => {
                 '&client_id=' +
                 CLIENT_TOKEN +
                 '&scope=' +
-                encodeURIComponent(scopes) +
+                encodeURIComponent(SCOPES) +
                 '&redirect_uri=' +
                 encodeURIComponent(
                     REDIRECT_URL, //${req.session.id}`,
@@ -57,7 +57,7 @@ exports.requestToken = async (req, res) => {
 exports.refreshToken = async (req, res) => {
     const token = await fetchToken({
         grant_type: 'refresh_token',
-        refreshToken: req.query.token,
+        refresh_token: req.query.refresh_token,
     })
 
     res.status(STATUS.OK).send(Response(token))
@@ -69,18 +69,18 @@ exports.host = (req, res) => {
         .collection(COLLECTIONS.QUEUE)
         .doc(req.session.id)
         .get()
-        .then(doc => {
+        .then((doc) => {
             if (!doc.exists) {
-                req.db
-                    .collection(COLLECTIONS.QUEUE)
-                    .doc(req.session.id)
-                    .set({
-                        tracks: [],
-                    })
+                req.db.collection(COLLECTIONS.QUEUE).doc(req.session.id).set({
+                    tracks: [],
+                })
             }
         })
-    console.log('New host:', req.session.id)
-    res.status(STATUS.OK).send(Response(req.session.id))
+
+    const { id } = req.session
+    console.log('New host:', id)
+    req.sessionStore.client.sadd(Host(id), id)
+    res.status(STATUS.OK).send(Response(id))
 }
 
 //
@@ -89,7 +89,7 @@ exports.validate = (req, res) => {
         .collection(COLLECTIONS.QUEUE)
         .doc(req.query.id)
         .get()
-        .then(doc => {
+        .then((doc) => {
             res.status(STATUS.OK).send(Response(doc.exists))
         })
 }
@@ -108,8 +108,8 @@ exports.search = async (req, res) => {
             },
         })
 
-        const tracks = searchResults.data.tracks.items.map(t =>
-            extractTrackInformation(t),
+        const tracks = searchResults.data.tracks.items.map(
+            extractTrackInformation,
         )
 
         res.status(STATUS.OK).send(Response(tracks))
@@ -125,7 +125,7 @@ exports.getQueue = async (req, res) => {
         .collection(COLLECTIONS.QUEUE)
         .doc(id)
         .get()
-        .then(doc => {
+        .then((doc) => {
             if (doc.exists) {
                 res.status(STATUS.OK).send(Response(doc.data()))
             } else {
@@ -143,7 +143,7 @@ exports.addTrackToQueue = async (req, res) => {
             headers: {
                 Authorization: `Bearer ${req.token}`,
             },
-        }).then(res => extractTrackInformation(res.data))
+        }).then((res) => extractTrackInformation(res.data))
 
         req.ws.doSendAddedTrack(track, sessionID, req.sessionID)
 
@@ -170,17 +170,17 @@ exports.removeTrackFromQueue = async (req, res) => {
 
     trackRef
         .get()
-        .then(doc => {
+        .then((doc) => {
             // workaround until Firestore arrayRemove supports filter keys
             const tracks = doc.data().tracks
             trackRef.update({
-                tracks: tracks.filter(t => t.queue_id !== trackID),
+                tracks: tracks.filter((t) => t.queue_id !== trackID),
             })
         })
         .then(() => {
             res.status(STATUS.OK).send(Response('OK'))
         })
-        .catch(error => {
+        .catch((error) => {
             console.log('Error removing track:', error)
             res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
         })

@@ -1,3 +1,25 @@
+export interface APIType {
+    connect: () => void
+    check: () => void
+    doAddTrackToQueue: (track: string) => Promise<string>
+    doRemoveTrackFromQueue: (track: string) => Promise<unknown>
+    doVoteForTrack: (track: string, vote: boolean) => void
+    doAuthorizeUser: () => Promise<unknown>
+    doFetchUserToken: (code: string) => Promise<void>
+    doGetQueue: () => Promise<TrackType[]>
+    doJoinRoom: (id: string, callbacks: object) => void
+    doLeaveRoom: () => void
+    doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
+    doSetupRoom: () => Promise<string>
+    doValidateRoomID: (id: string) => Promise<boolean>
+    ws: WebSocket
+    host: boolean
+    window: Window | null
+    token: SpotifyToken | null
+    roomID: string
+    inSession: boolean
+}
+
 export interface TrackType extends Partial<SpotifyApi.TrackObjectFull> {
     title: string
     artist: string

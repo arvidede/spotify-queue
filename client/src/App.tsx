@@ -6,15 +6,12 @@ import './styles/App.scss'
 
 /**
  * TODO:
- *  - Vote for track
- *  - Host: Play current track
- *  - Host: Pause current track
- *  - Host: Skip to next track
- *  - Host: Skip to previous track
+
  *  - Host: Logout
  *  - Host: Remove session
  *  - Host: Fallback playlist/queue/track (Radio on last played track)
  *  - Host: Search and add tracks
+ *  - Host: Fullscreen mode
  *  - Redirect to 404 when entering unknown id in url
  *  - Lazy-load additional search results
  *

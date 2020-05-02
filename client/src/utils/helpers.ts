@@ -59,3 +59,9 @@ export const getVotes = () => {
 const setupLocalStorage = () => {
     localStorage.setItem(VOTED_TRACKS, JSON.stringify([]))
 }
+
+export function millisToMinutesAndSeconds(millis) {
+    const minutes = Math.floor(millis / 60000)
+    const seconds = Math.floor((millis % 60000) / 1000)
+    return seconds === 60 ? `${minutes + 1}:00` : `${minutes}:${(seconds < 10 ? '0' : '') + seconds}`
+}

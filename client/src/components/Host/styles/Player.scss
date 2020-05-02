@@ -84,12 +84,12 @@
     }
 
     > div:first-of-type {
-        left: -10px;
+        left: -18px;
         text-align: left;
     }
 
     > div:last-of-type {
-        right: -16px;
+        right: -18px;
         text-align: right;
     }
 }
@@ -100,6 +100,7 @@
     height: 5px;
     background-color: var(--spotify_medium_gray);
     border-radius: 3px;
+    overflow: hidden;
 
     div {
         background-color: var(--spotify_text_gray);

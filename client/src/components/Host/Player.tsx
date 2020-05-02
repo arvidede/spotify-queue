@@ -1,40 +1,67 @@
-import React, { useState } from 'react'
-import { TrackType } from '../../utils'
+import React, { useState, useEffect } from 'react'
+import { TrackType, millisToMinutesAndSeconds } from '../../utils'
 import { Play, Pause, Repeat, Shuffle, Next, Image } from './'
 import './styles/Player.scss'
 import { Previous } from './Icons'
+import { useSpotify, SpotifyPlayer } from './Spotify'
 
 interface PlayerProps {
-    track: TrackType
+    tracks: TrackType[]
 }
 
-export const Player: React.FC<PlayerProps> = ({ track }: PlayerProps) => {
-    return (
-        <div className="host-content-inner">
-            <div className="player">
-                <Image src={track.album_l} />
-                <h3>{track.artist}</h3>
-                <p>{track.title}</p>
-                <Controller />
+export const Player: React.FC<PlayerProps> = ({ tracks }) => {
+    const { playerState, controller } = useSpotify()
+
+    if ('is_playing' in playerState) {
+        const track = playerState.item
+        return (
+            <div className="host-content-inner">
+                <div className="player">
+                    <Image src={track.album.images[0].url} />
+                    <h3>{track.artists[0].name}</h3>
+                    <p>{track.name}</p>
+                    <Controller tracks={tracks} state={playerState} controller={controller} />
+                </div>
             </div>
-        </div>
-    )
+        )
+    } else {
+        return <div>Loading...</div>
+    }
 }
 
-interface ControllerProps {}
+interface ControllerProps {
+    state: SpotifyApi.CurrentPlaybackResponse
+    controller: SpotifyPlayer
+    tracks: TrackType[]
+}
 
-export const Controller: React.FC<ControllerProps> = ({}: ControllerProps) => {
-    const [isPlaying, setIsPlaying] = useState(false)
+export const Controller: React.FC<ControllerProps> = ({ state, controller, tracks }) => {
+    const [isPlaying, setIsPlaying] = useState(state.is_playing)
+
+    useEffect(() => {
+        setIsPlaying(state.is_playing)
+    }, [state.is_playing])
+
+    const handleTogglePlayback = () => {
+        controller.togglePlayback(isPlaying)
+        setIsPlaying(!isPlaying)
+    }
+
+    const handlePlayNextTrack = () => {
+        controller.playTrack(tracks[0].id)
+        // controller.changeTrack(true)
+    }
+
     return (
         <div className="player-controller">
             <div className="player-controller-controlls">
-                <ControllButton onClick={() => setIsPlaying(!isPlaying)} type="shuffle" />
-                <ControllButton onClick={() => setIsPlaying(!isPlaying)} type="prev" />
-                <ControllButton onClick={() => setIsPlaying(!isPlaying)} type={isPlaying ? 'pause' : 'play'} />
-                <ControllButton onClick={() => setIsPlaying(!isPlaying)} type="next" />
-                <ControllButton onClick={() => setIsPlaying(!isPlaying)} type="repeat" />
+                <ControllButton onClick={() => console.log(controller)} type="shuffle" />
+                <ControllButton onClick={() => controller.changeTrack(false)} type="prev" />
+                <ControllButton onClick={handleTogglePlayback} type={isPlaying ? 'pause' : 'play'} />
+                <ControllButton onClick={handlePlayNextTrack} type="next" />
+                <ControllButton onClick={() => console.log(controller)} type="repeat" />
             </div>
-            <ProgressBar length={100} current={45} />
+            <ProgressBar isPlaying={isPlaying} length={state.item.duration_ms} current={state.progress_ms} />
         </div>
     )
 }
@@ -70,22 +97,42 @@ export const ControllButton: React.FC<ControllButtonProps> = ({ type, onClick }:
 }
 
 interface ProgressBarProps {
-    length: number
     current: number
+    length: number
+    isPlaying: boolean
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ length, current }: ProgressBarProps) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({ current, length, isPlaying }: ProgressBarProps) => {
+    const [progress, setProgress] = useState(current)
+
     const styles = {
-        transform: `scaleX(${current / length})`,
+        transform: `scaleX(${progress / length})`,
     }
+
+    const tick = () => setProgress(progress + 1000 < length ? progress + 1000 : length)
+
+    useEffect(() => {
+        if (isPlaying) {
+            const interval = setInterval(tick, 1000)
+            return () => clearInterval(interval)
+        }
+    }, [tick])
+
+    useEffect(() => {
+        setProgress(current)
+    }, [current, length])
+
+    useEffect(() => {
+        setProgress(current)
+    }, [isPlaying])
 
     return (
         <div className="progress-bar-container">
-            <div>{current}</div>
+            <div>{millisToMinutesAndSeconds(progress)}</div>
             <div className="progress-bar">
                 <div style={styles}></div>
             </div>
-            <div>{length}</div>
+            <div>{millisToMinutesAndSeconds(length)}</div>
         </div>
     )
 }

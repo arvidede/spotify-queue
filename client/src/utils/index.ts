@@ -2,7 +2,7 @@ import * as ROUTES from './routes'
 export { ROUTES }
 export { useAuth, Auth, AuthContext } from './Auth'
 export { useAPI, APIContext, API } from './Api'
-export { validateRoomID, Fetch, tokenHasExpired, getVotes, setVote } from './helpers'
+export { validateRoomID, Fetch, tokenHasExpired, getVotes, setVote, millisToMinutesAndSeconds } from './helpers'
 export { useDebounce, useDebouncedInput, useSearch, useWebSocket, useQueue } from './Hooks'
 
 export {
@@ -18,5 +18,10 @@ export {
     ADD_TRACK_TO_QUEUE_URL,
     REMOVE_TRACK_FROM_QUEUE_URL,
     VOTED_TRACKS,
+    SPOTIFY_PLAYER_BASE_URL,
+    SPOTIFY_PLAYER_PLAY_URL,
+    SPOTIFY_PLAYER_NEXT_TRACK_URL,
+    SPOTIFY_PLAYER_PREVIOUS_TRACK_URL,
+    SPOTIFY_PLAYER_PAUSE_URL,
 } from './constants'
 export * from './types'

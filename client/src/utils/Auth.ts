@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 
 export interface AuthType {
-    auth: boolean,
-    roomId: string,
-    doLogin: () => void,
-    doSignOut: () => void,
+    auth: boolean
+    roomId: string
+    doLogin: () => void
+    doSignOut: () => void
 }
 
 export class Auth implements AuthType {
@@ -16,20 +16,12 @@ export class Auth implements AuthType {
         this.roomId = ''
     }
 
-    doLogin = () => {
+    doLogin = () => {}
 
-    }
-
-    doSignOut = () => {
-
-    }
+    doSignOut = () => {}
 }
 
 export const AuthContext = React.createContext<AuthType>(new Auth())
-
-export const withAuthorization = (Component: React.ComponentType<any>) => (props: any) => (
-    <AuthContext.Consumer>{auth => <Component {...props} auth={auth} />}</AuthContext.Consumer>
-)
 
 export const useAuth = () => useContext(AuthContext)
 

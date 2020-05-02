@@ -17,6 +17,7 @@ import {
     TrackType,
     tokenHasExpired,
     SpotifyToken,
+    APIType,
 } from './'
 
 const Message = (type: string, payload: string | object): string => {
@@ -24,27 +25,6 @@ const Message = (type: string, payload: string | object): string => {
         type,
         payload,
     })
-}
-export interface APIType {
-    connect: () => void
-    check: () => void
-    doAddTrackToQueue: (track: string) => Promise<string>
-    doRemoveTrackFromQueue: (track: string) => Promise<unknown>
-    doVoteForTrack: (track: string, vote: boolean) => void
-    doAuthorizeUser: () => Promise<unknown>
-    doFetchUserToken: (code: string) => Promise<SpotifyToken>
-    doGetQueue: () => Promise<TrackType[]>
-    doJoinRoom: (id: string, callbacks: object) => void
-    doLeaveRoom: () => void
-    doSearchTrack: (search: string, signal: AbortSignal) => Promise<TrackType[]>
-    doSetupRoom: () => Promise<string>
-    doValidateRoomID: (id: string) => Promise<boolean>
-    ws: WebSocket
-    host: boolean
-    window: Window | null
-    token: SpotifyToken | null
-    roomID: string
-    inSession: boolean
 }
 
 export class API implements APIType {
@@ -143,6 +123,11 @@ export class API implements APIType {
             if (token && !tokenHasExpired(token)) {
                 this.token = token
                 return resolve()
+            } else if (token && tokenHasExpired(token)) {
+                return this.doRefreshUserToken(token).then(token => {
+                    this.token = token
+                    return resolve()
+                })
             }
 
             return Fetch(AUTHORIZE_URL, 'GET').then((res: { data: string }) => {
@@ -158,6 +143,8 @@ export class API implements APIType {
                         `${width},height=${height},top=${top},left=${left}`,
                 )
 
+                if (!this.window) return reject('Please allow pop-ups for logging into Spotify')
+
                 this.window.onbeforeunload = () => {
                     this.token = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
                     resolve()
@@ -167,18 +154,22 @@ export class API implements APIType {
     }
 
     doFetchUserToken = (code: string) => {
-        return Fetch(`${REQUEST_TOKEN_URL}?code=${code}`).then(res => res.data)
+        return Fetch(`${REQUEST_TOKEN_URL}?code=${code}`)
+            .then(res => res.data)
+            .then(token => {
+                token.expires_on = Date.now() + token.expires_in * 1000
+                localStorage.setItem(SPOTIFY_USER_TOKEN, JSON.stringify(token))
+            })
     }
 
-    doRefreshUserToken = (code: string) => {
-        return Fetch(`${REFRESH_TOKEN_URL}?refresh_token=${this.token.refresh_token}`).then(res => res.data)
+    doRefreshUserToken = (token: SpotifyToken) => {
+        return Fetch(`${REFRESH_TOKEN_URL}?refresh_token=${token.refresh_token}`).then(res => res.data)
     }
 
     doSetupRoom = async (): Promise<string> => {
         const response: { data: string } = await Fetch(HOST_URL)
         this.host = true
         this.connect()
-        this.doSendMessage('host', response.data)
         return response.data
     }
 

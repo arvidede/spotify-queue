@@ -54,3 +54,5 @@ export const extractTrackInformation = track => {
         votes: 1,
     }
 }
+
+export const Host = id => `host-${id}`

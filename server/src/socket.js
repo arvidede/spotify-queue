@@ -1,4 +1,5 @@
 import { COLLECTIONS } from './constants'
+import { Host } from './helpers'
 const WebSocket = require('ws')
 const FieldValue = require('firebase-admin').firestore.FieldValue
 
@@ -8,8 +9,6 @@ const Message = (type, payload) => {
         payload,
     })
 }
-
-const Host = id => `host-${id}`
 class Socket {
     constructor(server, db, verifyClient) {
         this.wss = new WebSocket.Server({
@@ -32,9 +31,6 @@ class Socket {
                     case 'join':
                         this.joinChannel(req.sessionID, message.payload)
                         break
-                    case 'host':
-                        this.setupChannel(req.sessionID)
-                        break
                     case 'vote':
                         this.doVoteForTrack(req.sessionID, message.payload)
                     default:
@@ -47,10 +43,6 @@ class Socket {
                 console.log('Lost connection with client:', req.sessionID)
             })
         })
-    }
-
-    setupChannel = id => {
-        this.store.sadd(Host(id), id)
     }
 
     joinChannel = (sessionID, room) => {

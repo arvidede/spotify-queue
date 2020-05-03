@@ -12,6 +12,9 @@ import {
     useAPI,
     tokenHasExpired,
     APIType,
+    SPOTIFY_PLAYER_RECOMMENDATION_URL,
+    TrackType,
+    LAST_PLAYED_TRACK,
 } from '../../utils'
 
 const POLLING_TIMEOUT = 10000
@@ -46,7 +49,7 @@ export class SpotifyPlayer {
         this.request(SPOTIFY_PLAYER_BASE_URL, {}).then(next)
     }
 
-    playTrack = (queue_id: string, id: string) => {
+    playTrack = (id: string, queue_id?: string) => {
         const config = {
             method: 'PUT',
             body: JSON.stringify({
@@ -60,10 +63,23 @@ export class SpotifyPlayer {
         this.request(SPOTIFY_PLAYER_PLAY_URL, config).then(() => {
             this.getPlayerState(this.pollingCallback)
         })
-        this.api.doRemoveTrackFromQueue(queue_id)
+        if (queue_id) this.api.doRemoveTrackFromQueue(queue_id)
     }
 
-    changeTrack = (next: boolean) => {
+    playSimilarTrack = () => {
+        const id = localStorage.getItem(LAST_PLAYED_TRACK)
+        const config = {
+            method: 'GET',
+        }
+        const url = `${SPOTIFY_PLAYER_RECOMMENDATION_URL}?seed_tracks=${id}&limit=1`
+        this.request(url, config).then(({ tracks }: { tracks: TrackType[] }) => {
+            if (tracks && tracks.length > 0) {
+                this.playTrack(tracks[0].id)
+            }
+        })
+    }
+
+    changeTrack = (next: boolean = true) => {
         const url = next ? SPOTIFY_PLAYER_NEXT_TRACK_URL : SPOTIFY_PLAYER_PREVIOUS_TRACK_URL
         const config = {
             method: 'POST',
@@ -81,7 +97,8 @@ export class SpotifyPlayer {
 
     seekInPlayingTrack = (ms: number) => {
         const url = `${SPOTIFY_PLAYER_SEEK_URL}?position_ms=${ms}`
-        this.request(url, {})
+        const config = { method: 'PUT' }
+        this.request(url, config)
     }
 
     refreshToken = (): Promise<void> => {
@@ -125,6 +142,7 @@ export const useSpotify = (): {
         spotify.pollPlayerState((state: SpotifyApi.CurrentPlaybackResponse) => {
             if (initialFetch) setInitialFetch(false)
             setPlayerState(state)
+            localStorage.setItem(LAST_PLAYED_TRACK, state.item.id)
         })
         return spotify.clearPolling
     }, [])

@@ -2,7 +2,14 @@ import * as ROUTES from './routes'
 export { ROUTES }
 export { useAuth, Auth, AuthContext } from './Auth'
 export { useAPI, APIContext, API } from './Api'
-export { validateRoomID, Fetch, tokenHasExpired, getVotes, setVote, millisToMinutesAndSeconds } from './helpers'
+export {
+    validateRoomID,
+    Fetch,
+    tokenHasExpired,
+    getVotes,
+    setVote,
+    millisToMinutesAndSeconds,
+} from './helpers'
 export { useDebounce, useDebouncedInput, useSearch, useWebSocket, useQueue } from './Hooks'
 
 export {
@@ -24,5 +31,7 @@ export {
     SPOTIFY_PLAYER_PREVIOUS_TRACK_URL,
     SPOTIFY_PLAYER_PAUSE_URL,
     SPOTIFY_PLAYER_SEEK_URL,
+    SPOTIFY_PLAYER_RECOMMENDATION_URL,
+    LAST_PLAYED_TRACK,
 } from './constants'
 export * from './types'

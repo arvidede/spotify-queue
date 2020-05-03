@@ -12,7 +12,9 @@ export const ADD_TRACK_TO_QUEUE_URL = BASE_URL + 'add-to-queue'
 export const REMOVE_TRACK_FROM_QUEUE_URL = BASE_URL + 'remove-from-queue'
 
 /* Spotify API */
-export const SPOTIFY_PLAYER_BASE_URL = 'https://api.spotify.com/v1/me/player'
+export const SPOIFY_BASE_URL = 'https://api.spotify.com/v1'
+export const SPOTIFY_PLAYER_RECOMMENDATION_URL = SPOIFY_BASE_URL + '/recommendations'
+export const SPOTIFY_PLAYER_BASE_URL = SPOIFY_BASE_URL + '/me/player'
 export const SPOTIFY_PLAYER_PLAY_URL = SPOTIFY_PLAYER_BASE_URL + '/play'
 export const SPOTIFY_PLAYER_PAUSE_URL = SPOTIFY_PLAYER_BASE_URL + '/pause'
 export const SPOTIFY_PLAYER_NEXT_TRACK_URL = SPOTIFY_PLAYER_BASE_URL + '/next'
@@ -20,5 +22,6 @@ export const SPOTIFY_PLAYER_PREVIOUS_TRACK_URL = SPOTIFY_PLAYER_BASE_URL + '/pre
 export const SPOTIFY_PLAYER_SEEK_URL = SPOTIFY_PLAYER_BASE_URL + '/seek'
 
 /* Localstorage */
-export const SPOTIFY_USER_TOKEN = 'spotifyUserToken'
+export const SPOTIFY_USER_TOKEN = 'spotify_user_token'
 export const VOTED_TRACKS = 'votes'
+export const LAST_PLAYED_TRACK = 'last_played_track'

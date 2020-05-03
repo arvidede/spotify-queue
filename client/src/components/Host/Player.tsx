@@ -80,7 +80,13 @@ const DisabledController: React.FC = () => {
                 <ControllButton onClick={() => {}} type="next" />
                 <ControllButton onClick={() => {}} type="repeat" />
             </div>
-            <ProgressBar isPlaying={false} length={0} current={0} />
+            <ProgressBar
+                isPlaying={false}
+                length={0}
+                current={0}
+                onSeek={(ms: number) => {}}
+                onEnd={() => {}}
+            />
         </div>
     )
 }
@@ -104,7 +110,11 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
     }
 
     const handlePlayNextTrack = () => {
-        controller.playTrack(tracks[0].queue_id, tracks[0].id)
+        if (tracks.length > 0) {
+            controller.playTrack(tracks[0].queue_id, tracks[0].id)
+        } else {
+            controller.playSimilarTrack()
+        }
     }
 
     return (
@@ -123,6 +133,8 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
                 isPlaying={isPlaying}
                 length={state.item.duration_ms}
                 current={state.progress_ms}
+                onSeek={controller.seekInPlayingTrack}
+                onEnd={handlePlayNextTrack}
             />
         </div>
     )
@@ -168,20 +180,32 @@ interface ProgressBarProps {
     current: number
     length: number
     isPlaying: boolean
+    onSeek: (ms: number) => void
+    onEnd: () => void
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
     current,
     length,
     isPlaying,
+    onSeek,
+    onEnd,
 }: ProgressBarProps) => {
     const [progress, setProgress] = useState(current)
 
     const styles = {
-        transform: `scaleX(${progress / length})`,
+        // transform: `scaleX(${progress / length})`,
+        width: `${(100 * progress) / length}%`,
     }
 
-    const tick = () => setProgress(progress + 1000 < length ? progress + 1000 : length)
+    const tick = () => {
+        const next = progress + 2000
+        if (Math.round(next) < length) setProgress(next - 1000)
+        else {
+            setProgress(0)
+            onEnd()
+        }
+    }
 
     useEffect(() => {
         if (isPlaying) {
@@ -198,10 +222,20 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         setProgress(progress)
     }, [isPlaying])
 
+    const handleSeekTrack = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        const progressBar = e.currentTarget
+        const progressBarWidth = progressBar.offsetWidth
+        const progressBarClickPosition = e.clientX - progressBar.getBoundingClientRect().left
+        const progressBarProgressClicked = progressBarClickPosition / progressBarWidth
+        const progressInMs = Math.round(progressBarProgressClicked * length)
+        onSeek(progressInMs)
+        setProgress(progressInMs)
+    }
+
     return (
         <div className="progress-bar-container">
             <div>{millisToMinutesAndSeconds(progress)}</div>
-            <div className="progress-bar">
+            <div className="progress-bar" onClick={handleSeekTrack}>
                 <div style={styles}></div>
             </div>
             <div>{millisToMinutesAndSeconds(length)}</div>

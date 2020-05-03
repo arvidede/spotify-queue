@@ -5,28 +5,81 @@ import './styles/Player.scss'
 import { Previous } from './Icons'
 import { useSpotify, SpotifyPlayer } from './Spotify'
 
+const PLACEHOLDER_TRACK = {
+    src: require('./placeholder.png'),
+    artist: 'Artist',
+    track: 'Track',
+}
+
 interface PlayerProps {
     tracks: TrackType[]
 }
 
 export const Player: React.FC<PlayerProps> = ({ tracks }) => {
-    const { playerState, controller } = useSpotify()
+    const { playerState, controller, fetching } = useSpotify()
 
-    if ('is_playing' in playerState) {
-        const track = playerState.item
-        return (
-            <div className="host-content-inner">
-                <div className="player">
-                    <Image src={track.album.images[0].url} />
-                    <h3>{track.artists[0].name}</h3>
-                    <p>{track.name}</p>
-                    <Controller tracks={tracks} state={playerState} controller={controller} />
+    const renderPlayer = () => {
+        if (playerState && 'is_playing' in playerState) {
+            const track = playerState.item
+            return (
+                <div className="host-content-inner">
+                    <div className="player">
+                        <Image src={track.album.images[0].url} />
+                        <h3>{track.artists[0].name}</h3>
+                        <p>{track.name}</p>
+                        <Controller tracks={tracks} state={playerState} controller={controller} />
+                    </div>
                 </div>
-            </div>
-        )
-    } else {
-        return <div>Loading...</div>
+            )
+        } else {
+            return (
+                <div className="host-content-inner">
+                    <div className="player">
+                        <Image src={PLACEHOLDER_TRACK.src} />
+                        <h3>{PLACEHOLDER_TRACK.artist}</h3>
+                        <p>{PLACEHOLDER_TRACK.track}</p>
+                        <DisabledController />
+                    </div>
+                </div>
+            )
+        }
     }
+
+    return (
+        <>
+            <Overlay fetching={fetching} />
+            {renderPlayer()}
+        </>
+    )
+}
+
+interface OverlayProps {
+    fetching: boolean
+}
+
+const Overlay: React.FC<OverlayProps> = ({ fetching }) => {
+    const [showOverlay, setShowOverlay] = useState(fetching)
+
+    useEffect(() => {
+        setTimeout(() => setShowOverlay(false), 1000)
+    }, [fetching])
+
+    return showOverlay ? <div className={'player-loading-overlay' + (fetching ? '' : ' disabled')}></div> : null
+}
+
+const DisabledController: React.FC = () => {
+    return (
+        <div className="player-controller">
+            <div className="player-controller-controlls">
+                <ControllButton onClick={() => {}} type="shuffle" />
+                <ControllButton onClick={() => {}} type="prev" />
+                <ControllButton onClick={() => {}} type={'play'} />
+                <ControllButton onClick={() => {}} type="next" />
+                <ControllButton onClick={() => {}} type="repeat" />
+            </div>
+            <ProgressBar isPlaying={false} length={0} current={0} />
+        </div>
+    )
 }
 
 interface ControllerProps {

@@ -31,7 +31,6 @@ export class API implements APIType {
     ws: WebSocket
     host: boolean
     window: Window | null
-    token: SpotifyToken | null
     roomID: string
     inSession: boolean
 
@@ -121,13 +120,9 @@ export class API implements APIType {
             const token: SpotifyToken = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
 
             if (token && !tokenHasExpired(token)) {
-                this.token = token
                 return resolve()
             } else if (token && tokenHasExpired(token)) {
-                return this.doRefreshUserToken(token).then(token => {
-                    this.token = token
-                    return resolve()
-                })
+                return this.doRefreshUserToken(token).then(resolve)
             }
 
             return Fetch(AUTHORIZE_URL, 'GET').then((res: { data: string }) => {
@@ -146,7 +141,6 @@ export class API implements APIType {
                 if (!this.window) return reject('Please allow pop-ups for logging into Spotify')
 
                 this.window.onbeforeunload = () => {
-                    this.token = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
                     resolve()
                 }
             })
@@ -163,7 +157,14 @@ export class API implements APIType {
     }
 
     doRefreshUserToken = (token: SpotifyToken) => {
-        return Fetch(`${REFRESH_TOKEN_URL}?refresh_token=${token.refresh_token}`).then(res => res.data)
+        return Fetch(`${REFRESH_TOKEN_URL}?refresh_token=${token.refresh_token}`).then(
+            (res: { data: SpotifyToken }) => {
+                const newToken = res.data
+                newToken.refresh_token = token.refresh_token
+                newToken.expires_on = Date.now() + newToken.expires_in * 1000
+                localStorage.setItem(SPOTIFY_USER_TOKEN, JSON.stringify(newToken))
+            },
+        )
     }
 
     doSetupRoom = async (): Promise<string> => {
@@ -178,7 +179,8 @@ export class API implements APIType {
     }
 
     doSearchTrack = async (search: string, signal: AbortSignal): Promise<TrackType[]> => {
-        const response: { data: TrackType[] } = await Fetch(`${SEARCH_URL}?query=${search}`, 'GET', null, signal)
+        const query = search.replace(' ', '+')
+        const response: { data: TrackType[] } = await Fetch(`${SEARCH_URL}?query=${query}`, 'GET', null, signal)
         return response.data
     }
 

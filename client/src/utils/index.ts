@@ -23,5 +23,6 @@ export {
     SPOTIFY_PLAYER_NEXT_TRACK_URL,
     SPOTIFY_PLAYER_PREVIOUS_TRACK_URL,
     SPOTIFY_PLAYER_PAUSE_URL,
+    SPOTIFY_PLAYER_SEEK_URL,
 } from './constants'
 export * from './types'

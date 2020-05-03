@@ -95,10 +95,7 @@ exports.validate = (req, res) => {
 }
 
 exports.search = async (req, res) => {
-    let query = req.query
-
-    query = query.query.replace(' ', '%')
-
+    const query = req.query.query.split(' ').map(encodeURIComponent).join('+')
     try {
         const searchResults = await axios({
             medthod: 'GET',

@@ -17,6 +17,7 @@ export const SPOTIFY_PLAYER_PLAY_URL = SPOTIFY_PLAYER_BASE_URL + '/play'
 export const SPOTIFY_PLAYER_PAUSE_URL = SPOTIFY_PLAYER_BASE_URL + '/pause'
 export const SPOTIFY_PLAYER_NEXT_TRACK_URL = SPOTIFY_PLAYER_BASE_URL + '/next'
 export const SPOTIFY_PLAYER_PREVIOUS_TRACK_URL = SPOTIFY_PLAYER_BASE_URL + '/previous'
+export const SPOTIFY_PLAYER_SEEK_URL = SPOTIFY_PLAYER_BASE_URL + '/seek'
 
 /* Localstorage */
 export const SPOTIFY_USER_TOKEN = 'spotifyUserToken'

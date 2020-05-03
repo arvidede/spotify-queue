@@ -6,6 +6,7 @@ export interface APIType {
     doVoteForTrack: (track: string, vote: boolean) => void
     doAuthorizeUser: () => Promise<unknown>
     doFetchUserToken: (code: string) => Promise<void>
+    doRefreshUserToken: (token: SpotifyToken) => Promise<SpotifyToken>
     doGetQueue: () => Promise<TrackType[]>
     doJoinRoom: (id: string, callbacks: object) => void
     doLeaveRoom: () => void
@@ -15,7 +16,6 @@ export interface APIType {
     ws: WebSocket
     host: boolean
     window: Window | null
-    token: SpotifyToken | null
     roomID: string
     inSession: boolean
 }

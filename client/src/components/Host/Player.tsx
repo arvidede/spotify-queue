@@ -65,7 +65,9 @@ const Overlay: React.FC<OverlayProps> = ({ fetching }) => {
         setTimeout(() => setShowOverlay(false), 1000)
     }, [fetching])
 
-    return showOverlay ? <div className={'player-loading-overlay' + (fetching ? '' : ' disabled')}></div> : null
+    return showOverlay ? (
+        <div className={'player-loading-overlay' + (fetching ? '' : ' disabled')}></div>
+    ) : null
 }
 
 const DisabledController: React.FC = () => {
@@ -102,8 +104,7 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
     }
 
     const handlePlayNextTrack = () => {
-        controller.playTrack(tracks[0].id)
-        // controller.changeTrack(true)
+        controller.playTrack(tracks[0].queue_id, tracks[0].id)
     }
 
     return (
@@ -111,11 +112,18 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
             <div className="player-controller-controlls">
                 <ControllButton onClick={() => console.log(controller)} type="shuffle" />
                 <ControllButton onClick={() => controller.changeTrack(false)} type="prev" />
-                <ControllButton onClick={handleTogglePlayback} type={isPlaying ? 'pause' : 'play'} />
+                <ControllButton
+                    onClick={handleTogglePlayback}
+                    type={isPlaying ? 'pause' : 'play'}
+                />
                 <ControllButton onClick={handlePlayNextTrack} type="next" />
                 <ControllButton onClick={() => console.log(controller)} type="repeat" />
             </div>
-            <ProgressBar isPlaying={isPlaying} length={state.item.duration_ms} current={state.progress_ms} />
+            <ProgressBar
+                isPlaying={isPlaying}
+                length={state.item.duration_ms}
+                current={state.progress_ms}
+            />
         </div>
     )
 }
@@ -125,7 +133,10 @@ interface ControllButtonProps {
     onClick: () => void
 }
 
-export const ControllButton: React.FC<ControllButtonProps> = ({ type, onClick }: ControllButtonProps) => {
+export const ControllButton: React.FC<ControllButtonProps> = ({
+    type,
+    onClick,
+}: ControllButtonProps) => {
     const isCircled = type === 'play' || type === 'pause'
     const renderIcon = () => {
         switch (type) {
@@ -144,7 +155,10 @@ export const ControllButton: React.FC<ControllButtonProps> = ({ type, onClick }:
         }
     }
     return (
-        <button onClick={onClick} className={'player-controll-button ' + type + (isCircled ? ' circle' : '')}>
+        <button
+            onClick={onClick}
+            className={'player-controll-button ' + type + (isCircled ? ' circle' : '')}
+        >
             {renderIcon()}
         </button>
     )
@@ -156,7 +170,11 @@ interface ProgressBarProps {
     isPlaying: boolean
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ current, length, isPlaying }: ProgressBarProps) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({
+    current,
+    length,
+    isPlaying,
+}: ProgressBarProps) => {
     const [progress, setProgress] = useState(current)
 
     const styles = {

@@ -5,10 +5,14 @@ import './styles/TrackList.scss'
 interface TrackListProps {
     tracks: TrackType[]
     onDelete: (id: string) => void
-    onPlay: (id: string) => void
+    onPlay: (queue_id: string, id: string) => void
 }
 
-export const TrackList: React.FC<TrackListProps> = ({ tracks, onDelete, onPlay }: TrackListProps) => {
+export const TrackList: React.FC<TrackListProps> = ({
+    tracks,
+    onDelete,
+    onPlay,
+}: TrackListProps) => {
     return (
         <div className="host-content-inner">
             <ul className="host-track-list">
@@ -26,7 +30,7 @@ export const TrackList: React.FC<TrackListProps> = ({ tracks, onDelete, onPlay }
                             <button onClick={() => onDelete(track.queue_id)}>D</button>
                         </div>
                         <div>
-                            <button onClick={() => onPlay(track.queue_id)}>P</button>
+                            <button onClick={() => onPlay(track.queue_id, track.id)}>P</button>
                         </div>
                     </li>
                 ))}

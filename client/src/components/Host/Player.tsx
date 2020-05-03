@@ -13,11 +13,12 @@ const PLACEHOLDER_TRACK = {
 
 interface PlayerProps {
     tracks: TrackType[]
+    playerState: SpotifyApi.CurrentPlaybackResponse
+    controller: SpotifyPlayer
+    fetching: boolean
 }
 
-export const Player: React.FC<PlayerProps> = ({ tracks }) => {
-    const { playerState, controller, fetching } = useSpotify()
-
+export const Player: React.FC<PlayerProps> = ({ tracks, playerState, controller, fetching }) => {
     const renderPlayer = () => {
         if (playerState && 'is_playing' in playerState) {
             const track = playerState.item
@@ -176,7 +177,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ current, length, isPla
     }, [current, length])
 
     useEffect(() => {
-        setProgress(current)
+        setProgress(progress)
     }, [isPlaying])
 
     return (

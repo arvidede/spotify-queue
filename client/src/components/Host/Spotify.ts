@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext, useContext } from 'react'
 import {
     SPOTIFY_USER_TOKEN,
     REFRESH_TOKEN_URL,
@@ -7,6 +7,7 @@ import {
     SPOTIFY_PLAYER_PAUSE_URL,
     SPOTIFY_PLAYER_NEXT_TRACK_URL,
     SPOTIFY_PLAYER_PREVIOUS_TRACK_URL,
+    SPOTIFY_PLAYER_SEEK_URL,
     SpotifyToken,
     useAPI,
     tokenHasExpired,
@@ -44,7 +45,6 @@ export class SpotifyPlayer {
                 uris: [`spotify:track:${id}`],
             }),
         }
-        console.log(config)
         this.request(SPOTIFY_PLAYER_PLAY_URL, config)
     }
 
@@ -64,12 +64,18 @@ export class SpotifyPlayer {
         this.request(url, config)
     }
 
+    seekInPlayingTrack = (ms: number) => {
+        const url = `${SPOTIFY_PLAYER_SEEK_URL}?position_ms=${ms}`
+        this.request(url, {})
+    }
+
     refreshToken = (): Promise<void> => {
         console.log('Token expired:', this.token)
         return fetch(`${REFRESH_TOKEN_URL}?refresh_token=${this.token.refresh_token}`)
             .then(res => res.json())
             .then((res: { data: SpotifyToken }) => {
                 const token = res.data
+                token.refresh_token = this.token.refresh_token
                 token.expires_on = Date.now() + token.expires_in * 1000
                 localStorage.setItem(SPOTIFY_USER_TOKEN, JSON.stringify(token))
                 this.token = token
@@ -93,16 +99,22 @@ export class SpotifyPlayer {
     }
 }
 
-export const useSpotify = (): { playerState: SpotifyApi.CurrentPlaybackResponse; controller: SpotifyPlayer } => {
-    const [spotify, setSpotify] = useState<SpotifyPlayer>({} as SpotifyPlayer)
+export const useSpotify = (): {
+    playerState: SpotifyApi.CurrentPlaybackResponse
+    controller: SpotifyPlayer
+    fetching: boolean
+} => {
+    const [initialFetch, setInitialFetch] = useState(true)
+    const spotify = new SpotifyPlayer()
     const [playerState, setPlayerState] = useState<SpotifyApi.CurrentPlaybackResponse>(
         {} as SpotifyApi.CurrentPlaybackResponse,
     )
     useEffect(() => {
-        const player = new SpotifyPlayer()
-        player.pollPlayerState((state: SpotifyApi.CurrentPlaybackResponse) => setPlayerState(state))
-        setSpotify(player)
-        return player.clearPolling
+        spotify.pollPlayerState((state: SpotifyApi.CurrentPlaybackResponse) => {
+            if (initialFetch) setInitialFetch(false)
+            setPlayerState(state)
+        })
+        return spotify.clearPolling
     }, [])
-    return { playerState, controller: spotify }
+    return { playerState, controller: spotify, fetching: initialFetch }
 }

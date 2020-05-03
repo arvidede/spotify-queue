@@ -14,6 +14,7 @@ interface Props extends RouteComponentProps<MatchParams> {}
 export const Host: React.FC<Props> = (props: Props) => {
     const { subscribers, queue } = useWebSocket(props.match.params.id)
     const { playerState, controller, fetching } = useSpotify()
+
     return (
         <div className="host">
             <Header
@@ -32,7 +33,7 @@ export const Host: React.FC<Props> = (props: Props) => {
                 <TrackList
                     tracks={queue.tracks}
                     onDelete={queue.removeFromQueue}
-                    onPlay={(id: string) => console.log(id)}
+                    onPlay={controller.playTrack}
                 />
             </div>
         </div>

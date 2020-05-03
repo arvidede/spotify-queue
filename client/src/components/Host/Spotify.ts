@@ -19,13 +19,21 @@ const POLLING_TIMEOUT = 10000
 export class SpotifyPlayer {
     playerInterval: null | number
     token: SpotifyToken
-    constructor() {
+    api: APIType
+    pollingCallback: null | ((state: SpotifyApi.CurrentPlaybackResponse) => void)
+    abortController: AbortController
+
+    constructor(api: APIType) {
         const token: SpotifyToken = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
         this.token = token
         this.playerInterval = null
+        this.pollingCallback = null
+        this.api = api
+        this.abortController = new AbortController()
     }
 
     pollPlayerState = (next: (state: SpotifyApi.CurrentPlaybackResponse) => void) => {
+        this.pollingCallback = next
         this.getPlayerState(next)
         this.playerInterval = window.setInterval(() => this.getPlayerState(next), POLLING_TIMEOUT)
     }
@@ -38,14 +46,21 @@ export class SpotifyPlayer {
         this.request(SPOTIFY_PLAYER_BASE_URL, {}).then(next)
     }
 
-    playTrack = (id: string) => {
+    playTrack = (queue_id: string, id: string) => {
         const config = {
             method: 'PUT',
             body: JSON.stringify({
                 uris: [`spotify:track:${id}`],
             }),
         }
-        this.request(SPOTIFY_PLAYER_PLAY_URL, config)
+
+        this.abortController.abort()
+        this.abortController = new AbortController()
+
+        this.request(SPOTIFY_PLAYER_PLAY_URL, config).then(() => {
+            this.getPlayerState(this.pollingCallback)
+        })
+        this.api.doRemoveTrackFromQueue(queue_id)
     }
 
     changeTrack = (next: boolean) => {
@@ -71,15 +86,9 @@ export class SpotifyPlayer {
 
     refreshToken = (): Promise<void> => {
         console.log('Token expired:', this.token)
-        return fetch(`${REFRESH_TOKEN_URL}?refresh_token=${this.token.refresh_token}`)
-            .then(res => res.json())
-            .then((res: { data: SpotifyToken }) => {
-                const token = res.data
-                token.refresh_token = this.token.refresh_token
-                token.expires_on = Date.now() + token.expires_in * 1000
-                localStorage.setItem(SPOTIFY_USER_TOKEN, JSON.stringify(token))
-                this.token = token
-            })
+        return this.api.doRefreshUserToken(this.token).then(token => {
+            this.token = token
+        })
     }
 
     request = (url: string, config: object) => {
@@ -91,9 +100,11 @@ export class SpotifyPlayer {
                 Authorization: `Bearer ${this.token.access_token}`,
             },
             ...config,
+            signal: this.abortController.signal,
         })
             .then(res => {
                 if (res.status !== 204) return res.json()
+                else return res
             })
             .catch(console.error)
     }
@@ -105,7 +116,8 @@ export const useSpotify = (): {
     fetching: boolean
 } => {
     const [initialFetch, setInitialFetch] = useState(true)
-    const spotify = new SpotifyPlayer()
+    const api = useAPI()
+    const [spotify, setSpotify] = useState(new SpotifyPlayer(api))
     const [playerState, setPlayerState] = useState<SpotifyApi.CurrentPlaybackResponse>(
         {} as SpotifyApi.CurrentPlaybackResponse,
     )

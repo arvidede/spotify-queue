@@ -19,8 +19,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     width: 100%;
+
     h3,
     p {
         margin-bottom: 0;
@@ -28,6 +28,10 @@
 
     p {
         margin-top: 0.5rem;
+    }
+
+    @media screen and (max-width: 860px) {
+        margin-bottom: 1rem;
     }
 }
 
@@ -38,9 +42,16 @@
     width: 60vh;
     max-width: 100vw;
     margin-top: 0.25rem;
-    // background-color: var(--spotify_gray);
     padding: 1rem;
     box-sizing: border-box;
+
+    @media screen and (max-width: 860px) {
+        background-color: var(--spotify_gray);
+        position: fixed;
+        bottom: 0;
+        width: 100vw;
+        z-index: 999;
+    }
 }
 
 .player-controller-controlls {

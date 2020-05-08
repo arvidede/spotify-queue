@@ -1,18 +1,20 @@
 .host-track-list {
     list-style: none;
     padding: 0;
-    margin: 0 10% 0 0;
-    width: 90%;
+    width: 100%;
+    margin: 0;
 
     li {
         font-size: 0.9rem;
         margin: 0;
-        padding: 0.8rem 2rem;
+        padding: 0.8rem 0.5rem 0.75rem 0.75rem;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 8fr 5fr 2fr 1fr 1fr;
         grid-template-rows: 1fr;
         background-color: var(--spotify_dark_gray);
         justify-content: space-around;
+        align-items: center;
+        position: relative;
 
         &:first-of-type {
             font-size: 0.75rem;
@@ -25,12 +27,45 @@
 
         &:hover {
             background-color: var(--spotify_gray);
-        }
-    }
-}
 
-@media screen and (max-width: 860px) {
-    .host-track-list {
-        margin: 0;
+            button {
+                display: initial;
+            }
+        }
+
+        button {
+            position: relative;
+            display: none;
+            background: none;
+            border: none;
+            fill: var(--spotify_text_gray);
+            height: 0.75rem;
+            width: 0.75rem;
+            padding: 3px;
+            box-sizing: content-box;
+            margin: 0;
+            line-height: 0.75rem;
+            outline: none;
+
+            &:hover {
+                cursor: pointer;
+                fill: var(--spotify_white);
+                transform: scale(1.1);
+            }
+
+            &:before {
+                font-size: 0.5rem;
+            }
+
+            &:last-of-type {
+                height: 1.1rem;
+                width: 1.1rem;
+                padding: 0px;
+            }
+        }
+
+        @media screen and (max-width: 860px) {
+            margin: 0 0.75rem;
+        }
     }
 }

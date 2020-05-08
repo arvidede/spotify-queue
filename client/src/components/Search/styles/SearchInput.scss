@@ -1,9 +1,8 @@
-.search {
+.search-input {
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 0.75rem;
-    box-sizing: border-box;
+    padding: 0 0.75rem 0.75rem 0.75rem;
     position: sticky;
     top: 4rem;
 
@@ -36,5 +35,9 @@
         &:hover {
             cursor: pointer;
         }
+    }
+
+    @media screen and (max-width: 860px) {
+        box-sizing: border-box;
     }
 }

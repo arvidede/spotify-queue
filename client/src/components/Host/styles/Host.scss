@@ -1,22 +1,15 @@
 .host-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 10fr 8fr 1fr;
     grid-template-rows: 1fr;
     width: 100vw;
     height: 88vh;
     padding-top: 12vh;
-}
 
-.host-content-inner {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
-
-@media screen and (max-width: 860px) {
-    .host-content {
+    @media screen and (max-width: 860px) {
         display: flex;
         flex-direction: column;
         height: auto;
+        padding-bottom: 20vh;
     }
 }

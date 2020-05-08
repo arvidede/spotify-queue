@@ -143,7 +143,7 @@ export const useSpotify = (): {
         spotify.pollPlayerState((state: SpotifyApi.CurrentPlaybackResponse) => {
             if (initialFetch) setInitialFetch(false)
             setPlayerState(state)
-            localStorage.setItem(LAST_PLAYED_TRACK, state.item.id)
+            if (state.item) localStorage.setItem(LAST_PLAYED_TRACK, state.item.id)
         })
         return spotify.clearPolling
     }, [])

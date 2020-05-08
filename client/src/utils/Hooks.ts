@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAsyncAbortable } from 'react-async-hook'
+import { useHistory } from 'react-router-dom'
 import { useAPI, TrackType, getVotes, setVote as setVoteInStorage } from './'
 
 export function useDebounce(value: string, delay: number) {
@@ -79,10 +80,21 @@ export const useSearch = () => {
     return { searching, cancelSearch: handleCancelSearch, searchUpdate: handleSearchUpdate, search }
 }
 
+export const useRoomValidation = () => {}
+
 export const useWebSocket = (id: string) => {
     const api = useAPI()
     const queue = useQueue()
+    const history = useHistory()
     const [subscribers, setSubscribers] = useState<number>(1)
+
+    useEffect(() => {
+        api.doValidateRoomID(id).then(isValid => {
+            if (isValid) api.doGetQueue().then(queue.setTracks)
+            else history.push('/not-found')
+        })
+        return () => api.doLeaveRoom()
+    }, [])
 
     useEffect(() => {
         const callbacks = {
@@ -93,13 +105,6 @@ export const useWebSocket = (id: string) => {
         }
         api.doJoinRoom(id, callbacks)
     }, [queue.addedToQueue, queue.removedFromQueue])
-
-    useEffect(() => {
-        api.doGetQueue().then(queue.setTracks)
-        return () => {
-            api.doLeaveRoom()
-        }
-    }, [])
 
     return { subscribers, queue }
 }
@@ -112,7 +117,7 @@ const useVotes = () => {
 
     const handleSetVote = (id: string, vote: boolean) => {
         if (vote) setVotes([...votes, id])
-        else setVotes(votes.filter(v => v != id))
+        else setVotes(votes.filter(v => v !== id))
         setVoteInStorage(id, vote)
     }
 
@@ -143,6 +148,7 @@ export const useQueue = () => {
     }
 
     const handleTrackRemovedFromQueue = (id: string) => {
+        console.log('Removing from queue:', id)
         setTracks(tracks.filter(t => t.queue_id !== id))
     }
 

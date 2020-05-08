@@ -105,8 +105,11 @@ export class API implements APIType {
         }
 
         this.roomID = id
-        if (!this.inSession) this.doSendMessage('join', id)
-        this.inSession = true
+
+        if (!this.inSession) {
+            this.doSendMessage('join', id)
+            this.inSession = true
+        }
     }
 
     doLeaveRoom = () => {
@@ -176,27 +179,17 @@ export class API implements APIType {
     }
 
     doValidateRoomID = async (id: string): Promise<boolean> => {
-        return (
-            validateRoomID(id) &&
-            ((await Fetch(`${VALIDATE_ROOM_URL}?id=${id}`)) as { data: boolean }).data
-        )
+        return validateRoomID(id) && ((await Fetch(`${VALIDATE_ROOM_URL}?id=${id}`)) as { data: boolean }).data
     }
 
     doSearchTrack = async (search: string, signal: AbortSignal): Promise<TrackType[]> => {
         const query = search.replace(' ', '+')
-        const response: { data: TrackType[] } = await Fetch(
-            `${SEARCH_URL}?query=${query}`,
-            'GET',
-            null,
-            signal,
-        )
+        const response: { data: TrackType[] } = await Fetch(`${SEARCH_URL}?query=${query}`, 'GET', null, signal)
         return response.data
     }
 
     doGetQueue = async (): Promise<TrackType[]> => {
-        const response: { data: { tracks: TrackType[] } } = await Fetch(
-            `${GET_QUEUE_URL}?id=${this.roomID}`,
-        )
+        const response: { data: { tracks: TrackType[] } } = await Fetch(`${GET_QUEUE_URL}?id=${this.roomID}`)
         return response.data.tracks
     }
 

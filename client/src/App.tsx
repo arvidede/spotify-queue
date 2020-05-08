@@ -6,17 +6,16 @@ import './styles/App.scss'
 
 /**
  * TODO:
-
- *  - Host: Logout
- *  - Host: Remove session
- *  - Host: Fallback playlist/queue/track (Radio on last played track)
- *  - Host: Search and add tracks
+ *  - Host/Spectator: Lazy-load additional search results
  *  - Host: Fullscreen mode
- *  - Redirect to 404 when entering unknown id in url
- *  - Lazy-load additional search results
+ *  - Host: Logout / Remove session
+ *  - Host: Sync with lyrics from external API
+ 
  *
  * FIX:
  *  - Abort last search request on cancel
+ *  - Strange behaviour when the callback is empty
+ *  - Handle authorization when pop-ups not are allowed
  */
 
 const App: React.FC = () => {

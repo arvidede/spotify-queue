@@ -59,7 +59,7 @@ class Server {
     createSession() {
         this.session = session({
             secret: 'queue',
-            genid: function(req) {
+            genid: function (req) {
                 // return shortid.generate()
                 return shortID()
             },
@@ -75,7 +75,7 @@ class Server {
         })
     }
 
-    async fetchToken() {
+    fetchToken = async () => {
         const token = await fetchToken({
             grant_type: 'client_credentials',
         })
@@ -108,7 +108,7 @@ class Server {
         this.app.use(cors(corsOptions))
     }
 
-    createRoutes() {
+    createRoutes = () => {
         const middlewares = {
             withAppToken: middleware.withAppToken(
                 () => this.tokenExpiration,

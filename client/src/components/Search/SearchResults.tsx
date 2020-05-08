@@ -9,8 +9,6 @@ interface SearchResultProps {
     onRemoveTrack: (id: string) => void
 }
 
-const img = require('../../assets/img/album.jpg')
-
 export const SearchResults: React.FC<SearchResultProps> = ({
     tracks,
     onAddTrack,
@@ -59,6 +57,6 @@ function getArtwork(album: string) {
     if (album.length > 0) {
         return album
     } else {
-        return require('../../assets/img/album.jpg')
+        return require('../../assets/img/placeholder.png')
     }
 }

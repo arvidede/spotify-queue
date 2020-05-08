@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { TrackType, millisToMinutesAndSeconds } from '../../utils'
-import { Play, Pause, Repeat, Shuffle, Next, Image } from './'
+import { Play, Pause, Repeat, Shuffle, Next, Previous } from '../Common'
+import { Image } from './'
 import './styles/Player.scss'
-import { Previous } from './Icons'
-import { useSpotify, SpotifyPlayer } from './Spotify'
+import { useSpotify, SpotifyPlayer } from '../../utils/Spotify'
 
 const PLACEHOLDER_TRACK = {
-    src: require('./placeholder.png'),
+    src: require('../../assets/img/placeholder.png'),
     artist: 'Artist',
     track: 'Track',
 }
@@ -23,24 +23,20 @@ export const Player: React.FC<PlayerProps> = ({ tracks, playerState, controller,
         if (playerState && 'is_playing' in playerState) {
             const track = playerState.item
             return (
-                <div className="host-content-inner">
-                    <div className="player">
-                        <Image src={track.album.images[0].url} />
-                        <h3>{track.artists[0].name}</h3>
-                        <p>{track.name}</p>
-                        <Controller tracks={tracks} state={playerState} controller={controller} />
-                    </div>
+                <div className="player">
+                    <Image src={track.album.images[0].url} />
+                    <h3>{track.artists[0].name}</h3>
+                    <p>{track.name}</p>
+                    <Controller tracks={tracks} state={playerState} controller={controller} />
                 </div>
             )
         } else {
             return (
-                <div className="host-content-inner">
-                    <div className="player">
-                        <Image src={PLACEHOLDER_TRACK.src} />
-                        <h3>{PLACEHOLDER_TRACK.artist}</h3>
-                        <p>{PLACEHOLDER_TRACK.track}</p>
-                        <DisabledController />
-                    </div>
+                <div className="player">
+                    <Image src={PLACEHOLDER_TRACK.src} />
+                    <h3>{PLACEHOLDER_TRACK.artist}</h3>
+                    <p>{PLACEHOLDER_TRACK.track}</p>
+                    <DisabledController />
                 </div>
             )
         }
@@ -65,9 +61,7 @@ const Overlay: React.FC<OverlayProps> = ({ fetching }) => {
         setTimeout(() => setShowOverlay(false), 1000)
     }, [fetching])
 
-    return showOverlay ? (
-        <div className={'player-loading-overlay' + (fetching ? '' : ' disabled')}></div>
-    ) : null
+    return showOverlay ? <div className={'player-loading-overlay' + (fetching ? '' : ' disabled')}></div> : null
 }
 
 const DisabledController: React.FC = () => {
@@ -80,13 +74,7 @@ const DisabledController: React.FC = () => {
                 <ControllButton onClick={() => {}} type="next" />
                 <ControllButton onClick={() => {}} type="repeat" />
             </div>
-            <ProgressBar
-                isPlaying={false}
-                length={0}
-                current={0}
-                onSeek={(ms: number) => {}}
-                onEnd={() => {}}
-            />
+            <ProgressBar isPlaying={false} length={0} current={0} onSeek={(ms: number) => {}} onEnd={() => {}} />
         </div>
     )
 }
@@ -111,7 +99,7 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
 
     const handlePlayNextTrack = () => {
         if (tracks.length > 0) {
-            controller.playTrack(tracks[0].queue_id, tracks[0].id)
+            controller.playTrack(tracks[0].id, tracks[0].queue_id)
         } else {
             controller.playSimilarTrack()
         }
@@ -122,10 +110,7 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
             <div className="player-controller-controlls">
                 <ControllButton onClick={() => console.log(controller)} type="shuffle" />
                 <ControllButton onClick={() => controller.changeTrack(false)} type="prev" />
-                <ControllButton
-                    onClick={handleTogglePlayback}
-                    type={isPlaying ? 'pause' : 'play'}
-                />
+                <ControllButton onClick={handleTogglePlayback} type={isPlaying ? 'pause' : 'play'} />
                 <ControllButton onClick={handlePlayNextTrack} type="next" />
                 <ControllButton onClick={() => console.log(controller)} type="repeat" />
             </div>
@@ -145,10 +130,7 @@ interface ControllButtonProps {
     onClick: () => void
 }
 
-export const ControllButton: React.FC<ControllButtonProps> = ({
-    type,
-    onClick,
-}: ControllButtonProps) => {
+export const ControllButton: React.FC<ControllButtonProps> = ({ type, onClick }: ControllButtonProps) => {
     const isCircled = type === 'play' || type === 'pause'
     const renderIcon = () => {
         switch (type) {
@@ -167,10 +149,7 @@ export const ControllButton: React.FC<ControllButtonProps> = ({
         }
     }
     return (
-        <button
-            onClick={onClick}
-            className={'player-controll-button ' + type + (isCircled ? ' circle' : '')}
-        >
+        <button onClick={onClick} className={'player-controll-button ' + type + (isCircled ? ' circle' : '')}>
             {renderIcon()}
         </button>
     )
@@ -199,8 +178,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     }
 
     const tick = () => {
-        const next = progress + 2000
-        if (Math.round(next) < length) setProgress(next - 1000)
+        const next = progress + 1500
+        if (Math.round(next) < length) setProgress(next - 500)
         else {
             setProgress(0)
             onEnd()

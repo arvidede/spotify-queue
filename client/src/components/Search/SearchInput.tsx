@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useRef, useState } from 'react'
 import { useDebouncedInput } from '../../utils'
-import './styles/Search.scss'
+import './styles/SearchInput.scss'
 
 interface SearchProps {
     onCancel: () => void
@@ -8,7 +8,7 @@ interface SearchProps {
     searching: boolean
 }
 
-export const Search: React.FC<SearchProps> = ({ onCancel, onSearchUpdate, searching }) => {
+export const SearchInput: React.FC<SearchProps> = ({ onCancel, onSearchUpdate, searching }) => {
     const inputRef = useRef<HTMLInputElement>(document.createElement('input'))
     const { input, setInput, handleInputChange } = useDebouncedInput(onSearchUpdate, onCancel)
     const [hasFocus, setFocus] = useState(false)
@@ -54,7 +54,7 @@ export const Search: React.FC<SearchProps> = ({ onCancel, onSearchUpdate, search
     }, [handleClickOutside, handleKeyPressed])
 
     return (
-        <div className="search">
+        <div className="search-input">
             <input
                 ref={inputRef}
                 onFocus={() => setFocus(true)}

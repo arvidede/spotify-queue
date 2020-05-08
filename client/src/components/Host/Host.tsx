@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Header } from '../Common/'
 import { RouteComponentProps } from 'react-router'
 import { TrackType, useWebSocket, useAPI } from '../../utils'
+import { Search } from '../Search'
 import './styles/Host.scss'
 import { Player, TrackList, useSpotify, SpotifyPlayer } from './'
 
@@ -17,24 +18,12 @@ export const Host: React.FC<Props> = (props: Props) => {
 
     return (
         <div className="host">
-            <Header
-                color="green"
-                size="s"
-                numSubscribers={subscribers}
-                id={props.match.params.id}
-            />
+            <Header color="green" size="s" numSubscribers={subscribers} id={props.match.params.id} />
             <div className="host-content">
-                <Player
-                    tracks={queue.tracks}
-                    playerState={playerState}
-                    controller={controller}
-                    fetching={fetching}
-                />
-                <TrackList
-                    tracks={queue.tracks}
-                    onDelete={queue.removeFromQueue}
-                    onPlay={controller.playTrack}
-                />
+                <Player tracks={queue.tracks} playerState={playerState} controller={controller} fetching={fetching} />
+                <Search queue={queue}>
+                    <TrackList tracks={queue.tracks} onDelete={queue.removeFromQueue} onPlay={controller.playTrack} />
+                </Search>
             </div>
         </div>
     )

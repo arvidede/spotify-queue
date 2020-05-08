@@ -57,6 +57,7 @@ export const SearchInput: React.FC<SearchProps> = ({ onCancel, onSearchUpdate, s
         <div className="search-input">
             <input
                 ref={inputRef}
+                tabIndex={1}
                 onFocus={() => setFocus(true)}
                 onBlur={() => setFocus(false)}
                 onChange={handleInputChange}

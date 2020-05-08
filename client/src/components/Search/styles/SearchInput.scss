@@ -15,6 +15,7 @@
         padding: 10px;
         transition: ease 0.15s;
         background-color: var(--spotify_gray);
+        caret-color: var(--spotify_green);
 
         &:focus {
             color: var(--spotify_white);

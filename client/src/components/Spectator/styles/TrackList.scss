@@ -27,7 +27,6 @@
         display: grid;
         grid-template-columns: 6vh 6fr 3fr;
         grid-template-rows: 1fr;
-        background-color: var(--spotify_dark_gray);
         justify-content: space-around;
 
         &:not(:first-of-type) {

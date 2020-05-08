@@ -24,7 +24,7 @@ class Socket {
             this.store = req.sessionStore.client
             ws.clientID = req.sessionID
 
-            ws.on('message', (m) => {
+            ws.on('message', m => {
                 const message = JSON.parse(m)
 
                 switch (message.type) {
@@ -49,17 +49,23 @@ class Socket {
         console.log('Client', sessionID, 'joined room', room)
 
         try {
-            this.store.set(sessionID, room)
-            this.store.sadd(Host(room), sessionID)
-            this.store.smembers(Host(room), (err, channel) => {
-                this.doSendMessage('numSubscribers', channel.length, channel)
+            this.store.exists(Host(room), () => {
+                this.store.set(sessionID, room)
+                this.store.sadd(Host(room), sessionID)
+                this.store.smembers(Host(room), (err, channel) => {
+                    this.doSendMessage(
+                        'numSubscribers',
+                        channel.length,
+                        channel,
+                    )
+                })
             })
         } catch (error) {
             console.error('Error:', error)
         }
     }
 
-    deleteFromChannel = (id) => {
+    deleteFromChannel = id => {
         this.store.get(id, (err, res) => {
             this.store.del(id)
             this.store.srem(Host(res), id)
@@ -73,10 +79,10 @@ class Socket {
         console.log('Vote:', payload)
         const room = payload.room
         const trackRef = this.db.collection(COLLECTIONS.QUEUE).doc(room)
-        trackRef.get().then((doc) => {
+        trackRef.get().then(doc => {
             // workaround until Firestore arrayRemove supports filter keys
             const tracks = doc.data().tracks
-            const index = tracks.findIndex((t) => t.queue_id === payload.id)
+            const index = tracks.findIndex(t => t.queue_id === payload.id)
             if (index !== -1) {
                 tracks[index].votes =
                     tracks[index].votes + (payload.vote ? 1 : -1)
@@ -89,7 +95,7 @@ class Socket {
                     this.doSendMessage(
                         'vote',
                         track,
-                        channel.filter((id) => id !== client),
+                        channel.filter(id => id !== client),
                     )
                 })
             }
@@ -101,7 +107,7 @@ class Socket {
             this.doSendMessage(
                 'trackAdded',
                 track,
-                channel.filter((id) => id !== client),
+                channel.filter(id => id !== client),
             )
         })
     }
@@ -119,7 +125,7 @@ class Socket {
 
     doSendMessage = (type, payload, receivers) => {
         const message = Message(type, payload)
-        this.wss.clients.forEach((client) => {
+        this.wss.clients.forEach(client => {
             if (receivers.includes(client.clientID)) {
                 client.send(message)
             }

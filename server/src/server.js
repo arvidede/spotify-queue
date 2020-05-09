@@ -20,8 +20,9 @@ const redis = require('redis')
 const RedisStore = require('connect-redis')(session)
 const axios = require('axios')
 const middleware = require('./middleware')
-
-const redisClient = redis.createClient()
+const redisClient = redis.createClient(
+    process.env.NODE_ENV === 'production' ? process.env.REDIS_URL : '',
+)
 
 class Server {
     constructor() {

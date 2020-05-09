@@ -6,7 +6,8 @@ export const TOKEN_URL = 'https://accounts.spotify.com/api/token'
 export const BASE_URL = 'https://api.spotify.com'
 export const SEARCH_URL = BASE_URL + '/v1/search'
 export const TRACK_URL = BASE_URL + '/v1/tracks'
-export const REDIRECT_URL = 'http://localhost:3000/redirect'
+export const REDIRECT_URL =
+    process.env.REDIRECT_URL || 'http://localhost:3000/redirect'
 
 export const TOKEN_BASE_64 = new Buffer(
     `${CLIENT_TOKEN}:${CLIENT_TOKEN_SECRET}`,

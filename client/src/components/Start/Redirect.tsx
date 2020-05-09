@@ -10,7 +10,10 @@ export const Redirect: React.FC<RedirectProps> = props => {
     useEffect(() => {
         const query = new URLSearchParams(props.location.search)
         const code = query.get('code')
-        api.doFetchUserToken(code).then(window.close)
+        api.doFetchUserToken(code).then(() => {
+            window.opener.tokenCallback()
+            window.close()
+        })
     }, [])
     return <div></div>
 }

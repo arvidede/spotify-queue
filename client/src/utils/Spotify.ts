@@ -130,7 +130,7 @@ export class SpotifyPlayer {
     }
 
     request = (url: string, config: object) => {
-        if (tokenHasExpired(this.token)) {
+        if (this.token && tokenHasExpired(this.token)) {
             return this.refreshToken().then(() => this.request(url, config))
         }
         return fetch(url, {

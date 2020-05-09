@@ -128,23 +128,27 @@ export class API implements APIType {
                 return this.doRefreshUserToken(token).then(resolve)
             }
 
+            const width = 450,
+                height = 730,
+                left = window.screen.width / 2 - width / 2,
+                top = window.screen.height / 2 - height / 2
+
+            const popup = window.open(
+                'http://localhost:3000',
+                'Spotify',
+                'menubar=no,location=no,resizable=no,scrollbars=no,status=no,width=' +
+                    `${width},height=${height},top=${top},left=${left}`,
+            )
+
             return Fetch(AUTHORIZE_URL, 'GET').then((res: { data: string }) => {
-                const width = 450,
-                    height = 730,
-                    left = window.screen.width / 2 - width / 2,
-                    top = window.screen.height / 2 - height / 2
-
-                this.window = window.open(
-                    res.data,
-                    'Spotify',
-                    'menubar=no,location=no,resizable=no,scrollbars=no,status=no,width=' +
-                        `${width},height=${height},top=${top},left=${left}`,
-                )
-
-                if (!this.window) return reject('Please allow pop-ups for logging into Spotify')
-
-                this.window.onbeforeunload = () => {
-                    resolve()
+                if (popup) {
+                    popup.location.replace(res.data)
+                    window['tokenCallback'] = () => {
+                        popup.close()
+                        return resolve()
+                    }
+                } else {
+                    alert('Hey, you! This app needs popups, sorry. Just allow them. Once.')
                 }
             })
         })

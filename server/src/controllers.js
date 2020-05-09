@@ -69,7 +69,7 @@ exports.host = (req, res) => {
         .collection(COLLECTIONS.QUEUE)
         .doc(req.session.id)
         .get()
-        .then((doc) => {
+        .then(doc => {
             if (!doc.exists) {
                 req.db.collection(COLLECTIONS.QUEUE).doc(req.session.id).set({
                     tracks: [],
@@ -84,14 +84,17 @@ exports.host = (req, res) => {
 }
 
 //
-exports.validate = (req, res) => {
-    req.db
-        .collection(COLLECTIONS.QUEUE)
-        .doc(req.query.id)
-        .get()
-        .then((doc) => {
-            res.status(STATUS.OK).send(Response(doc.exists))
-        })
+exports.validate = async (req, res) => {
+    try {
+        const exists = await req.sessionStore.client.exists(Host(req.query.id))
+        if (exists) res.status(STATUS.OK).send(Response(true))
+        else
+            res.status(STATUS.INTERNAL_SERVER_ERROR).send(
+                Response({ error: 'session not found' }),
+            )
+    } catch (error) {
+        res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
+    }
 }
 
 exports.search = async (req, res) => {
@@ -112,6 +115,7 @@ exports.search = async (req, res) => {
         res.status(STATUS.OK).send(Response(tracks))
     } catch (error) {
         console.log('Error fetching search:', error)
+        res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
     }
 }
 
@@ -122,11 +126,11 @@ exports.getQueue = async (req, res) => {
         .collection(COLLECTIONS.QUEUE)
         .doc(id)
         .get()
-        .then((doc) => {
+        .then(doc => {
             if (doc.exists) {
                 res.status(STATUS.OK).send(Response(doc.data()))
             } else {
-                res.status(STATUS.NO_CONTENT).send(Response([]))
+                res.status(STATUS.OK).send(Response([]))
             }
         })
 }
@@ -140,7 +144,7 @@ exports.addTrackToQueue = async (req, res) => {
             headers: {
                 Authorization: `Bearer ${req.token}`,
             },
-        }).then((res) => extractTrackInformation(res.data))
+        }).then(res => extractTrackInformation(res.data))
 
         req.ws.doSendAddedTrack(track, sessionID, req.sessionID)
 
@@ -167,17 +171,17 @@ exports.removeTrackFromQueue = async (req, res) => {
 
     trackRef
         .get()
-        .then((doc) => {
+        .then(doc => {
             // workaround until Firestore arrayRemove supports filter keys
             const tracks = doc.data().tracks
             trackRef.update({
-                tracks: tracks.filter((t) => t.queue_id !== trackID),
+                tracks: tracks.filter(t => t.queue_id !== trackID),
             })
         })
         .then(() => {
             res.status(STATUS.OK).send(Response('OK'))
         })
-        .catch((error) => {
+        .catch(error => {
             console.log('Error removing track:', error)
             res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
         })

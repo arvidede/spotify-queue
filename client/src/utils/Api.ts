@@ -134,7 +134,7 @@ export class API implements APIType {
                 top = window.screen.height / 2 - height / 2
 
             const popup = window.open(
-                'http://localhost:3000',
+                window.location.href,
                 'Spotify',
                 'menubar=no,location=no,resizable=no,scrollbars=no,status=no,width=' +
                     `${width},height=${height},top=${top},left=${left}`,

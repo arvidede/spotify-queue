@@ -15,13 +15,13 @@ import './styles/App.scss'
  * FIX:
  *  - Abort last search request on cancel
  *  - Strange behaviour when the callback is empty
- *  - Handle authorization when pop-ups not are allowed
+ *  - Host: Close device list when clicking outside
  */
 
 const App: React.FC = () => {
     return (
         <div className="App">
-            <Router>
+            <Router basename={process.env.PUBLIC_URL}>
                 <Switch>
                     <Route path={ROUTES.START} exact component={Start} />
                     <Route path={ROUTES.LOGIN} exact component={Login} />

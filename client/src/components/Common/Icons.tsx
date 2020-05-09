@@ -118,6 +118,28 @@ export const Repeat = () => (
     </svg>
 )
 
+export const Speaker = () => (
+    <svg viewBox="0 0 76 120">
+        <rect x="12" y="11" width="52" height="98" rx="4" strokeWidth="6" />
+        <circle cx="38" cy="78" r="14" strokeWidth="6" />
+        <circle cx="38" cy="36" r="5" className="icon-fill" />
+    </svg>
+)
+
+export const Phone = () => (
+    <svg viewBox="0 0 76 120">
+        <rect x="12" y="11" width="52" height="98" rx="4" strokeWidth="6" />
+        <circle cx="38" cy="96" r="5" className="icon-fill" />
+    </svg>
+)
+
+export const Computer = () => (
+    <svg viewBox="0 0 228 180">
+        <rect x="35" y="21" width="157" height="113" rx="4" strokeWidth="6" />
+        <path d="M15 158H213" strokeWidth="6" />
+    </svg>
+)
+
 export const Play = () => (
     <svg x="0px" y="0px" viewBox="0 0 320.001 320.001" className="icon-fill">
         <path

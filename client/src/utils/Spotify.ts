@@ -15,6 +15,8 @@ import {
     SPOTIFY_PLAYER_RECOMMENDATION_URL,
     TrackType,
     LAST_PLAYED_TRACK,
+    SPOTIFY_PLAYER_GET_DEVICES_URL,
+    SPOTIFY_PLAYER_SET_DEVICE_URL,
 } from '.'
 
 const POLLING_TIMEOUT = 10000
@@ -47,6 +49,25 @@ export class SpotifyPlayer {
 
     getPlayerState = (next: (state: SpotifyApi.CurrentPlaybackResponse) => void) => {
         this.request(SPOTIFY_PLAYER_BASE_URL, {}).then(next)
+    }
+
+    getDevices = (): Promise<SpotifyApi.UserDevice[]> => {
+        const config = {
+            method: 'GET',
+        }
+        return this.request(SPOTIFY_PLAYER_GET_DEVICES_URL, config).then(
+            (res: SpotifyApi.UserDevicesResponse) => res.devices,
+        )
+    }
+
+    setDevice = (id: string): Promise<any> => {
+        const config = {
+            method: 'PUT',
+            body: JSON.stringify({
+                device_ids: [id],
+            }),
+        }
+        return this.request(SPOTIFY_PLAYER_SET_DEVICE_URL, config)
     }
 
     playTrack = (id: string, queue_id?: string) => {

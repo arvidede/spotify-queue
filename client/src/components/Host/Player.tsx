@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { TrackType, millisToMinutesAndSeconds } from '../../utils'
-import { Play, Pause, Connect, Shuffle, Next, Previous } from '../Common'
+import { Play, Pause, Connect, Shuffle, Next, Previous, Computer, Speaker, Phone } from '../Common'
+import { PulseLoader as Spinner } from 'react-spinners'
 import { Image } from './'
 import './styles/Player.scss'
 import { useSpotify, SpotifyPlayer } from '../../utils/Spotify'
@@ -36,7 +37,7 @@ export const Player: React.FC<PlayerProps> = ({ tracks, playerState, controller,
                     <Image src={PLACEHOLDER_TRACK.src} />
                     <h3>{PLACEHOLDER_TRACK.artist}</h3>
                     <p>{PLACEHOLDER_TRACK.track}</p>
-                    <DisabledController />
+                    <DisabledController controller={controller} />
                 </div>
             )
         }
@@ -64,7 +65,11 @@ const Overlay: React.FC<OverlayProps> = ({ fetching }) => {
     return showOverlay ? <div className={'player-loading-overlay' + (fetching ? '' : ' disabled')}></div> : null
 }
 
-const DisabledController: React.FC = () => {
+interface DisabledControllerProps {
+    controller: SpotifyPlayer
+}
+
+const DisabledController: React.FC<DisabledControllerProps> = ({ controller }) => {
     return (
         <div className="player-controller">
             <div className="player-controller-controlls">
@@ -72,7 +77,7 @@ const DisabledController: React.FC = () => {
                 <ControllButton onClick={() => {}} type="prev" />
                 <ControllButton onClick={() => {}} type={'play'} />
                 <ControllButton onClick={() => {}} type="next" />
-                <ControllButton onClick={() => {}} type="connect" />
+                <ConnectButton controller={controller} />
             </div>
             <ProgressBar isPlaying={false} length={0} current={0} onSeek={(ms: number) => {}} onEnd={() => {}} />
         </div>
@@ -112,7 +117,7 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
                 <ControllButton onClick={() => controller.changeTrack(false)} type="prev" />
                 <ControllButton onClick={handleTogglePlayback} type={isPlaying ? 'pause' : 'play'} />
                 <ControllButton onClick={handlePlayNextTrack} type="next" />
-                <ControllButton onClick={() => console.log(controller)} type="connect" />
+                <ConnectButton controller={controller} />
             </div>
             <ProgressBar
                 isPlaying={isPlaying}
@@ -121,6 +126,89 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
                 onSeek={controller.seekInPlayingTrack}
                 onEnd={handlePlayNextTrack}
             />
+        </div>
+    )
+}
+
+interface PopUpProps {
+    devices: SpotifyApi.UserDevice[]
+    onClick: (id: string) => void
+}
+
+const PopUp: React.FC<PopUpProps> = ({ devices, onClick }) => {
+    const getIcon = (type: string) => {
+        switch (type) {
+            case 'Computer':
+                return <Computer />
+            case 'Speaker':
+                return <Speaker />
+            case 'Smartphone':
+                return <Phone />
+            default:
+                return <Speaker />
+        }
+    }
+
+    return (
+        <div>
+            <ul>
+                {devices.length > 0 ? (
+                    devices.map((device, index) => (
+                        <li key={device.id}>
+                            <button
+                                className={
+                                    device.is_restricted ? 'device-restricted' : device.is_active ? 'device-active' : ''
+                                }
+                                disabled={device.is_restricted}
+                                onClick={() => onClick(device.id)}
+                            >
+                                {getIcon(device.type)}
+                                <p>{device.name}</p>
+                            </button>
+                        </li>
+                    ))
+                ) : (
+                    <li>
+                        <Spinner size={10} color={'white'} />
+                    </li>
+                )}
+            </ul>
+        </div>
+    )
+}
+
+interface ConnectButtonProps {
+    controller: SpotifyPlayer
+}
+
+const ConnectButton: React.FC<ConnectButtonProps> = ({ controller }) => {
+    const [isVisible, setIsVisible] = useState(false)
+    const [devices, setDevices] = useState([])
+
+    const handleTogglePopUp = () => {
+        if (!isVisible) controller.getDevices().then(setDevices)
+        setIsVisible(!isVisible)
+    }
+
+    const handleSelectDevice = (id: string) => {
+        controller
+            .setDevice(id)
+            .then(controller.getDevices)
+            .then(setDevices)
+    }
+
+    useEffect(() => {
+        let mounted = true
+        controller.getDevices().then(devices => {
+            if (mounted) setDevices(devices)
+        })
+        return () => (mounted = false)
+    }, [])
+
+    return (
+        <div className="player-controll-connect">
+            {isVisible && <PopUp devices={devices} onClick={handleSelectDevice} />}
+            <ControllButton onClick={handleTogglePopUp} type="connect" />
         </div>
     )
 }

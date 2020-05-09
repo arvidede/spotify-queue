@@ -61,6 +61,118 @@
     justify-content: space-evenly;
 }
 
+.player-controll-connect {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    div {
+        position: absolute;
+        background-color: var(--spotify_gray);
+        border-radius: 5px;
+        transform: translateY(-100%);
+        box-shadow: 0 4px 20px 4px rgba(0, 0, 0, 0.5);
+        top: -1rem;
+        min-width: 220px;
+        display: block;
+
+        &::before {
+            bottom: -20px;
+            left: calc(50% - 10px);
+            border: 10px solid transparent;
+            border-top-color: #282828;
+            position: absolute;
+            content: '';
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+            li {
+                overflow: hidden;
+
+                &:first-of-type {
+                    border-top-left-radius: 5px;
+                    border-top-right-radius: 5px;
+                }
+
+                &:last-of-type {
+                    border-bottom-left-radius: 5px;
+                    border-bottom-right-radius: 5px;
+                }
+            }
+        }
+
+        button {
+            min-width: 100%;
+            outline: none;
+            background: none;
+            border: none;
+            padding: 1rem 2rem 1rem 1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: left;
+            color: var(--spotify_white);
+
+            &.device-active {
+                color: var(--spotify_green);
+
+                svg {
+                    stroke: var(--spotify_green);
+
+                    .icon-fill {
+                        fill: var(--spotify_green);
+                    }
+                }
+            }
+
+            &.device-restricted {
+                color: var(--spotify_text_gray);
+
+                svg {
+                    stroke: var(--spotify_text_gray);
+
+                    .icon-fill {
+                        fill: var(--spotify_text_gray);
+                    }
+                }
+            }
+
+            &:hover {
+                background-color: var(--spotify_medium_gray);
+                cursor: pointer;
+            }
+
+            svg {
+                fill: none;
+                height: 2rem;
+                width: 2rem;
+                stroke: var(--spotify_white);
+
+                .icon-fill {
+                    fill: var(--spotify_white);
+                }
+            }
+
+            p {
+                letter-spacing: 1px;
+                margin: 0 0 0 1rem;
+                font-size: 0.9rem;
+                font-weight: 700;
+                white-space: nowrap;
+                max-width: 280px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+    }
+}
+
 .player-controll-button {
     outline: none;
     background: none;

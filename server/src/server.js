@@ -9,7 +9,6 @@ import {
 import { fetchToken, shortID } from './helpers'
 const routes = require('./routes')
 const Socket = require('./socket')
-const serviceAccount = require('../firebase.key.json')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -46,6 +45,15 @@ class Server {
 
     configFirebase() {
         this.admin = admin
+        const serviceAccount = {
+            type: process.env.FIREBASE_TYPE,
+            project_id: process.env.FIREBASE_PROJECT_ID,
+            private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+            private_key: process.env.FIREBASE_PRIVATE_KEY,
+            client_email: process.env.FIREBASE_CLIENT_EMAIL,
+            client_id: process.env.FIREBASE_CLIENT_ID,
+        }
+
         this.admin.initializeApp({
             credential: this.admin.credential.cert(serviceAccount),
             databaseURL: DATABASE_URL,
@@ -90,7 +98,11 @@ class Server {
         this.app.use(this.session)
 
         const corsOptions = {
-            origin: ['http://localhost:3000', 'https://accounts.spotify.com'],
+            origin: [
+                'https://queue.rocks',
+                'http://localhost:3000',
+                'https://accounts.spotify.com',
+            ],
             methods: 'GET,POST,PUT,DELETE',
             allowedHeaders: [
                 'Origin',

@@ -17,19 +17,25 @@ export const TrackList: React.FC<TrackListProps> = ({ tracks, onDelete, onPlay }
                 <div>ARTIST</div>
                 <div>VOTES</div>
             </li>
-            {tracks.map((track, index) => (
-                <li key={track.id}>
-                    <div>{track.title}</div>
-                    <div>{track.artist}</div>
-                    <div>{track.votes}</div>
-                    <button onClick={() => onPlay(track.id, track.queue_id)}>
-                        <Play />
-                    </button>
-                    <button onClick={() => onDelete(track.queue_id)}>
-                        <Close />
-                    </button>
+            {tracks.length > 0 ? (
+                tracks.map((track, index) => (
+                    <li key={track.id}>
+                        <div>{track.title}</div>
+                        <div>{track.artist}</div>
+                        <div>{track.votes}</div>
+                        <button onClick={() => onPlay(track.id, track.queue_id)}>
+                            <Play />
+                        </button>
+                        <button onClick={() => onDelete(track.queue_id)}>
+                            <Close />
+                        </button>
+                    </li>
+                ))
+            ) : (
+                <li>
+                    <h3>The Queue is empty</h3>
                 </li>
-            ))}
+            )}
         </ul>
     )
 }

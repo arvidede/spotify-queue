@@ -43,6 +43,12 @@ class Socket {
                 console.log('Lost connection with client:', req.sessionID)
             })
         })
+
+        setInterval(() => {
+            this.wss.clients.forEach(client => {
+                client.send(Message('ping', new Date().toTimeString()))
+            })
+        }, 10000)
     }
 
     joinChannel = (sessionID, room) => {

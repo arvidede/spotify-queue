@@ -1,27 +1,27 @@
 import React from 'react'
 
 export const Close = () => (
-    <svg viewBox="0 0 512 512">
+    <svg viewBox="0 0 512 512" className="icon-fill">
         <path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z" />
     </svg>
 )
 
 export const Next = () => (
-    <svg viewBox="0 0 170 174">
+    <svg viewBox="0 0 170 174" className="icon-fill">
         <path d="M132.916 87L20 153.684L20 20.316L132.916 87Z" />
         <rect x="132.916" y="20" width="16.6257" height="134" />
     </svg>
 )
 
 export const Previous = () => (
-    <svg viewBox="0 0 170 174">
+    <svg viewBox="0 0 170 174" className="icon-fill">
         <path d="M36.6257 87L149.542 20.316L149.542 153.684L36.6257 87Z" />
         <rect x="36.6257" y="154" width="16.6257" height="134" transform="rotate(-180 36.6257 154)" />
     </svg>
 )
 
 export const Shuffle = () => (
-    <svg x="0px" y="0px" viewBox="0 0 512 512">
+    <svg x="0px" y="0px" viewBox="0 0 512 512" className="icon-fill">
         <g>
             <g>
                 <g>
@@ -64,8 +64,22 @@ export const Shuffle = () => (
     </svg>
 )
 
+export const Connect = () => (
+    <svg viewBox="0 0 123 118" className="icon-connect">
+        <path
+            d="M50 10H14C11.7909 10 10 11.7909 10 14V80C10 82.2091 11.7909 84 14 84H50"
+            strokeWidth="8"
+            strokeLinejoin="round"
+        />
+        <rect x="61" y="10" width="52" height="98" rx="6" strokeWidth="8" />
+        <path d="M35 108H50" strokeWidth="8" />
+        <circle cx="87" cy="77" r="14" strokeWidth="8" />
+        <circle cx="87" cy="35" r="5" className="icon-fill" />
+    </svg>
+)
+
 export const Repeat = () => (
-    <svg x="0px" y="0px" viewBox="0 0 511.991 511.991">
+    <svg x="0px" y="0px" viewBox="0 0 511.991 511.991" className="icon-fill">
         <g>
             <g>
                 <g>
@@ -105,7 +119,7 @@ export const Repeat = () => (
 )
 
 export const Play = () => (
-    <svg x="0px" y="0px" viewBox="0 0 320.001 320.001">
+    <svg x="0px" y="0px" viewBox="0 0 320.001 320.001" className="icon-fill">
         <path
             d="M295.84,146.049l-256-144c-4.96-2.784-11.008-2.72-15.904,0.128C19.008,5.057,16,10.305,16,16.001v288
 	c0,5.696,3.008,10.944,7.936,13.824c2.496,1.44,5.28,2.176,8.064,2.176c2.688,0,5.408-0.672,7.84-2.048l256-144
@@ -130,7 +144,7 @@ export const Play = () => (
 )
 
 export const Pause = () => (
-    <svg x="0px" y="0px" viewBox="0 0 47.607 47.607">
+    <svg x="0px" y="0px" viewBox="0 0 47.607 47.607" className="icon-fill">
         <g>
             <path
                 d="M17.991,40.976c0,3.662-2.969,6.631-6.631,6.631l0,0c-3.662,0-6.631-2.969-6.631-6.631V6.631C4.729,2.969,7.698,0,11.36,0

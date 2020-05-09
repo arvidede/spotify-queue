@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { TrackType, millisToMinutesAndSeconds } from '../../utils'
-import { Play, Pause, Repeat, Shuffle, Next, Previous } from '../Common'
+import { Play, Pause, Connect, Shuffle, Next, Previous } from '../Common'
 import { Image } from './'
 import './styles/Player.scss'
 import { useSpotify, SpotifyPlayer } from '../../utils/Spotify'
@@ -72,7 +72,7 @@ const DisabledController: React.FC = () => {
                 <ControllButton onClick={() => {}} type="prev" />
                 <ControllButton onClick={() => {}} type={'play'} />
                 <ControllButton onClick={() => {}} type="next" />
-                <ControllButton onClick={() => {}} type="repeat" />
+                <ControllButton onClick={() => {}} type="connect" />
             </div>
             <ProgressBar isPlaying={false} length={0} current={0} onSeek={(ms: number) => {}} onEnd={() => {}} />
         </div>
@@ -112,7 +112,7 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
                 <ControllButton onClick={() => controller.changeTrack(false)} type="prev" />
                 <ControllButton onClick={handleTogglePlayback} type={isPlaying ? 'pause' : 'play'} />
                 <ControllButton onClick={handlePlayNextTrack} type="next" />
-                <ControllButton onClick={() => console.log(controller)} type="repeat" />
+                <ControllButton onClick={() => console.log(controller)} type="connect" />
             </div>
             <ProgressBar
                 isPlaying={isPlaying}
@@ -126,7 +126,7 @@ export const Controller: React.FC<ControllerProps> = ({ state, controller, track
 }
 
 interface ControllButtonProps {
-    type: 'shuffle' | 'prev' | 'play' | 'pause' | 'next' | 'repeat'
+    type: 'shuffle' | 'prev' | 'play' | 'pause' | 'next' | 'connect'
     onClick: () => void
 }
 
@@ -144,8 +144,8 @@ export const ControllButton: React.FC<ControllButtonProps> = ({ type, onClick }:
                 return <Pause />
             case 'shuffle':
                 return <Shuffle />
-            case 'repeat':
-                return <Repeat />
+            case 'connect':
+                return <Connect />
         }
     }
     return (

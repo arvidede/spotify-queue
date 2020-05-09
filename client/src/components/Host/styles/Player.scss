@@ -78,7 +78,19 @@
     }
 
     svg {
-        width: 0.9rem;
+        stroke: var(--spotify_text_gray);
+
+        &:not(.icon-connect) {
+            width: 0.9rem;
+        }
+
+        &.icon-connect {
+            fill: none;
+            width: 1rem;
+        }
+    }
+
+    .icon-fill {
         fill: var(--spotify_text_gray);
     }
 

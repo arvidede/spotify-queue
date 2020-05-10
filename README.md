@@ -2,6 +2,11 @@
 
 ### Social Listening for [Spotify](https://spotify.com/se/)
 
+#### Available at [queue.rocks](https://queue.rocks)
+
+#### Please leave crash reports and feedback at [holy-shit.queue.rocks](https://holy-shit.queue.rocks)
+
+---
 
 1. Client
     - [React](https://reactjs.org/)

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { TrackType, millisToMinutesAndSeconds } from '../../utils'
 import { Play, Pause, Connect, Shuffle, Next, Previous, Computer, Speaker, Phone } from '../Common'
 import { PulseLoader as Spinner } from 'react-spinners'
 import { Image } from './'
 import './styles/Player.scss'
-import { useSpotify, SpotifyPlayer } from '../../utils/Spotify'
+import { SpotifyPlayer } from '../../utils/Spotify'
 
 const PLACEHOLDER_TRACK = {
     src: require('../../assets/img/placeholder.png'),
@@ -203,7 +203,7 @@ const ConnectButton: React.FC<ConnectButtonProps> = ({ controller }) => {
             if (mounted) setDevices(devices)
         })
         return () => (mounted = false)
-    }, [])
+    }, [controller.getDevices])
 
     return (
         <div className="player-controll-connect">
@@ -265,21 +265,21 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         width: `${(100 * progress) / length}%`,
     }
 
-    const tick = () => {
+    const tick = useCallback(() => {
         const next = progress + 1500
         if (Math.round(next) < length) setProgress(next - 500)
         else {
             setProgress(0)
             onEnd()
         }
-    }
+    }, [length, onEnd, progress])
 
     useEffect(() => {
         if (isPlaying) {
             const interval = setInterval(tick, 1000)
             return () => clearInterval(interval)
         }
-    }, [tick])
+    }, [tick, isPlaying])
 
     useEffect(() => {
         setProgress(current)
@@ -287,7 +287,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 
     useEffect(() => {
         setProgress(progress)
-    }, [isPlaying])
+    }, [isPlaying, progress])
 
     const handleSeekTrack = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         const progressBar = e.currentTarget

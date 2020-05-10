@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Join, Host } from './'
-import { useAuth, ROUTES, useAPI } from '../../utils'
+import { ROUTES, useAPI } from '../../utils'
 import { RouteComponentProps } from 'react-router'
 import './styles/Start.scss'
 
@@ -17,7 +17,6 @@ interface Props extends RouteComponentProps<MatchParams> {
 
 export const Start: React.FC<Props> = ({ onSelect, history }: Props) => {
     const api = useAPI()
-    const auth = useAuth()
 
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)

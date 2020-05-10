@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useAPI, SPOTIFY_USER_TOKEN } from '../../utils'
+import { useAPI } from '../../utils'
 
 export interface RedirectProps extends RouteComponentProps {}
 
@@ -14,6 +14,6 @@ export const Redirect: React.FC<RedirectProps> = props => {
             window.opener.tokenCallback()
             window.close()
         })
-    }, [])
+    }, [api, props.location])
     return <div></div>
 }

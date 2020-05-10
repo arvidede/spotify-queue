@@ -1,4 +1,4 @@
-import { SpotifyToken, TrackType } from './types'
+import { SpotifyToken } from './types'
 import { VOTED_TRACKS } from './constants'
 
 export const validateRoomID = (s: string): boolean => {

@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Header } from '../Common/'
 import { RouteComponentProps } from 'react-router'
-import { TrackType, useWebSocket, useAPI } from '../../utils'
+import { useWebSocket } from '../../utils'
 import { Search } from '../Search'
 import './styles/Host.scss'
-import { Player, TrackList, useSpotify, SpotifyPlayer } from './'
+import { Player, TrackList, useSpotify } from './'
 
 interface MatchParams {
     id: string

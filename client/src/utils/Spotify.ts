@@ -1,7 +1,6 @@
-import { useState, useEffect, createContext, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import {
     SPOTIFY_USER_TOKEN,
-    REFRESH_TOKEN_URL,
     SPOTIFY_PLAYER_BASE_URL,
     SPOTIFY_PLAYER_PLAY_URL,
     SPOTIFY_PLAYER_PAUSE_URL,

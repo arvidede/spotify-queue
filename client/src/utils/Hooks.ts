@@ -34,7 +34,7 @@ export const useDebouncedInput = (onUpdate: any, onCancel: any) => {
         if (debouncedInput) {
             onUpdate(debouncedInput)
         }
-    }, [debouncedInput])
+    }, [debouncedInput, onUpdate])
 
     return { input, setInput, handleInputChange }
 }
@@ -94,7 +94,7 @@ export const useWebSocket = (id: string) => {
             else history.push('/not-found')
         })
         return () => api.doLeaveRoom()
-    }, [])
+    }, [api, history, id, queue.setTracks])
 
     useEffect(() => {
         const callbacks = {
@@ -104,7 +104,7 @@ export const useWebSocket = (id: string) => {
             vote: queue.voted,
         }
         api.doJoinRoom(id, callbacks)
-    }, [queue.addedToQueue, queue.removedFromQueue])
+    }, [queue.addedToQueue, queue.removedFromQueue, api, id, queue.voted])
 
     return { subscribers, queue }
 }

@@ -44,12 +44,13 @@ export const SearchInput: React.FC<SearchProps> = ({ onCancel, onSearchUpdate, s
     })
 
     useEffect(() => {
-        inputRef.current.addEventListener('click', handleClickOutside)
-        inputRef.current.addEventListener('keydown', handleKeyPressed)
+        const current = inputRef.current
+        current.addEventListener('click', handleClickOutside)
+        current.addEventListener('keydown', handleKeyPressed)
 
         return () => {
-            inputRef.current.removeEventListener('click', handleClickOutside)
-            inputRef.current.removeEventListener('keydown', handleKeyPressed)
+            current.removeEventListener('click', handleClickOutside)
+            current.removeEventListener('keydown', handleKeyPressed)
         }
     }, [handleClickOutside, handleKeyPressed])
 

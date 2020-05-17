@@ -2,6 +2,8 @@ const controllers = require('./controllers')
 const routes = require('express').Router()
 
 module.exports = middleware => {
+    routes.get('/ping', controllers.ping)
+
     routes.get('/authorize', controllers.authorize)
 
     routes.get('/token', controllers.requestToken)

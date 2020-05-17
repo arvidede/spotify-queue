@@ -25,7 +25,7 @@ const STATUS = {
 }
 
 exports.ping = (req, res) => {
-    res.status(status.OK).send(Response('What a glorious time to be alive'))
+    res.status(STATUS.OK).send(Response('What a glorious time to be alive'))
 }
 
 //

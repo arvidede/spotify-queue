@@ -24,6 +24,10 @@ const STATUS = {
     INTERNAL_SERVER_ERROR: 500,
 }
 
+exports.ping = (req, res) => {
+    res.status(STATUS.OK).send(Response('What a glorious time to be alive'))
+}
+
 //
 exports.authorize = (req, res) => {
     res.status(STATUS.OK).send(

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { TrackType, millisToMinutesAndSeconds } from '../../utils'
+import { TrackType, millisToMinutesAndSeconds, useInterval} from '../../utils'
 import { Play, Pause, Connect, Shuffle, Next, Previous, Computer, Speaker, Phone } from '../Common'
 import { PulseLoader as Spinner } from 'react-spinners'
 import { Image } from './'
@@ -21,7 +21,7 @@ interface PlayerProps {
 
 export const Player: React.FC<PlayerProps> = ({ tracks, playerState, controller, fetching }) => {
     const renderPlayer = () => {
-        if (playerState && 'is_playing' in playerState) {
+        if (playerState && 'is_playing' in playerState && playerState.item) {
             const track = playerState.item
             return (
                 <div className="player">
@@ -251,6 +251,8 @@ interface ProgressBarProps {
     onEnd: () => void
 }
 
+const OFFSET = 1000
+
 export const ProgressBar: React.FC<ProgressBarProps> = ({
     current,
     length,
@@ -265,29 +267,28 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         width: `${(100 * progress) / length}%`,
     }
 
-    const tick = useCallback(() => {
-        const next = progress + 1500
-        if (Math.round(next) < length) setProgress(next - 500)
-        else {
-            setProgress(0)
-            onEnd()
-        }
-    }, [length, onEnd, progress])
-
-    useEffect(() => {
+    useInterval(() => {
         if (isPlaying) {
-            const interval = setInterval(tick, 1000)
-            return () => clearInterval(interval)
+            const next = progress + 1000 + OFFSET
+            if (next < length) setProgress(next - OFFSET)
+            else {
+                console.log('End', progress, current, length)
+                setProgress(0)
+                onEnd()
+            }
         }
-    }, [tick, isPlaying])
+    }, 1000)
 
     useEffect(() => {
-        setProgress(current)
+        console.log(current, length)
+        if(progress > 0 && isPlaying) {
+            setProgress(current)
+        }
     }, [current, length])
 
     useEffect(() => {
         setProgress(progress)
-    }, [isPlaying, progress])
+    }, [isPlaying])
 
     const handleSeekTrack = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         const progressBar = e.currentTarget

@@ -18,7 +18,7 @@ import {
     SPOTIFY_PLAYER_SET_DEVICE_URL,
 } from '.'
 
-const POLLING_TIMEOUT = 10000
+const POLLING_TIMEOUT = 5000
 
 export class SpotifyPlayer {
     playerInterval: null | number
@@ -81,7 +81,7 @@ export class SpotifyPlayer {
         this.abortController = new AbortController()
 
         this.request(SPOTIFY_PLAYER_PLAY_URL, config).then(() => {
-            this.getPlayerState(this.pollingCallback)
+            setTimeout(() => this.getPlayerState(this.pollingCallback), 500)
         })
         if (queue_id) this.api.doRemoveTrackFromQueue(queue_id)
     }

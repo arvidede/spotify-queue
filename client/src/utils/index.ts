@@ -3,7 +3,7 @@ export { ROUTES }
 export { useAuth, Auth, AuthContext } from './Auth'
 export { useAPI, APIContext, API } from './Api'
 export { validateRoomID, Fetch, tokenHasExpired, getVotes, setVote, millisToMinutesAndSeconds } from './helpers'
-export { useDebounce, useDebouncedInput, useSearch, useWebSocket, useQueue } from './Hooks'
+export { useDebounce, useDebouncedInput, useSearch, useWebSocket, useQueue, useInterval } from './Hooks'
 
 export {
     AUTHORIZE_URL,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAsyncAbortable } from 'react-async-hook'
 import { useHistory } from 'react-router-dom'
 import { useAPI, TrackType, getVotes, setVote as setVoteInStorage } from './'
@@ -183,4 +183,24 @@ export const useQueue = () => {
         votes,
         setTracks,
     }
+}
+
+export const useInterval = (callback: () => void, delay: number) => {
+
+    const savedCallback = useRef(() => {})
+    
+    useEffect(() => {
+        savedCallback.current = callback
+    }, [callback])
+    
+    useEffect(() => {
+        function tick() {
+            savedCallback.current()
+        }
+        if (delay !== null) {
+            let id = setInterval(tick, delay)
+            return () => clearInterval(id)
+        }
+    }, [delay])
+
 }

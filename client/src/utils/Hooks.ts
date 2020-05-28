@@ -173,7 +173,7 @@ export const useQueue = () => {
         // Probably anti-pattern to sort here, right?
         // The queue can be sorted from firebase,
         // but needs to be re-sorted on each vote
-        tracks: tracks.sort((a, b) => b.votes - a.votes),
+        tracks: tracks ? tracks.sort((a, b) => b.votes - a.votes) : [],
         addToQueue: handleAddTrackToQueue,
         addedToQueue: handleTrackAddedToQueue,
         removeFromQueue: handleRemoveTrackFromQueue,

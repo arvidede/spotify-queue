@@ -168,7 +168,7 @@ const PopUp: React.FC<PopUpProps> = ({ devices, onClick }) => {
                         </li>
                     ))
                 ) : (
-                    <li>
+                    <li className="loading">
                         <Spinner size={10} color={'white'} />
                     </li>
                 )}

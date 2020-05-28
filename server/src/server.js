@@ -99,7 +99,7 @@ class Server {
         this.app.use(this.session)
 
         const corsOptions = {
-            origin: ['https://queue.rocks', 'https://accounts.spotify.com'],
+            origin: ['https://queue.rocks', 'https://accounts.spotify.com', 'http://localhost:3000'],
             methods: 'GET,POST,PUT,DELETE',
             allowedHeaders: [
                 'Origin',

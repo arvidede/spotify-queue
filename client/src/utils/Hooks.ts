@@ -34,7 +34,7 @@ export const useDebouncedInput = (onUpdate: any, onCancel: any) => {
         if (debouncedInput && input.length > 0) {
             onUpdate(debouncedInput)
         }
-    }, [debouncedInput, onUpdate])
+    }, [debouncedInput])
 
     return { input, setInput, handleInputChange }
 }
@@ -69,7 +69,7 @@ export const useSearch = () => {
     useEffect(() => {
         const handleEscapePressed = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && searching) {
-                setSearching(false)
+                handleCancelSearch()
             }
         }
         document.addEventListener('keydown', handleEscapePressed)

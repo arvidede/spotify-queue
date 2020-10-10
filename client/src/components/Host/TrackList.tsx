@@ -19,7 +19,7 @@ export const TrackList: React.FC<TrackListProps> = ({ tracks, onDelete, onPlay }
             </li>
             {tracks.length > 0 ? (
                 tracks.map((track, index) => (
-                    <li key={track.id}>
+                    <li key={track.queue_id}>
                         <div>{track.title}</div>
                         <div>{track.artist}</div>
                         <div>{track.votes}</div>

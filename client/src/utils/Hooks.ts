@@ -19,7 +19,7 @@ export function useDebounce(value: string, delay: number) {
 
 export const useDebouncedInput = (onUpdate: any, onCancel: any) => {
     const [input, setInput] = useState('')
-    const debouncedInput = useDebounce(input, 500)
+    const debouncedInput = useDebounce(input, 400)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (input === '' && e.target.value.length > 0) {
@@ -31,7 +31,7 @@ export const useDebouncedInput = (onUpdate: any, onCancel: any) => {
     }
 
     useEffect(() => {
-        if (debouncedInput) {
+        if (debouncedInput && input.length > 0) {
             onUpdate(debouncedInput)
         }
     }, [debouncedInput, onUpdate])
@@ -44,7 +44,19 @@ export const useSearch = () => {
     const [searching, setSearching] = useState(false)
     const api = useAPI()
 
+    const search = useAsyncAbortable(
+        async (abortSignal, text) => {
+            if (text.length === 0) {
+                return []
+            } else {
+                return api.doSearchTrack(text, abortSignal)
+            }
+        },
+        [searchInput],
+    )
+
     const handleCancelSearch = () => {
+        setSearchInput('')
         setSearching(false)
         search.reset()
     }
@@ -65,17 +77,6 @@ export const useSearch = () => {
             document.removeEventListener('keydown', handleEscapePressed)
         }
     }, [searching])
-
-    const search = useAsyncAbortable(
-        async (abortSignal, text) => {
-            if (text.length === 0) {
-                return []
-            } else {
-                return api.doSearchTrack(text, abortSignal)
-            }
-        },
-        [searchInput],
-    )
 
     return { searching, cancelSearch: handleCancelSearch, searchUpdate: handleSearchUpdate, search }
 }
@@ -186,13 +187,12 @@ export const useQueue = () => {
 }
 
 export const useInterval = (callback: () => void, delay: number) => {
-
     const savedCallback = useRef(() => {})
-    
+
     useEffect(() => {
         savedCallback.current = callback
     }, [callback])
-    
+
     useEffect(() => {
         function tick() {
             savedCallback.current()
@@ -202,5 +202,4 @@ export const useInterval = (callback: () => void, delay: number) => {
             return () => clearInterval(id)
         }
     }, [delay])
-
 }

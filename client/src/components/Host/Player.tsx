@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { TrackType, millisToMinutesAndSeconds, useInterval} from '../../utils'
+import React, { useState, useEffect } from 'react'
+import { TrackType, millisToMinutesAndSeconds, useInterval } from '../../utils'
 import { Play, Pause, Connect, Shuffle, Next, Previous, Computer, Speaker, Phone } from '../Common'
 import { PulseLoader as Spinner } from 'react-spinners'
 import { Image } from './'
@@ -281,7 +281,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 
     useEffect(() => {
         console.log(current, length)
-        if(progress > 0 && isPlaying) {
+        if (progress > 0 && isPlaying) {
             setProgress(current)
         }
     }, [current, length])

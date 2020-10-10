@@ -33,5 +33,7 @@ module.exports = middleware => {
         controllers.removeTrackFromQueue,
     )
 
+    routes.get('/room', middleware.withWebSocket, controllers.getRoom)
+
     return routes
 }

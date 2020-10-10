@@ -190,3 +190,16 @@ exports.removeTrackFromQueue = async (req, res) => {
             res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
         })
 }
+
+exports.getRoom = async (req, res) => {
+    const id = req.query.id
+    try {
+        req.ws.store.smembers(Host(id), (err, channel) => {
+            res.status(STATUS.OK).send(
+                Response({ channel, members: channel.length }),
+            )
+        })
+    } catch (error) {
+        res.status(STATUS.INTERNAL_SERVER_ERROR).send(Response({ error }))
+    }
+}

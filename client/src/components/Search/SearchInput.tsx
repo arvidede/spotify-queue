@@ -19,15 +19,6 @@ export const SearchInput: React.FC<SearchProps> = ({ onCancel, onSearchUpdate, s
         onCancel()
     }, [onCancel, setInput])
 
-    const handleClickOutside = useCallback(
-        (e: MouseEvent) => {
-            if (!inputRef.current.contains(e.target as Node)) {
-                handleCancel()
-            }
-        },
-        [handleCancel],
-    )
-
     const handleKeyPressed = useCallback(
         (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -38,21 +29,19 @@ export const SearchInput: React.FC<SearchProps> = ({ onCancel, onSearchUpdate, s
     )
 
     useEffect(() => {
+        const current = inputRef.current
+        current.addEventListener('keydown', handleKeyPressed)
+
+        return () => {
+            current.removeEventListener('keydown', handleKeyPressed)
+        }
+    }, [handleKeyPressed])
+
+    useEffect(() => {
         if (!searching && input.length > 0) {
             setInput('')
         }
     })
-
-    useEffect(() => {
-        const current = inputRef.current
-        current.addEventListener('click', handleClickOutside)
-        current.addEventListener('keydown', handleKeyPressed)
-
-        return () => {
-            current.removeEventListener('click', handleClickOutside)
-            current.removeEventListener('keydown', handleKeyPressed)
-        }
-    }, [handleClickOutside, handleKeyPressed])
 
     return (
         <div className="search-input">

@@ -10,11 +10,10 @@ import './styles/App.scss'
  *  - Host: Fullscreen mode
  *  - Host: Logout / Remove session
  *  - Host: Sync with lyrics from external API
+ *  - Host: Pause/Play with keyboard input
  
  *
  * FIX:
- *  - Abort last search request on cancel
- *  - Strange behaviour when the callback is empty
  *  - Host: Close device list when clicking outside
  */
 

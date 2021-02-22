@@ -272,7 +272,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
             const next = progress + 1000 + OFFSET
             if (next < length) setProgress(next - OFFSET)
             else {
-                console.log('End', progress, current, length)
                 setProgress(0)
                 onEnd()
             }
@@ -280,7 +279,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     }, 1000)
 
     useEffect(() => {
-        console.log(current, length)
         if (progress > 0 && isPlaying) {
             setProgress(current)
         }

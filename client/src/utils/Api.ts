@@ -118,11 +118,11 @@ export class API implements APIType {
     }
 
     doAuthorizeUser = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             const token: SpotifyToken = JSON.parse(localStorage.getItem(SPOTIFY_USER_TOKEN))
 
             if (token && !tokenHasExpired(token)) {
-                return resolve()
+                return resolve(true)
             } else if (token && tokenHasExpired(token)) {
                 return this.doRefreshUserToken(token).then(resolve)
             }
@@ -144,7 +144,7 @@ export class API implements APIType {
                     popup.location.replace(res.data)
                     window['tokenCallback'] = () => {
                         popup.close()
-                        return resolve()
+                        return resolve(true)
                     }
                 } else {
                     alert('Hey, you! This app needs popups, sorry. Just allow them. Once.')

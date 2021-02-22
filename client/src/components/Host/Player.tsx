@@ -31,16 +31,15 @@ export const Player: React.FC<PlayerProps> = ({ tracks, playerState, controller,
                     <Controller tracks={tracks} state={playerState} controller={controller} />
                 </div>
             )
-        } else {
-            return (
-                <div className="player">
-                    <Image src={PLACEHOLDER_TRACK.src} />
-                    <h3>{PLACEHOLDER_TRACK.artist}</h3>
-                    <p>{PLACEHOLDER_TRACK.track}</p>
-                    <DisabledController controller={controller} />
-                </div>
-            )
         }
+        return (
+            <div className="player">
+                <Image src={PLACEHOLDER_TRACK.src} />
+                <h3>{PLACEHOLDER_TRACK.artist}</h3>
+                <p>{PLACEHOLDER_TRACK.track}</p>
+                <DisabledController controller={controller} />
+            </div>
+        )
     }
 
     return (

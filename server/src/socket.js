@@ -120,12 +120,7 @@ class Socket {
 
     doSendRemovedTrack = async (trackID, room, client) => {
         this.store.smembers(Host(room), (err, channel) => {
-            this.doSendMessage(
-                'trackRemoved',
-                trackID,
-                channel,
-                // channel.filter(id => id !== client),
-            )
+            this.doSendMessage('trackRemoved', trackID, channel)
         })
     }
 
@@ -140,14 +135,3 @@ class Socket {
 }
 
 module.exports = Socket
-
-// this.db
-//                             .collection('sessions')
-//                             .doc(res)
-//                             .update({ spectators: FieldValue.increment(-1) })
-
-// store.set(req.sessionID, message.payload)
-//                         this.db
-//                             .collection('sessions')
-//                             .doc(message.payload)
-//                             .update({ spectators: FieldValue.increment(1) })

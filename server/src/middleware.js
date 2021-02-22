@@ -6,7 +6,7 @@ exports.withDB = getDB => (req, res, next) => {
 // Check if current token is valid and refresh if not
 exports.withAppToken = (getTokenExpiration, getToken, fetchNewToken) => (
     req,
-    res,
+    _,
     next,
 ) => {
     // May need to offset somewhat to compensate for latency
@@ -23,7 +23,7 @@ exports.withAppToken = (getTokenExpiration, getToken, fetchNewToken) => (
     }
 }
 
-exports.withWebSocket = getWS => (req, res, next) => {
+exports.withWebSocket = getWS => (req, _, next) => {
     req.ws = getWS()
     next()
 }

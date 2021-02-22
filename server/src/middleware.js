@@ -1,4 +1,4 @@
-exports.withDB = getDB => (req, res, next) => {
+exports.withDB = getDB => (req, _, next) => {
     req.db = getDB()
     next()
 }

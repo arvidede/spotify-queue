@@ -23,7 +23,7 @@
         &:not(:first-of-type) {
             border-top: solid 1px var(--spotify_gray);
 
-            &:hover {
+            &.track-list-item:hover {
                 background-color: var(--spotify_gray);
 
                 button {

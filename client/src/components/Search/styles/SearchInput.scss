@@ -2,7 +2,8 @@
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 0 0.75rem 0.75rem 0.75rem;
+    padding: 0 0.75rem;
+    margin: 0.25rem 0;
     position: sticky;
     top: 4rem;
 
@@ -33,6 +34,10 @@
         color: var(--spotify_text_gray);
         border: none;
         outline: none;
+        padding: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto 0;
 
         &:hover {
             cursor: pointer;

@@ -97,7 +97,10 @@ class Server {
         this.port = PORT
         this.app.use(bodyParser.json())
         this.app.use(this.session)
-        const origin = process.env.NODE_ENV === 'production' ? ['https://queue.rocks', 'https://accounts.spotify.com'] : ['http://localhost:3000']
+        const origin =
+            process.env.NODE_ENV === 'production'
+                ? ['https://q.edenheim.se', 'https://accounts.spotify.com']
+                : ['http://localhost:3000']
         const corsOptions = {
             origin,
             methods: 'GET,POST,PUT,DELETE',

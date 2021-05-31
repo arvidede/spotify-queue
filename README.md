@@ -2,9 +2,7 @@
 
 ### Social Listening for [Spotify](https://spotify.com/se/)
 
-#### Available at [queue.rocks](https://queue.rocks)
-
-#### Please leave crash reports and feedback at [holy-shit.queue.rocks](https://holy-shit.queue.rocks)
+#### Available at [q.edenheim.se](https://q.edenheim.se)
 
 ---
 

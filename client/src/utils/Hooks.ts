@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useAsyncAbortable } from 'react-async-hook'
 import { useHistory } from 'react-router-dom'
-import { useAPI, TrackType, getVotes, setVote as setVoteInStorage } from './'
+import { useAPI, TrackType, getVotes, setVote as setVoteInStorage } from '.'
 
 export function useDebounce(value: string, delay: number) {
     const [debouncedValue, setDebouncedValue] = useState(value)
@@ -55,11 +55,11 @@ export const useSearch = () => {
         [searchInput],
     )
 
-    const handleCancelSearch = () => {
+    const handleCancelSearch = useCallback(() => {
         setSearchInput('')
         setSearching(false)
         search.reset()
-    }
+    }, [search])
 
     const handleSearchUpdate = (input: string) => {
         setSearchInput(input)
@@ -76,7 +76,7 @@ export const useSearch = () => {
         return () => {
             document.removeEventListener('keydown', handleEscapePressed)
         }
-    }, [searching])
+    }, [searching, handleCancelSearch])
 
     return { searching, cancelSearch: handleCancelSearch, searchUpdate: handleSearchUpdate, search }
 }

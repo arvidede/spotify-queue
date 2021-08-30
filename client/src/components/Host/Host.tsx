@@ -1,10 +1,10 @@
 import React from 'react'
 import { Header } from '../Common/'
 import { RouteComponentProps } from 'react-router'
-import { useWebSocket } from '../../utils'
+import { useWebSocket, useSpotify } from '../../utils'
 import { Search } from '../Search'
 import './styles/Host.scss'
-import { Player, TrackList, useSpotify } from './'
+import { Player, TrackList } from './'
 
 interface MatchParams {
     id: string

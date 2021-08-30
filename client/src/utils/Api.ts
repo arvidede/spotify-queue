@@ -11,13 +11,14 @@ import {
     HOST_URL,
     VALIDATE_ROOM_URL,
     SEARCH_URL,
+    PING_URL,
     validateRoomID,
     Fetch,
     TrackType,
     tokenHasExpired,
     SpotifyToken,
     APIType,
-} from './'
+} from '.'
 
 const Message = (type: string, payload: string | object): string => {
     return JSON.stringify({
@@ -63,6 +64,10 @@ export class API implements APIType {
     check = () => {
         /* check if websocket instance is closed, if so call `connect` function. */
         if (this.inSession && (!this.ws || this.ws.readyState === WebSocket.CLOSED)) this.connect()
+    }
+
+    ping = () => {
+        Fetch(PING_URL)
     }
 
     doSendMessage = (type: string, payload: string | object) => {

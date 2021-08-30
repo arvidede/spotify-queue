@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
     SPOTIFY_USER_TOKEN,
     SPOTIFY_PLAYER_BASE_URL,
@@ -95,6 +95,7 @@ export class SpotifyPlayer {
         this.request(url, config).then(({ tracks }: { tracks: TrackType[] }) => {
             if (tracks && tracks.length > 0) {
                 this.playTrack(tracks[0].id)
+                // this.pollingCalback(tracks[0].id)
             }
         })
     }
@@ -155,7 +156,7 @@ export const useSpotify = (): {
 } => {
     const [initialFetch, setInitialFetch] = useState(true)
     const api = useAPI()
-    const [spotify, setSpotify] = useState(new SpotifyPlayer(api))
+    const spotify = useMemo(() => new SpotifyPlayer(api), [api])
     const [playerState, setPlayerState] = useState<SpotifyApi.CurrentPlaybackResponse>(
         {} as SpotifyApi.CurrentPlaybackResponse,
     )

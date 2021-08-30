@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Join, Host } from './'
 import { ROUTES, useAPI } from '../../utils'
 import { RouteComponentProps } from 'react-router'
@@ -20,6 +20,11 @@ export const Start: React.FC<Props> = ({ onSelect, history }: Props) => {
 
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        // Wake up idle Heroku dyno
+        api.ping()
+    }, [api])
 
     const handleHostRoom = async (): Promise<any> => {
         console.log('Authorizing...')

@@ -10,6 +10,7 @@ export const REFRESH_TOKEN_URL = BASE_URL + 'refresh'
 export const GET_QUEUE_URL = BASE_URL + 'get-queue'
 export const ADD_TRACK_TO_QUEUE_URL = BASE_URL + 'add-to-queue'
 export const REMOVE_TRACK_FROM_QUEUE_URL = BASE_URL + 'remove-from-queue'
+export const PING_URL = BASE_URL + 'ping'
 
 /* Spotify API */
 export const SPOIFY_BASE_URL = 'https://api.spotify.com/v1'

@@ -19,7 +19,7 @@ export const Header: React.FC<Props> = ({ size, color, numSubscribers, id }: Pro
             </h3>
             {id && (
                 <h3 className="header-code">
-                    Go to <b>queue.rocks</b> and use the code <b>{id}</b>{' '}
+                    Go to <b>q.edenheim.se</b> and use the code <b>{id}</b>{' '}
                 </h3>
             )}
             {numSubscribers && (

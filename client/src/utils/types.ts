@@ -1,6 +1,7 @@
 export interface APIType {
     connect: () => void
     check: () => void
+    ping: () => void
     doAddTrackToQueue: (track: string) => Promise<string>
     doRemoveTrackFromQueue: (track: string) => Promise<unknown>
     doVoteForTrack: (track: string, vote: boolean) => void

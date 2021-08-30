@@ -3,6 +3,14 @@ import { TrackType } from '../../utils'
 import { Heart, HeartOutline } from '../Common'
 import './styles/SearchResults.scss'
 
+function getArtwork(album: string) {
+    if (album.length > 0) {
+        return album
+    } else {
+        return require('../../assets/img/placeholder.png')
+    }
+}
+
 interface SearchResultProps {
     tracks: TrackType[]
     onAddTrack: (track: TrackType) => void
@@ -51,12 +59,4 @@ export const SearchResults: React.FC<SearchResultProps> = ({
             </ul>
         </div>
     )
-}
-
-function getArtwork(album: string) {
-    if (album.length > 0) {
-        return album
-    } else {
-        return require('../../assets/img/placeholder.png')
-    }
 }

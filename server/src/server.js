@@ -1,11 +1,4 @@
-import {
-    TOKEN_URL,
-    CLIENT_TOKEN,
-    CLIENT_TOKEN_SECRET,
-    DATABASE_URL,
-    TOKEN_BASE_64,
-    PORT,
-} from './constants'
+import { DATABASE_URL, PORT } from './constants'
 import { fetchToken, shortID } from './helpers'
 const routes = require('./routes')
 const Socket = require('./socket')
@@ -13,12 +6,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const http = require('http')
-const shortid = require('shortid')
 const admin = require('firebase-admin')
 const session = require('express-session')
 const redis = require('redis')
 const RedisStore = require('connect-redis')(session)
-const axios = require('axios')
 const middleware = require('./middleware')
 const redisClient = redis.createClient(
     process.env.NODE_ENV === 'production' ? process.env.REDIS_URL : '',

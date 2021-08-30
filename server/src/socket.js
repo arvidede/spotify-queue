@@ -1,7 +1,6 @@
 import { COLLECTIONS } from './constants'
 import { Host } from './helpers'
 const WebSocket = require('ws')
-const FieldValue = require('firebase-admin').firestore.FieldValue
 
 const Message = (type, payload) => {
     return JSON.stringify({
